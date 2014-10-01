@@ -2,84 +2,86 @@ require 'miasma'
 require 'miasma/utils/smash'
 require 'time'
 
-class RackspaceApiCore
-
-  AUTH_ENDPOINT = {
-    :us => 'https://identity.api.rackspacecloud.com/v2.0',
-    :uk => 'https://lon.identity.api.rackspacecloud.com/v2.0'
-  }
-
-  API_MAP = Smash.new(
-    'compute' => 'cloudServersOpenStack'
-  )
-
-  attr_reader :user
-  attr_reader :service_catalog
-  attr_reader :token
-  attr_reader :credentials
-
-  def initialize(creds)
-    @credentials = creds
-  end
-
-  def endpoint_for(api_name, region)
-    identify_and_load unless service_catalog
-    api = API_MAP[api_name]
-    srv = service_catalog.detect do |info|
-      info[:name] == api
-    end
-    region = region.to_s.upcase
-    point = srv[:endpoints].detect do |endpoint|
-      endpoint[:region] == region
-    end
-    if(point)
-      point[:publicURL]
-    end
-  end
-
-  def api_token
-    if(token.nil? || Time.now > token[:expires])
-      identify_and_load
-    end
-    token[:id]
-  end
-
-  def account_id
-    if(token.nil? || Time.now > token[:expires])
-      identify_and_load
-    end
-    token[:tenant][:id]
-  end
-
-  def identify_and_load
-    endpoint = credentials[:rackspace_region].to_s == 'lon' ? AUTH_ENDPOINT[:uk] : AUTH_ENDPOINT[:us]
-    result = HTTP.post(File.join(endpoint, 'tokens'),
-      :json => {
-        'auth' => {
-          'RAX-KSKEY:apiKeyCredentials' => {
-            'username' => credentials[:rackspace_username],
-            'apiKey' => credentials[:rackspace_api_key]
-          }
-        }
-      }
-    )
-    unless(result.status == 200)
-      raise Error::ApiError::AuthenticationError.new('Failed to authenticate', :response => result)
-    end
-    info = MultiJson.load(result.body.to_s).to_smash
-    info = info[:access]
-    @user = info[:user]
-    @service_catalog = info[:serviceCatalog]
-    @token = info[:token]
-    token[:expires] = Time.parse(token[:expires])
-    true
-  end
-
-
-end
-
-
 module Miasma
+  module Contrib
+
+    class RackspaceApiCore
+
+      AUTH_ENDPOINT = {
+        :us => 'https://identity.api.rackspacecloud.com/v2.0',
+        :uk => 'https://lon.identity.api.rackspacecloud.com/v2.0'
+      }
+
+      API_MAP = Smash.new(
+        'compute' => 'cloudServersOpenStack'
+      )
+
+      attr_reader :user
+      attr_reader :service_catalog
+      attr_reader :token
+      attr_reader :credentials
+
+      def initialize(creds)
+        @credentials = creds
+      end
+
+      def endpoint_for(api_name, region)
+        identify_and_load unless service_catalog
+        api = API_MAP[api_name]
+        srv = service_catalog.detect do |info|
+          info[:name] == api
+        end
+        region = region.to_s.upcase
+        point = srv[:endpoints].detect do |endpoint|
+          endpoint[:region] == region
+        end
+        if(point)
+          point[:publicURL]
+        end
+      end
+
+      def api_token
+        if(token.nil? || Time.now > token[:expires])
+          identify_and_load
+        end
+        token[:id]
+      end
+
+      def account_id
+        if(token.nil? || Time.now > token[:expires])
+          identify_and_load
+        end
+        token[:tenant][:id]
+      end
+
+      def identify_and_load
+        endpoint = credentials[:rackspace_region].to_s == 'lon' ? AUTH_ENDPOINT[:uk] : AUTH_ENDPOINT[:us]
+        result = HTTP.post(File.join(endpoint, 'tokens'),
+          :json => {
+            'auth' => {
+              'RAX-KSKEY:apiKeyCredentials' => {
+                'username' => credentials[:rackspace_username],
+                'apiKey' => credentials[:rackspace_api_key]
+              }
+            }
+          }
+        )
+        unless(result.status == 200)
+          raise Error::ApiError::AuthenticationError.new('Failed to authenticate', :response => result)
+        end
+        info = MultiJson.load(result.body.to_s).to_smash
+        info = info[:access]
+        @user = info[:user]
+        @service_catalog = info[:serviceCatalog]
+        @token = info[:token]
+        token[:expires] = Time.parse(token[:expires])
+        true
+      end
+
+
+    end
+  end
+
   module Models
     class Compute
       class Rackspace < Compute
@@ -102,7 +104,7 @@ module Miasma
 
         def rackspace_api
           memoize(:miasma_rackspace_api, :direct) do
-            RackspaceApiCore.new(attributes)
+            Miasma::Contrib::RackspaceApiCore.new(attributes)
           end
         end
 

@@ -64,10 +64,23 @@ module Miasma
           end
           ary.push(options) unless options.empty?
         end
-        result = connection.send(http_method, *request_args)
+        if(args[:headers])
+          _connection = connection.with_headers(args[:headers])
+        else
+          _connection = connection
+        end
+        result = _connection.send(http_method, *request_args)
         unless(result.code == args.fetch(:expects, 200).to_i)
           raise Error::ApiError::RequestError.new(result.reason, :response => result)
         end
+        format_response(result)
+      end
+
+      # Makes best attempt at formatting response
+      #
+      # @param result [HTTP::Response]
+      # @return [Smash]
+      def format_response(result)
         extracted_headers = Smash[result.headers.map{|k,v| [Utils.snake(k), v]}]
         if(extracted_headers[:content_type] == 'application/json')
           begin

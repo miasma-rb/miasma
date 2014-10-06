@@ -69,11 +69,24 @@ module Miasma
         else
           _connection = connection
         end
-        result = _connection.send(http_method, *request_args)
+        result = make_request(_connection, http_method, request_args)
         unless(result.code == args.fetch(:expects, 200).to_i)
           raise Error::ApiError::RequestError.new(result.reason, :response => result)
         end
         format_response(result)
+      end
+
+      # Perform request
+      #
+      # @param connection [HTTP]
+      # @param http_method [Symbol]
+      # @param request_args [Array]
+      # @return [HTTP::Response]
+      # @note this is mainly here for concrete APIs to
+      #   override if things need to be done prior to
+      #   the actual request (like signature generation)
+      def make_request(connection, http_method, request_args)
+        connection.send(http_method, *request_args)
       end
 
       # Makes best attempt at formatting response

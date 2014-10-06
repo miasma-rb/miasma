@@ -5,26 +5,42 @@ require 'time'
 module Miasma
   module Contrib
 
+    # Rackspace API core helper
     class RackspaceApiCore
 
-      AUTH_ENDPOINT = {
+      # @return [Smash] Authentication endpoints
+      AUTH_ENDPOINT = Smash.new(
         :us => 'https://identity.api.rackspacecloud.com/v2.0',
         :uk => 'https://lon.identity.api.rackspacecloud.com/v2.0'
-      }
+      )
 
+      # @return [Smash] Mapping to external service name
       API_MAP = Smash.new(
         'compute' => 'cloudServersOpenStack'
       )
 
+      # @return [String] username
       attr_reader :user
+      # @return [Smash] remote service catalog
       attr_reader :service_catalog
+      # @return [Smash] token information
       attr_reader :token
+      # @return [Smash] credentials in use
       attr_reader :credentials
 
+      # Create a new api instance
+      #
+      # @param creds [Smash] credential hash
+      # @return [self]
       def initialize(creds)
         @credentials = creds
       end
 
+      # Provide end point URL for service
+      #
+      # @param api_name [String] name of api
+      # @param region [String] region in use
+      # @return [String] public URL
       def endpoint_for(api_name, region)
         identify_and_load unless service_catalog
         api = API_MAP[api_name]
@@ -40,6 +56,7 @@ module Miasma
         end
       end
 
+      # @return [String] API token
       def api_token
         if(token.nil? || Time.now > token[:expires])
           identify_and_load
@@ -47,6 +64,7 @@ module Miasma
         token[:id]
       end
 
+      # @return [String] ID of account
       def account_id
         if(token.nil? || Time.now > token[:expires])
           identify_and_load
@@ -54,6 +72,10 @@ module Miasma
         token[:tenant][:id]
       end
 
+      # Identify with authentication service and load
+      # token information and service catalog
+      #
+      # @return [TrueClass]
       def identify_and_load
         endpoint = credentials[:rackspace_region].to_s == 'lon' ? AUTH_ENDPOINT[:uk] : AUTH_ENDPOINT[:us]
         result = HTTP.post(File.join(endpoint, 'tokens'),
@@ -78,7 +100,6 @@ module Miasma
         true
       end
 
-
     end
   end
 
@@ -90,30 +111,35 @@ module Miasma
         attribute :rackspace_username, String, :required => true
         attribute :rackspace_region, String, :required => true
 
+        # @return [HTTP] with auth token provided
         def connection
-          HTTP.with_headers('X-Auth-Token' => token)
+          super.with_headers('X-Auth-Token' => token)
         end
 
+        # @return [String] endpoint URL
         def endpoint
           rackspace_api.endpoint_for(:compute, rackspace_region)
         end
 
+        # @return [String] valid API token
         def token
           rackspace_api.api_token
         end
 
+        # @return [Miasma::Contrib::RackspaceApiCore]
         def rackspace_api
           memoize(:miasma_rackspace_api, :direct) do
             Miasma::Contrib::RackspaceApiCore.new(attributes)
           end
         end
 
-        SERVER_STATE_MAP = {
+        # @return [Smash] map state to valid internal values
+        SERVER_STATE_MAP = Smash.new(
           'ACTIVE' => :running,
           'DELETED' => :terminated,
           'SUSPENDED' => :stopped,
           'PASSWORD' => :running
-        }
+        )
 
         def server_save(server)
           unless(server.persisted?)

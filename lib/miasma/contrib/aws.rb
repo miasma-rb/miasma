@@ -270,6 +270,16 @@ module Miasma
         # Supported version of the EC2 API
         EC2_API_VERSION = '2014-06-15'
 
+        # @return [Smash] map state to valid internal values
+        SERVER_STATE_MAP = Smash.new(
+          'running' => :running,
+          'pending' => :pending,
+          'shutting-down' => :pending,
+          'terminated' => :terminated,
+          'stopping' => :pending,
+          'stopped' => :stopped
+        )
+
         attribute :aws_access_key_id, String, :required => true
         attribute :aws_secret_access_key, String, :required => true
         attribute :aws_region, String, :required => true
@@ -330,6 +340,21 @@ module Miasma
               'Action' => 'DescribeInstances'
             }
           )
+          result.fetch(:body, 'DescribeInstancesResponse', 'reservationSet', 'item', []).map do |srv|
+            srv = srv[:instancesSet][:item]
+            Server.new(
+              self,
+              :id => srv[:instanceId],
+              :name => srv.fetch(:tagSet, :item, []).map{|tag| tag[:value] if tag.is_a?(Hash) && tag[:key] == 'Name'}.compact.first,
+              :image_id => srv[:imageId],
+              :flavor_id => srv[:instanceType],
+              :state => SERVER_STATE_MAP.fetch(srv.get(:instanceState, :name), :pending),
+              :addresses_private => [Server::Address.new(:version => 4, :address => srv[:privateIpAddress])],
+              :addresses_public => [Server::Address.new(:version => 4, :address => srv[:ipAddress])],
+              :status => srv.get(:instanceState, :name),
+              :key_name => srv[:keyName]
+            )
+          end
         end
 
       end

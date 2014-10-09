@@ -95,7 +95,7 @@ module Miasma
         # @param string [String] string to escape
         # @return [String] escaped string
         def safe_escape(string)
-          string.gsub(/([^a-zA-Z0-9_.\-~])/) do
+          string.to_s.gsub(/([^a-zA-Z0-9_.\-~])/) do
             '%' << $1.unpack('H2', $1.bytesize).join('%').upcase
           end
         end
@@ -159,7 +159,7 @@ module Miasma
               hmac.sign(
                 region,
                 hmac.sign(
-                  Time.now.strftime('%Y%m%d'),
+                  Time.now.utc.strftime('%Y%m%d'),
                   "AWS4#{hmac.key}"
                 )
               )
@@ -176,7 +176,7 @@ module Miasma
         # @return [String] credential scope for request
         def credential_scope
           [
-            Time.now.strftime('%Y%m%d'),
+            Time.now.utc.strftime('%Y%m%d'),
             region,
             service,
             'aws4_request'
@@ -321,18 +321,79 @@ module Miasma
           dest, options = request_args
           path = URI.parse(dest).path
           options = options.to_smash
-          options[:params] = options.fetch(:params, {}).to_smash.deep_merge('Version' => EC2_API_VERSION)
+          options[:params] = options.fetch(:params, Smash.new).to_smash.deep_merge('Version' => EC2_API_VERSION)
           signature = signer.generate(
             http_method, path, options.merge(
-              :headers => Smash[
-                connection.default_headers.to_a
-              ]
+              Smash.new(
+                :headers => Smash[
+                  connection.default_headers.to_a
+                ]
+              )
             )
           )
           options = Hash[options.map{|k,v|[k.to_sym,v]}]
           connection.auth(signature).send(http_method, dest, options)
         end
 
+        # @todo catch bad lookup and clear model
+        def server_reload(server)
+          result = request(
+            :path => '/',
+            :params => {
+              'Action' => 'DescribeInstances',
+              'InstanceId.1' => server.id
+            }
+          )
+          srv = result.get(:body, 'DescribeInstancesResponse', 'reservationSet', 'item', 'instancesSet', 'item')
+          server.load_data(
+            :id => srv[:instanceId],
+            :name => srv.fetch(:tagSet, :item, []).map{|tag| tag[:value] if tag.is_a?(Hash) && tag[:key] == 'Name'}.compact.first,
+            :image_id => srv[:imageId],
+            :flavor_id => srv[:instanceType],
+            :state => SERVER_STATE_MAP.fetch(srv.get(:instanceState, :name), :pending),
+            :addresses_private => [Server::Address.new(:version => 4, :address => srv[:privateIpAddress])],
+            :addresses_public => [Server::Address.new(:version => 4, :address => srv[:ipAddress])],
+            :status => srv.get(:instanceState, :name),
+            :key_name => srv[:keyName]
+          )
+          server.valid_state
+        end
+
+        def server_destroy(server)
+          if(server.persisted?)
+            result = request(
+              :path => '/',
+              :params => {
+                'Action' => 'TerminateInstances',
+                'InstanceId.1' => server.id
+              }
+            )
+          else
+            raise "this doesn't even exist"
+          end
+        end
+
+        def server_save(server)
+          unless(server.persisted?)
+            server.load_data(server.attributes)
+            result = request(
+              :path => '/',
+              :params => {
+                'Action' => 'RunInstances',
+                'ImageId' => server.image_id,
+                'InstanceType' => server.flavor_id,
+                'KeyName' => server.key_name,
+                'MinCount' => 1,
+                'MaxCount' => 1
+              }
+            )
+            server.id = result.get(:body, 'RunInstancesResponse', 'instancesSet', 'item', 'instanceId')
+          else
+            raise 'WAT DO I DO!?'
+          end
+        end
+
+        # @todo need to add auto pagination helper (as common util)
         def server_all
           result = request(
             :path => '/',
@@ -353,7 +414,7 @@ module Miasma
               :addresses_public => [Server::Address.new(:version => 4, :address => srv[:ipAddress])],
               :status => srv.get(:instanceState, :name),
               :key_name => srv[:keyName]
-            )
+            ).valid_state
           end
         end
 

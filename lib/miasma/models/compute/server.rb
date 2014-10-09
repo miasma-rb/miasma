@@ -53,7 +53,7 @@ module Miasma
         attribute :addresses_public, Address, :default => [], :multiple => true
         attribute :addresses_private, Address, :default => [], :multiple => true
         attribute :networks, Network, :default => [], :multiple => true
-        attribute :personality, Hash, :default => {}
+        attribute :personality, [Hash, String], :default => {}
         attribute :metadata, Hash, :coerce => lambda{|o| o.to_smash}
         attribute :key_name, String
 

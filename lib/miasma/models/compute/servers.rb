@@ -16,8 +16,8 @@ module Miasma
           raise NotImplementedError
         end
 
-        def build
-          Server.new(api)
+        def build(args={})
+          Server.new(api, args.to_smash)
         end
 
         protected

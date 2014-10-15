@@ -37,5 +37,12 @@ module Miasma
 
     end
 
+    # Orchestration error
+    class OrchestrationError < Error
+      # Template failed to validate
+      class InvalidTemplate < OrchestrationError
+      end
+    end
+
   end
 end

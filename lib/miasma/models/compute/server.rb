@@ -7,42 +7,17 @@ module Miasma
       class Server < Types::Model
 
         # Data container for networks
-        class Network
-
-          include Utils::Lazy
-
+        #
+        # @todo add model link
+        class Network < Types::ThinModel
           attribute :name, String
-          attribute :id, [String, Integer], :required => true
-
-          def initialize(args={})
-            load_data(args)
-          end
-
         end
 
         # Data container for IP addresses
-        class Address
-
-          include Utils::Lazy
-
+        class Address < Types::Data
           attribute :version, Integer, :required => true, :default => 4
           attribute :address, String, :required => true
           attribute :label, String
-          attribute :id, [String, Integer]
-
-          # Create new instance
-          #
-          # @param args [Hash]
-          # @option args [Integer] :version IP verion
-          # @option args [String] :address IP address
-          # @option args [String] :label optional label describing address
-          # @option args [String, Integer] :id optional ID for network
-          # @return [self]
-          def initialize(args={})
-            load_data(args)
-            valid_state
-          end
-
         end
 
         attribute :name, String, :required => true

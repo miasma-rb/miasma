@@ -40,12 +40,17 @@ module Miasma
             provider_const.pop
             # Insert mapping constant name and fetch
             const = provider_const.push(:RESOURCE_MAPPING).inject(Object) do |memo, konst|
-              memo.const_get(konst)
+              res = memo.const_get(konst)
+              break unless res
+              res
             end
-            const = const[self.type]
-            # Now rebuild from the ground up
-            const.to_s.split('::').insert(3, Utils.camel(api.provider)).inject(Object) do |memo, konst|
-              memo.const_get(konst)
+            if(const && const = const[self.type])
+              # Now rebuild from the ground up
+              const.to_s.split('::').insert(3, Utils.camel(api.provider)).inject(Object) do |memo, konst|
+                memo.const_get(konst)
+              end
+            else
+              raise KeyError.new "Failed to locate requested mapping! (`#{self.type}`)"
             end
           end
 

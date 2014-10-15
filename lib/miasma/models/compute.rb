@@ -12,7 +12,7 @@ module Miasma
       #
       # @param filter [Hash] filtering options
       # @return [Types::Collection<Models::Compute::Server>] servers
-      def servers(args={})
+      def servers(filter={})
         memoize(:servers) do
           Servers.new(self)
         end
@@ -20,7 +20,7 @@ module Miasma
 
       # Create new server instance
       #
-      # @param options [Models::Compute::Server]
+      # @param server [Models::Compute::Server]
       # @return [Models::Compute::Server]
       def server_save(server)
         raise NotImplementedError
@@ -28,7 +28,7 @@ module Miasma
 
       # Reload the server data from the API
       #
-      # @param options [Models::Compute::Server]
+      # @param server [Models::Compute::Server]
       # @return [Models::Compute::Server]
       def server_reload(server)
         raise NotImplementedError

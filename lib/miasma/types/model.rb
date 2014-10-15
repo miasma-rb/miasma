@@ -4,18 +4,14 @@ module Miasma
   module Types
 
     # Base model
-    class Model
+    class Model < Data
 
-      include Miasma::Utils::Lazy
-
-      attribute :id, [String, Numeric]
-
-      # @return [Miasma::Api] underlying service API
+      # @return [Miasma::Types::Api] underlying service API
       attr_reader :api
 
       # Build new model
       #
-      # @param api [Miasma::Api] service API
+      # @param api [Miasma::Types::Api] service API
       # @param model_data [Smash] load model data if provided
       # @return [self]
       def initialize(api, model_data=nil)
@@ -56,23 +52,6 @@ module Miasma
         else
           false
         end
-      end
-
-      # Convert model to JSON string
-      #
-      # @return [String]
-      def to_json
-        MultiJson.dump(attributes)
-      end
-
-      # Load model using JSON string
-      #
-      # @param json [String]
-      # @return [self]
-      def from_json(json)
-        set_attributes(
-          MultiJson.load(json).to_smash
-        )
       end
 
       # Reload the underlying data for model

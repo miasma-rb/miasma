@@ -22,6 +22,11 @@ module Miasma
         connect
       end
 
+      # @return [Symbol] name of provider
+      def provider
+        Utils.snake(self.class.split('::').last).to_sym
+      end
+
       # Connect to the remote API
       #
       # @return [self]

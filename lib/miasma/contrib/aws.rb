@@ -9,6 +9,29 @@ module Miasma
     # Core API for AWS access
     class AwsApiCore
 
+      module RequestUtils
+
+        # Fetch all results when tokens are being used
+        # for paging results
+        #
+        # @param next_token [String]
+        # @param result_key [Array<String, Symbol>] path to result
+        # @yield block to perform request
+        # @yieldparam options [Hash] request parameters (token information)
+        # @return [Array]
+        def all_result_pages(next_token, *result_key, &block)
+          list = []
+          options = next_token ? Smash.new('NextToken' => next_token) : Smash.new
+          result = block.call(options)
+          list += result.fetch(*result_key.dup.push(Smash.new))
+          if(token = result.get(:body, 'NextToken'))
+            list += all_result_pages(token, *result_key, &block)
+          end
+          list
+        end
+
+      end
+
       # @return [String] current time ISO8601 format
       def self.time_iso8601
         Time.now.utc.strftime('%Y%m%dT%H%M%SZ')
@@ -259,7 +282,6 @@ module Miasma
       end
 
     end
-
   end
 
   Models::Compute.autoload :Aws, 'miasma/contrib/aws/compute'

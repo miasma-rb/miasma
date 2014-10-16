@@ -7,6 +7,8 @@ module Miasma
       # Compute interface for AWS
       class Aws < Compute
 
+        include Contrib::AwsApiCore::RequestUtils
+
         # Supported version of the EC2 API
         EC2_API_VERSION = '2014-06-15'
 
@@ -135,13 +137,10 @@ module Miasma
 
         # @todo need to add auto pagination helper (as common util)
         def server_all
-          result = request(
-            :path => '/',
-            :params => {
-              'Action' => 'DescribeInstances'
-            }
-          )
-          result.fetch(:body, 'DescribeInstancesResponse', 'reservationSet', 'item', []).map do |srv|
+          results = all_result_pages(nil, :body, 'DescribeInstancesResponse', 'reservationSet', 'item') do |options|
+            request(:path => '/', :params => options.merge('Action' => 'DescribeInstances'))
+          end
+          results.map do |srv|
             srv = srv[:instancesSet][:item]
             Server.new(
               self,

@@ -6,15 +6,12 @@ module Miasma
       # Abstract server
       class Stack < Types::Model
 
+        autoload :Resource, 'miasma/models/orchestration/resource'
+        autoload :Resources, 'miasma/models/orchestration/resources'
+        autoload :Event, 'miasma/models/orchestration/event'
+        autoload :Events, 'miasma/models/orchestration/events'
+
         include Miasma::Utils::Memoization
-
-        # @return [Smash] mapping of remote type to internal type
-        RESOURCE_MAPPING = Smash.new
-
-        ## mapping example
-        # RESOURCE_MAPPING = Smash.new(
-        #   'AWS::EC2::Instance' => Miasma::Models::Compute::Server
-        # )
 
         # Stack output
         class Output < Types::Data
@@ -33,12 +30,15 @@ module Miasma
         end
 
         attribute :name, String, :required => true
-        attribute :status, [String, Symbol], :required => true, :coerce => lambda{|v| v.to_s.to_sym}
+        attribute :description, String
+        attribute :state, [Symbol], :allowed => Orchestration::VALID_RESOURCE_STATES
+        attribute :outputs, Array, :coerce => lambda{|v| v.map{|o| Output.new(o)}}
+        attribute :status, [String]
         attribute :status_reason, String
         attribute :creation_time, Time
         attribute :updated_time, Time
-        attribute :parameters, Hash, :default => Smash.new
-        attribute :template, Hash, :default => Smash.new
+        attribute :parameters, Hash
+        attribute :template, Hash, :default => Smash.new, :depends => :perform_template_load
         attribute :template_url, String
         attribute :template_description, String
         attribute :timeout_in_minutes, Integer
@@ -58,9 +58,6 @@ module Miasma
           @events = (args.delete(:events) || []).each do |e|
             Event.new(e)
           end
-          @outputs = (args.delete(:outputs) || []).each do |o|
-            Output.new(o)
-          end
           super args
         end
 
@@ -77,6 +74,12 @@ module Miasma
         # @return [self]
         def reload
           clear_memoizations!
+          remove = data.keys.find_all do |k|
+            ![:id, :name].include?(k.to_sym)
+          end
+          remove.each do |k|
+            data.delete(k)
+          end
           super
         end
 
@@ -110,6 +113,15 @@ module Miasma
         def perform_destroy
           api.stack_destroy(self)
         end
+
+        # Proxy template loading up to the API
+        def perform_template_load
+          memoize(:template) do
+            self.data[:template] = api.stack_template_load(self)
+            true
+          end
+        end
+
       end
 
     end

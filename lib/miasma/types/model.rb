@@ -67,33 +67,32 @@ module Miasma
         id?
       end
 
+      protected
+
+      # Save model state to remote API
+      #
+      # @return [TrueClass, FalseClass] performed remote action
+      # @raises [Miasma::Error::Save]
+      def perform_save
+        raise NotImplementedError.new 'Remote API save has not been implemented'
+      end
+
+      # Reload model state from remote API
+      #
+      # @return [TrueClass, FalseClass] performed remote action
+      # @raises [Miasma::Error::Save]
+      def perform_reload
+        raise NotImplementedError.new 'Remote API reload has not been implemented'
+      end
+
+      # Destroy model from remote API
+      #
+      # @return [TrueClass, FalseClass] performed remote action
+      # @raises [Miasma::Error::Save]
+      def perform_destroy
+        raise NotImplementedError.new 'Remote API destroy has not been implemented'
+      end
+
     end
-
-    protected
-
-    # Save model state to remote API
-    #
-    # @return [TrueClass, FalseClass] performed remote action
-    # @raises [Miasma::Error::Save]
-    def perform_save
-      raise NotImplemented.new 'Remote API save has not been implemented'
-    end
-
-    # Reload model state from remote API
-    #
-    # @return [TrueClass, FalseClass] performed remote action
-    # @raises [Miasma::Error::Save]
-    def perform_reload
-      raise NotImplemented.new 'Remote API reload has not been implemented'
-    end
-
-    # Destroy model from remote API
-    #
-    # @return [TrueClass, FalseClass] performed remote action
-    # @raises [Miasma::Error::Save]
-    def perform_destroy
-      raise NotImplemented.new 'Remote API destroy has not been implemented'
-    end
-
   end
 end

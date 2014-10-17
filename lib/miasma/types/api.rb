@@ -24,7 +24,7 @@ module Miasma
 
       # @return [Symbol] name of provider
       def provider
-        Utils.snake(self.class.split('::').last).to_sym
+        Utils.snake(self.class.to_s.split('::').last).to_sym
       end
 
       # Connect to the remote API
@@ -32,6 +32,22 @@ module Miasma
       # @return [self]
       def connect
         self
+      end
+
+      # Build new API for specified type using current provider / creds
+      #
+      # @param type [Symbol] api type
+      # @return [Api]
+      def api_for(type)
+        memoize(type) do
+          Miasma.api(
+            Smash.new(
+              :type => type,
+              :provider => provider,
+              :credentials => attributes
+            )
+          )
+        end
       end
 
       # @return [HTTP]

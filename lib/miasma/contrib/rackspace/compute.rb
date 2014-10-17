@@ -5,31 +5,7 @@ module Miasma
     class Compute
       class Rackspace < Compute
 
-        attribute :rackspace_api_key, String, :required => true
-        attribute :rackspace_username, String, :required => true
-        attribute :rackspace_region, String, :required => true
-
-        # @return [HTTP] with auth token provided
-        def connection
-          super.with_headers('X-Auth-Token' => token)
-        end
-
-        # @return [String] endpoint URL
-        def endpoint
-          rackspace_api.endpoint_for(:compute, rackspace_region)
-        end
-
-        # @return [String] valid API token
-        def token
-          rackspace_api.api_token
-        end
-
-        # @return [Miasma::Contrib::RackspaceApiCore]
-        def rackspace_api
-          memoize(:miasma_rackspace_api, :direct) do
-            Miasma::Contrib::RackspaceApiCore.new(attributes)
-          end
-        end
+        include Contrib::RackspaceApiCore::ModelCommon
 
         # @return [Smash] map state to valid internal values
         SERVER_STATE_MAP = Smash.new(

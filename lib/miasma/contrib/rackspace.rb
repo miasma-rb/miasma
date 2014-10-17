@@ -28,7 +28,7 @@ module Miasma
 
         # @return [String] endpoint URL
         def endpoint
-          rackspace_api.endpoint_for(:compute, rackspace_region)
+          rackspace_api.endpoint_for(self.class.to_s.split('::')[-2].downcase.to_sym, rackspace_region)
         end
 
         # @return [String] valid API token
@@ -52,8 +52,16 @@ module Miasma
       )
 
       # @return [Smash] Mapping to external service name
+      # @note ["cloudFilesCDN", "cloudFiles", "cloudBlockStorage",
+      # "cloudImages", "cloudQueues", "cloudBigData",
+      # "cloudOrchestration", "cloudServersOpenStack", "autoscale",
+      # "cloudDatabases", "cloudBackup", "cloudMetrics",
+      # "cloudLoadBalancers", "cloudNetworks", "cloudFeeds",
+      # "cloudMonitoring", "cloudDNS"]
+
       API_MAP = Smash.new(
-        'compute' => 'cloudServersOpenStack'
+        'compute' => 'cloudServersOpenStack',
+        'orchestration' => 'cloudOrchestration'
       )
 
       # @return [String] username
@@ -141,4 +149,5 @@ module Miasma
   end
 
   Models::Compute.autoload :Rackspace, 'miasma/contrib/rackspace/compute'
+  Models::Orchestration.autoload :Rackspace, 'miasma/contrib/rackspace/orchestration'
 end

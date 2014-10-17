@@ -93,7 +93,10 @@ module Miasma
           valid_types = [attributes[name][:type], NilClass].flatten.compact
           allowed_values = attributes[name][:allowed]
           multiple_values = attributes[name][:multiple]
+          depends_on = attributes[name][:depends]
           define_method(name) do
+            send(depends_on) if depends_on
+            on_missing unless data.has_key?(name) || dirty.has_key?(name)
             dirty[name] || data[name]
           end
           define_method("#{name}=") do |val|
@@ -114,6 +117,8 @@ module Miasma
             dirty[name] = coerce ? coerce.call(val) : val
           end
           define_method("#{name}?") do
+            send(depends_on) if depends_on
+            on_missing unless data.has_key?(name)
             !!data[name]
           end
           nil
@@ -131,6 +136,21 @@ module Miasma
             Smash[@attributes.find_all{|k,v| !v[:required]}]
           else
             @attributes
+          end
+        end
+
+        # Instance method to call on missing attribute
+        #
+        # @param method_name [Symbol]
+        # @return [Symbol]
+        def on_missing(method_name=nil)
+          if(method_name)
+            @missing_method = method_name
+          else
+            if(@missing_method)
+              send(@missing_method)
+              @missing_method
+            end
           end
         end
 

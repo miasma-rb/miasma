@@ -4,6 +4,7 @@ module Miasma
   module Utils
     autoload :Lazy, 'miasma/utils/lazy'
     autoload :Memoization, 'miasma/utils/memoization'
+    autoload :Immutable, 'miasma/utils/immutable'
   end
 end
 

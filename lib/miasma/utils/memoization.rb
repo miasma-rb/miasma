@@ -16,10 +16,14 @@ module Miasma
         unless(direct)
           key = "#{self.object_id}_#{key}"
         end
-        unless(Thread.current[key])
-          Thread.current[key] = yield
+        unless(_memo.has_key?(key))
+          _memo[key] = yield
         end
-        Thread.current[key]
+        _memo[key]
+      end
+
+      def _memo
+        Thread.current[:miasma_memoization] ||= Smash.new
       end
 
       # Remove memoized value
@@ -31,17 +35,17 @@ module Miasma
         unless(direct)
           key = "#{self.object_id}_#{key}"
         end
-        Thread.current[key] = nil
+        _memo.delete(key)
       end
 
       # Remove all memoized values
       #
       # @return [TrueClass]
       def clear_memoizations!
-        Thread.current.keys.find_all do |key|
+        _memo.keys.find_all do |key|
           key.to_s.start_with?("#{self.object_id}_")
         end.each do |key|
-          unmemoize(key)
+          _memo.delete(key)
         end
         true
       end

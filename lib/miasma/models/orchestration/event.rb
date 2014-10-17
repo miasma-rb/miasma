@@ -12,6 +12,7 @@ module Miasma
           attribute :resource_id, [String, Numeric], :required => true
           attribute :resource_logical_id, [String, Numeric]
           attribute :resource_name, String
+          attribute :resource_state, Symbol, :allowed_values => Orchestration::VALID_RESOURCE_STATES
           attribute :resource_status, String
           attribute :resource_status_reason, String
 
@@ -24,9 +25,7 @@ module Miasma
 
           # @return [Resource]
           def resource
-            stack.resources.detect do |r|
-              r.id == self.resource_id
-            end
+            stack.resources.get(self.resource_id)
           end
 
           include Utils::Immutable

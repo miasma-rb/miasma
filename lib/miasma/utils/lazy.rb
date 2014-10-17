@@ -32,7 +32,7 @@ module Miasma
         # Create new instance
         #
         # @param args [Hash]
-        # @return [Object]
+        # @return [self]
         def load_data(args={})
           args = args.to_smash
           @data = Smash.new
@@ -48,6 +48,7 @@ module Miasma
               self.send("#{name}=", val)
             end
           end
+          self
         end
 
         # Identifies valid state and automatically
@@ -96,7 +97,7 @@ module Miasma
           depends_on = attributes[name][:depends]
           define_method(name) do
             send(depends_on) if depends_on
-            on_missing unless data.has_key?(name) || dirty.has_key?(name)
+            self.class.on_missing(self) unless data.has_key?(name) || dirty.has_key?(name)
             dirty[name] || data[name]
           end
           define_method("#{name}=") do |val|
@@ -118,7 +119,7 @@ module Miasma
           end
           define_method("#{name}?") do
             send(depends_on) if depends_on
-            on_missing unless data.has_key?(name)
+            self.class.on_missing(self) unless data.has_key?(name)
             !!data[name]
           end
           nil
@@ -139,18 +140,21 @@ module Miasma
           end
         end
 
-        # Instance method to call on missing attribute
+        # Instance method to call on missing attribute or
+        # object to call method on if set
         #
-        # @param method_name [Symbol]
+        # @param param [Symbol, Object]
         # @return [Symbol]
-        def on_missing(method_name=nil)
-          if(method_name)
-            @missing_method = method_name
-          else
-            if(@missing_method)
-              send(@missing_method)
+        def on_missing(param=nil)
+          if(param)
+            if(param.is_a?(Symbol))
+              @missing_method = param
+            else
+              param.send(@missing_method)
               @missing_method
             end
+          else
+            @missing_method
           end
         end
 

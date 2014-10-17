@@ -44,5 +44,8 @@ module Miasma
       end
     end
 
+    # Invalid modification request
+    class ImmutableError < Error; end
+
   end
 end

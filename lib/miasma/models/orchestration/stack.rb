@@ -6,6 +6,8 @@ module Miasma
       # Abstract server
       class Stack < Types::Model
 
+        include Miasma::Utils::Memoization
+
         # @return [Smash] mapping of remote type to internal type
         RESOURCE_MAPPING = Smash.new
 
@@ -13,74 +15,6 @@ module Miasma
         # RESOURCE_MAPPING = Smash.new(
         #   'AWS::EC2::Instance' => Miasma::Models::Compute::Server
         # )
-
-        # Stack resource
-        class Resource < Types::ThinModel
-
-          attribute :name, String, :required => true
-          attribute :type, String, :required => true
-          attribute :logical_id, [String, Numeric]
-          attribute :status, [String, Symbol], :required => true, :coerce => lambda{|v| v.to_s.to_sym}
-          attribute :status_reason, String
-          attribute :updated_time, Time
-          attribute :links, Array
-
-          attr_reader :stack
-
-          def initalize(stack, args={})
-            @stack = stack
-            super stack.api, args
-          end
-
-          # @return [Miasma::Types::Model] provides mapped resource class
-          def model
-            # Insert provider to namespace
-            provider_const = self.class.name.split('::').insert(3, Utils.camel(api.provider))
-            # Remove current class
-            provider_const.pop
-            # Insert mapping constant name and fetch
-            const = provider_const.push(:RESOURCE_MAPPING).inject(Object) do |memo, konst|
-              res = memo.const_get(konst)
-              break unless res
-              res
-            end
-            if(const && const = const[self.type])
-              # Now rebuild from the ground up
-              const.to_s.split('::').insert(3, Utils.camel(api.provider)).inject(Object) do |memo, konst|
-                memo.const_get(konst)
-              end
-            else
-              raise KeyError.new "Failed to locate requested mapping! (`#{self.type}`)"
-            end
-          end
-
-        end
-
-        # Stack event
-        class Event < Types::Data
-
-          attribute :time, Time, :required => true
-          attribute :resource_id, [String, Numeric], :required => true
-          attribute :resource_logical_id, [String, Numeric]
-          attribute :resource_name, String
-          attribute :resource_status, String
-          attribute :resource_status_reason, String
-
-          attr_reader :stack
-
-          def initialize(stack, args={})
-            @stack = stack
-            super stack.api, args
-          end
-
-          # @return [Resource]
-          def resource
-            stack.resources.detect do |r|
-              r.id == self.resource_id
-            end
-          end
-
-        end
 
         # Stack output
         class Output < Types::Data
@@ -112,12 +46,7 @@ module Miasma
         attribute :notification_topics, [String, Array]
         attribute :capabilities, Array
 
-        # @return [Array<Resource>]
-        attr_reader :resources
-        # @return [Array<Event>]
-        attr_reader :events
-        # @return [Array<Output>]
-        attr_reader :outputs
+        on_missing :reload
 
         # Overload the loader so we can extract resources,
         # events, and outputs
@@ -141,6 +70,28 @@ module Miasma
         # @raises [Miasma::Error::OrchestrationError::InvalidTemplate]
         def validate
           raise NotImplemented
+        end
+
+        # Override to scrub custom caches
+        #
+        # @return [self]
+        def reload
+          clear_memoizations!
+          super
+        end
+
+        # @return [Events]
+        def events
+          memoize(:events) do
+            Events.new(self)
+          end
+        end
+
+        # @return [Resources]
+        def resources
+          memoize(:resources) do
+            Resources.new(self)
+          end
         end
 
         protected

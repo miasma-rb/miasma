@@ -8,9 +8,11 @@ module Miasma
     module Immutable
 
       # Freezes underlying data hash
-      def frozen_load_data(*args)
-        unfrozen_load_data(*args)
+      def frozen_valid_state(*args)
+        unfrozen_valid_state(*args)
         data.freeze
+        dirty.freeze
+        self
       end
 
       # @raises [Error::ImmutableError]
@@ -21,12 +23,9 @@ module Miasma
       class << self
 
         def included(klass)
-          klass.instance_methods.grep(/\w\=/).each do |method_name|
-            klass.remove_method(method_name)
-          end
           klass.class_eval do
-            alias_method :unfrozen_load_data, :load_data
-            alias_method :load_data, :frozen_load_data
+            alias_method :unfrozen_valid_state, :valid_state
+            alias_method :valid_state, :frozen_valid_state
           end
         end
 

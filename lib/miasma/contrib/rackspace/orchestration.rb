@@ -21,6 +21,9 @@ module Miasma
         # @return [Models::Orchestration::Stack]
         def stack_save(stack)
           raise NotImplementedError
+          if(stack.persisted?)
+          else
+          end
         end
 
         # Reload the stack data from the API
@@ -147,7 +150,24 @@ module Miasma
         # @param stack [Models::Orchestration::Stack]
         # @return [Array<Models::Orchestration::Stack::Event>]
         def event_all(stack)
-          raise NotImplementedError
+          result = request(
+            :path => "/stacks/#{stack.name}/#{stack.id}/events",
+            :method => :get,
+            :expects => 200
+          )
+          result.fetch(:body, :events, []).map do |event|
+            Stack::Event.new(
+              stack,
+              :id => event[:id],
+              :resource_id => event[:physical_resource_id],
+              :resource_name => event[:resource_name],
+              :resource_logical_id => event[:logical_resource_id],
+              :resource_state => event[:resource_status].downcase.to_sym,
+              :resource_status => event[:resource_status],
+              :resource_status_reason => event[:resource_status_reason],
+              :time => Time.parse(event[:event_time])
+            ).valid_state
+          end
         end
 
         # Return all new events for event collection

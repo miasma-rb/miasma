@@ -34,6 +34,18 @@ module Miasma
         Thread.current[key] = nil
       end
 
+      # Remove all memoized values
+      #
+      # @return [TrueClass]
+      def clear_memoizations!
+        Thread.current.keys.find_all do |key|
+          key.to_s.start_with?("#{self.object_id}_")
+        end.each do |key|
+          unmemoize(key)
+        end
+        true
+      end
+
     end
   end
 end

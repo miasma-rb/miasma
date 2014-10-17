@@ -5,12 +5,24 @@ module Miasma
     # Abstract orchestration API
     class Orchestration < Types::Api
 
-      autoload :Server, 'miasma/models/orchestration/stack'
-      autoload :Servers, 'miasma/models/orchestration/stacks'
-      autoload :Resource, 'miasma/models/orchestration/resource'
-      autoload :Resources, 'miasma/models/orchestration/resources'
-      autoload :Event, 'miasma/models/orchestration/event'
-      autoload :Events, 'miasma/models/orchestration/events'
+      autoload :Stack, 'miasma/models/orchestration/stack'
+      autoload :Stacks, 'miasma/models/orchestration/stacks'
+
+      # @return [Smash] mapping of remote type to internal type
+      RESOURCE_MAPPING = Smash.new
+
+      ## mapping example
+      # RESOURCE_MAPPING = Smash.new(
+      #   'AWS::EC2::Instance' => Miasma::Models::Compute::Server
+      # )
+
+      # @return [Array<Symbol>] valid resource states
+      VALID_RESOURCE_STATES = [:create_complete, :create_in_progress, :create_failed,
+        :delete_complete, :delete_in_progress, :delete_failed,
+        :rollback_complete, :rollback_in_progress, :rollback_failed,
+        :update_complete, :update_in_progress, :update_failed,
+        :update_rollback_complete, :update_rollback_in_progress, :update_rollback_failed
+      ]
 
       # Orchestration stacks
       #
@@ -52,6 +64,14 @@ module Miasma
       # @return [Array<Models::Orchestration::Stack>]
       def stack_all(options={})
         raise NotImplementedError
+      end
+
+      # Fetch stack template
+      #
+      # @param stack [Stack]
+      # @return [Smash] stack template
+      def stack_template_load(stack)
+        raise NotImplemented
       end
 
       # Return all resources for stack

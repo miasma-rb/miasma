@@ -97,6 +97,12 @@ module Miasma
           end
         end
 
+        # Always perform save. Remove dirty check
+        # provided by default.
+        def save
+          perform_save
+        end
+
         protected
 
         # Proxy save action up to the API

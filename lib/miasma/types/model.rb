@@ -67,6 +67,11 @@ module Miasma
         id?
       end
 
+      # @return [String, Integer]
+      def id?
+        data[:id] || dirty[:id]
+      end
+
       protected
 
       # Save model state to remote API

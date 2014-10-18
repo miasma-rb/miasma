@@ -20,9 +20,34 @@ module Miasma
         # @param stack [Models::Orchestration::Stack]
         # @return [Models::Orchestration::Stack]
         def stack_save(stack)
-          raise NotImplementedError
           if(stack.persisted?)
+            stack.load_data(stack.attributes)
+            result = request(
+              :expects => 202,
+              :method => :put,
+              :path => "/stacks/#{stack.name}/#{stack.id}",
+              :json => {
+                :stack_name => stack.name,
+                :template => MultiJson.dump(stack.template),
+                :parameters => stack.parameters || {}
+              }
+            )
+            stack.valid_state
           else
+            stack.load_data(stack.attributes)
+            result = request(
+              :expects => 201,
+              :method => :post,
+              :path => '/stacks',
+              :json => {
+                :stack_name => stack.name,
+                :template => MultiJson.dump(stack.template),
+                :parameters => stack.parameters || {},
+                :disable_rollback => !!stack.disable_rollback.to_s
+              }
+            )
+            stack.id = result.get(:body, :stack, :id)
+            stack.valid_state
           end
         end
 
@@ -31,35 +56,38 @@ module Miasma
         # @param stack [Models::Orchestration::Stack]
         # @return [Models::Orchestration::Stack]
         def stack_reload(stack)
-          result = request(
-            :method => :get,
-            :path => "/stacks/#{stack.name}/#{stack.id}",
-            :expects => 200
-          )
-          stk = result.get(:body, :stack)
-          stack.load_data(
-            :id => stk[:id],
-            :capabilities => stk[:capabilities],
-            :creation_time => Time.parse(stk[:creation_time]),
-            :description => stk[:description],
-            :disable_rollback => stk[:disable_rollback].to_s.downcase == 'true',
-            :notification_topics => stk[:notification_topics],
-            :name => stk[:stack_name],
-            :state => stk[:stack_status].downcase.to_sym,
-            :status => stk[:stack_status],
-            :status_reason => stk[:stack_status_reason],
-            :template_description => stk[:template_description],
-            :timeout_in_minutes => stk[:timeout_mins].to_s.empty? ? nil : stk[:timeout_mins].to_i,
-            :updated_time => stk[:updated_time].to_s.empty? ? nil : Time.parse(stk[:updated_time]),
-            :parameters => stk.fetch(:parameters, Smash.new),
-            :outputs => stk.fetch(:outputs, []).map{ |output|
-              Smash.new(
-                :key => output[:output_key],
-                :value => output[:output_value],
-                :description => output[:description]
-              )
-            }
-          ).valid_state
+          if(stack.persisted?)
+            result = request(
+              :method => :get,
+              :path => "/stacks/#{stack.name}/#{stack.id}",
+              :expects => 200
+            )
+            stk = result.get(:body, :stack)
+            stack.load_data(
+              :id => stk[:id],
+              :capabilities => stk[:capabilities],
+              :creation_time => Time.parse(stk[:creation_time]),
+              :description => stk[:description],
+              :disable_rollback => stk[:disable_rollback].to_s.downcase == 'true',
+              :notification_topics => stk[:notification_topics],
+              :name => stk[:stack_name],
+              :state => stk[:stack_status].downcase.to_sym,
+              :status => stk[:stack_status],
+              :status_reason => stk[:stack_status_reason],
+              :template_description => stk[:template_description],
+              :timeout_in_minutes => stk[:timeout_mins].to_s.empty? ? nil : stk[:timeout_mins].to_i,
+              :updated_time => stk[:updated_time].to_s.empty? ? nil : Time.parse(stk[:updated_time]),
+              :parameters => stk.fetch(:parameters, Smash.new),
+              :outputs => stk.fetch(:outputs, []).map{ |output|
+                Smash.new(
+                  :key => output[:output_key],
+                  :value => output[:output_value],
+                  :description => output[:description]
+                )
+              }
+            ).valid_state
+          end
+          stack
         end
 
         # Delete the stack
@@ -67,7 +95,16 @@ module Miasma
         # @param stack [Models::Orchestration::Stack]
         # @return [TrueClass, FalseClass]
         def stack_destroy(stack)
-          raise NotImplementedError
+          if(stack.persisted?)
+            request(
+              :method => :delete,
+              :path => "/stacks/#{stack.name}/#{stack.id}",
+              :expects => 204
+            )
+            true
+          else
+            false
+          end
         end
 
         # Fetch stack template
@@ -149,11 +186,13 @@ module Miasma
         #
         # @param stack [Models::Orchestration::Stack]
         # @return [Array<Models::Orchestration::Stack::Event>]
-        def event_all(stack)
+        def event_all(stack, marker = nil)
+          params = marker ? {:marker => marker} : {}
           result = request(
             :path => "/stacks/#{stack.name}/#{stack.id}/events",
             :method => :get,
-            :expects => 200
+            :expects => 200,
+            :params => params
           )
           result.fetch(:body, :events, []).map do |event|
             Stack::Event.new(
@@ -175,7 +214,7 @@ module Miasma
         # @param events [Models::Orchestration::Stack::Events]
         # @return [Array<Models::Orchestration::Stack::Event>]
         def event_all_new(events)
-          raise NotImplementedError
+          event_all(events.stack, events.all.first.id)
         end
 
         # Reload the stack event data from the API
@@ -183,7 +222,8 @@ module Miasma
         # @param resource [Models::Orchestration::Stack::Event]
         # @return [Models::Orchestration::Event]
         def event_reload(event)
-          raise NotImplementedError
+          event.stack.events.reload
+          event.stack.events.get(event.id)
         end
 
       end

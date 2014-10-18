@@ -7,6 +7,17 @@ module Miasma
       # Abstract stack collection
       class Stacks < Types::Collection
 
+        # Locate stack by name or ID
+        #
+        # @param ident [String, Numeric] name or ID
+        # @return [Stack]
+        def get(ident)
+          all.detect do |stack|
+            stack.id.to_s == ident.to_s ||
+              stack.name.to_s == ident.to_s
+          end
+        end
+
         # Return stacks matching given filter
         #
         # @param options [Hash] filter options

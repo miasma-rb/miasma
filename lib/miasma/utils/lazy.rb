@@ -1,4 +1,5 @@
 require 'miasma'
+require 'digest/sha2'
 
 module Miasma
   module Utils
@@ -59,7 +60,18 @@ module Miasma
         def valid_state
           data.merge!(dirty)
           dirty.clear
+          @_checksum = Digest::SHA256.hexdigest(MultiJson.dump(data))
           self
+        end
+
+        # @return [TrueClass, FalseClass] data is dirty
+        def dirty?
+          if(@_checksum)
+            !dirty.empty? ||
+              @_checksum != Digest::SHA256.hexdigest(MultiJson.dump(data))
+          else
+            true
+          end
         end
 
         # @return [String]

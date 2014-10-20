@@ -12,6 +12,10 @@ module Miasma
           'Rackspace::Cloud::Server' => Smash.new(
             :api => :compute,
             :collection => :servers
+          ),
+          'Rackspace::AutoScale::Group' => Smash.new(
+            :api => :auto_scale,
+            :collection => :groups
           )
         )
 

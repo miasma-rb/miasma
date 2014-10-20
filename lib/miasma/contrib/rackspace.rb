@@ -28,7 +28,10 @@ module Miasma
 
         # @return [String] endpoint URL
         def endpoint
-          rackspace_api.endpoint_for(self.class.to_s.split('::')[-2].downcase.to_sym, rackspace_region)
+          rackspace_api.endpoint_for(
+            Utils.snake(self.class.to_s.split('::')[-2]).to_sym,
+            rackspace_region
+          )
         end
 
         # @return [String] valid API token
@@ -61,7 +64,8 @@ module Miasma
 
       API_MAP = Smash.new(
         'compute' => 'cloudServersOpenStack',
-        'orchestration' => 'cloudOrchestration'
+        'orchestration' => 'cloudOrchestration',
+        'auto_scale' => 'autoscale'
       )
 
       # @return [String] username
@@ -91,6 +95,9 @@ module Miasma
         api = API_MAP[api_name]
         srv = service_catalog.detect do |info|
           info[:name] == api
+        end
+        unless(srv)
+          raise NotImplementedError.new("No API mapping found for `#{api_name}`")
         end
         region = region.to_s.upcase
         point = srv[:endpoints].detect do |endpoint|
@@ -150,4 +157,5 @@ module Miasma
 
   Models::Compute.autoload :Rackspace, 'miasma/contrib/rackspace/compute'
   Models::Orchestration.autoload :Rackspace, 'miasma/contrib/rackspace/orchestration'
+  Models::AutoScale.autoload :Rackspace, 'miasma/contrib/rackspace/auto_scale'
 end

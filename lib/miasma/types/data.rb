@@ -22,7 +22,7 @@ module Miasma
       # Convert model to JSON string
       #
       # @return [String]
-      def to_json
+      def to_json(*_)
         MultiJson.dump(attributes)
       end
 

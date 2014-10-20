@@ -43,10 +43,11 @@ module Miasma
           # Provide proper instance from resource
           #
           # @return [Miasma::Types::Model]
-          def instance
+          def expand
             info = dereference
             api.api_for(info[:api]).send(info[:collection]).get(self.id)
           end
+          alias_method :instance, :expand
 
           # Proxy reload action up to the API
           def perform_reload

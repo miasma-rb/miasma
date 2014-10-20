@@ -37,7 +37,8 @@ module Miasma
       #
       # @param api [Miasma::Types::Api] service API
       # @param args [Hash] model data
-      def initailize(api, args={})
+      def initialize(api, args={})
+        @api = api
         super args
       end
 
@@ -53,11 +54,7 @@ module Miasma
       # @note will deconstruct namespace and rebuild using provider
       def model
         if(self.class.model)
-          self.class.model.to_s.split('::').insert(
-            3, Utils.camel(api.provider)
-          ).inject(Object) do |memo, konst|
-            memo.const_get(konst)
-          end
+          self.class.model
         else
           raise NotImplementedError.new "No associated model for this thin model type (#{self.class})"
         end
@@ -69,6 +66,7 @@ module Miasma
       def expand
         model.new(api, :id => self.id).reload
       end
+      alias_method :instance, :expand
 
     end
 

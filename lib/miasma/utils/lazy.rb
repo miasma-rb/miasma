@@ -118,8 +118,11 @@ module Miasma
               valid_type = valid_types.detect do |klass|
                 item.is_a?(klass)
               end
-              if(coerce)
+              if(coerce && !valid_type)
                 item = coerce.arity == 2 ? coerce.call(item, self) : coerce.call(item)
+              end
+              valid_type = valid_types.detect do |klass|
+                item.is_a?(klass)
               end
               unless(valid_type)
                 raise TypeError.new("Invalid type for `#{name}` (#{item} <#{item.class}>). Valid - #{valid_types.map(&:to_s).join(',')}")

@@ -37,8 +37,8 @@ module Miasma
         attribute :status_reason, String
         attribute :creation_time, Time
         attribute :updated_time, Time
-        attribute :parameters, Hash
-        attribute :template, Hash, :default => Smash.new, :depends => :perform_template_load
+        attribute :parameters, Hash, :coerce => lambda{|v| v.to_smash }, :default => Smash.new
+        attribute :template, Hash, :default => Smash.new, :depends => :perform_template_load, :coerce => lambda{|v| v.to_smash }
         attribute :template_url, String
         attribute :template_description, String
         attribute :timeout_in_minutes, Integer

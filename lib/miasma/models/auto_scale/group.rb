@@ -23,7 +23,7 @@ module Miasma
         attribute :desired_size, Integer, :coerce => lambda{|v| v.to_i}
         attribute :current_size, Integer, :coerce => lambda{|v| v.to_i}
         attribute :state, Symbol, :allowed_values => []
-        attribute :servers, Array
+        attribute :servers, Server, :multiple => true
 
         on_missing :reload
 

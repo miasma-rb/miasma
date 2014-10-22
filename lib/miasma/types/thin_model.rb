@@ -12,7 +12,7 @@ module Miasma
         #
         # @param klass [Class] fat model class
         # @return [Class] fat model class
-        def model(klass)
+        def model(klass=nil)
           if(klass)
             unless(klass.ancestors.include?(Miasma::Types::Model))
               raise TypeError.new "Expecting `Miasma::Types::Model` subclass! (got #{klass})"
@@ -64,7 +64,9 @@ module Miasma
       #
       # @return [Miasma::Types::Model]
       def expand
-        model.new(api, :id => self.id).reload
+        inst = model.new(api)
+        inst.data[:id] = self.id
+        inst.reload
       end
       alias_method :instance, :expand
 

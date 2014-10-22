@@ -24,16 +24,16 @@ module Miasma
 
           def initialize(stack, args={})
             @stack = stack
-            super stack.api, args
+            super args
           end
 
         end
 
         attribute :name, String, :required => true
         attribute :description, String
-        attribute :state, [Symbol], :allowed => Orchestration::VALID_RESOURCE_STATES
-        attribute :outputs, Array, :coerce => lambda{|v| v.map{|o| Output.new(o)}}
-        attribute :status, [String]
+        attribute :state, Symbol, :allowed => Orchestration::VALID_RESOURCE_STATES
+        attribute :outputs, Output, :coerce => lambda{|v| Output.new(stack, o) }, :multiple => true
+        attribute :status, String
         attribute :status_reason, String
         attribute :creation_time, Time
         attribute :updated_time, Time
@@ -43,8 +43,8 @@ module Miasma
         attribute :template_description, String
         attribute :timeout_in_minutes, Integer
         attribute :disable_rollback, [TrueClass, FalseClass]
-        attribute :notification_topics, [String, Array]
-        attribute :capabilities, Array
+        attribute :notification_topics, String, :multiple => true
+        attribute :capabilities, String, :multiple => true
 
         on_missing :reload
 

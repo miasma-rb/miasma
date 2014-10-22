@@ -6,6 +6,9 @@ module Miasma
       # Abstract server
       class Server < Types::Model
 
+        # @return [Array<Symbol>] valid compute instance states
+        VALID_COMPUTE_STATES = [:running, :stopped, :pending, :terminated]
+
         # Data container for networks
         #
         # @todo add model link
@@ -23,11 +26,11 @@ module Miasma
         attribute :name, String, :required => true
         attribute :image_id, [String, Numeric], :required => true
         attribute :flavor_id, [String, Numeric], :required => true
-        attribute :state, Symbol, :allowed => [:running, :stopped, :pending, :terminated]
+        attribute :state, Symbol, :allowed => VALID_COMPUTE_STATES
         attribute :status, String
-        attribute :addresses_public, Address, :default => [], :multiple => true
-        attribute :addresses_private, Address, :default => [], :multiple => true
-        attribute :networks, Network, :default => [], :multiple => true
+        attribute :addresses_public, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
+        attribute :addresses_private, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
+        attribute :networks, Network, :multiple => true, :coerce => lambda{|v| Network.new(v)}
         attribute :personality, [Hash, String], :default => {}
         attribute :metadata, Hash, :coerce => lambda{|o| o.to_smash}
         attribute :key_name, String

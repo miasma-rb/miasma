@@ -65,7 +65,8 @@ module Miasma
       API_MAP = Smash.new(
         'compute' => 'cloudServersOpenStack',
         'orchestration' => 'cloudOrchestration',
-        'auto_scale' => 'autoscale'
+        'auto_scale' => 'autoscale',
+        'load_balancer' => 'cloudLoadBalancers'
       )
 
       # @return [String] username
@@ -158,4 +159,5 @@ module Miasma
   Models::Compute.autoload :Rackspace, 'miasma/contrib/rackspace/compute'
   Models::Orchestration.autoload :Rackspace, 'miasma/contrib/rackspace/orchestration'
   Models::AutoScale.autoload :Rackspace, 'miasma/contrib/rackspace/auto_scale'
+  Models::LoadBalancer.autoload :Rackspace, 'miasma/contrib/rackspace/load_balancer'
 end

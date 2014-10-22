@@ -113,10 +113,13 @@ module Miasma
             dirty[name] || data[name]
           end
           define_method("#{name}=") do |val|
-            to_check = multiple_values ? val : [val]
-            to_check.each do |item|
+            values = multiple_values && val.is_a?(Array) ? val : [val]
+            values.map do |item|
               valid_type = valid_types.detect do |klass|
                 item.is_a?(klass)
+              end
+              if(coerce)
+                item = coerce.arity == 2 ? coerce.call(item, self) : coerce.call(item)
               end
               unless(valid_type)
                 raise TypeError.new("Invalid type for `#{name}` (#{item} <#{item.class}>). Valid - #{valid_types.map(&:to_s).join(',')}")
@@ -127,7 +130,11 @@ module Miasma
                 end
               end
             end
-            dirty[name] = coerce ? coerce.call(val) : val
+            if(!multiple_values && !val.is_a?(Array))
+              dirty[name] = values.first
+            else
+              dirty[name] = values
+            end
           end
           define_method("#{name}?") do
             send(depends_on) if depends_on

@@ -42,8 +42,12 @@ module Miasma
             if(options[:required] && !args.has_key?(name) && !options.has_key?(:default))
               raise ArgumentError.new("Missing required option: `#{name}`")
             end
-            if(val.nil? && options[:default] && !args.has_key?(name))
-              val = options[:default].respond_to?(:call) ? options[:default].call : options[:default]
+            if(val.nil? && !args.has_key?(name) && (options[:default] || options[:multiple]))
+              if(options[:default])
+                val = options[:default].respond_to?(:call) ? options[:default].call : options[:default]
+              else
+                val = []
+              end
             end
             if(args.has_key?(name) || val)
               self.send("#{name}=", val)

@@ -33,12 +33,13 @@ module Miasma
         attribute :name, String
         attribute :state, Symbol, :allowed_values => [:active, :pending]
         attribute :status, String
-        attribute :servers, Server, :multiple => true
-        attribute :public_addresses, Address, :multiple => true, :default => []
-        attribute :private_addresses, Address, :multiple => true, :default => []
-        attribute :health_check, HealthCheck
-        attribute :created, [String, Time], :coerce => lambda{|v| v.is_a?(Time) ? v : Time.parse(v)}
-        attribute :updated, [String, Time], :coerce => lambda{|v| v.is_a?(Time) ? v : Time.parse(v)}
+        attribute :servers, Server, :multiple => true, :coerce => lambda{|v| Server.new(v)}
+        attribute :public_addresses, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
+        attribute :private_addresses, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
+        attribute :health_check, HealthCheck, :coerce => lambda{|v| HealthCheck.new(v)}
+        attribute :listeners, Listener, :coerce => lambda{|v| Listener.new(v)}, :multiple => true
+        attribute :created, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
+        attribute :updated, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
 
         on_missing :reload
 

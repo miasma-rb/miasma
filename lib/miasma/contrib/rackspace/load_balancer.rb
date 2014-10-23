@@ -5,7 +5,7 @@ module Miasma
     class LoadBalancer
       class Rackspace < LoadBalancer
 
-        include Contrib::RackspaceApiCore::ModelCommon
+        include Contrib::RackspaceApiCore::ApiCommon
 
         # Save load balancer
         #

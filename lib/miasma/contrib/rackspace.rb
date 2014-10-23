@@ -8,7 +8,7 @@ module Miasma
     # Rackspace API core helper
     class RackspaceApiCore
 
-      module ModelCommon
+      module ApiCommon
 
         # Set attributes into model
         #

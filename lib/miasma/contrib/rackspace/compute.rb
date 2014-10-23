@@ -5,7 +5,7 @@ module Miasma
     class Compute
       class Rackspace < Compute
 
-        include Contrib::RackspaceApiCore::ModelCommon
+        include Contrib::RackspaceApiCore::ApiCommon
 
         # @return [Smash] map state to valid internal values
         SERVER_STATE_MAP = Smash.new(

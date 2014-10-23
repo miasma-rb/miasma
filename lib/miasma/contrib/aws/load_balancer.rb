@@ -32,7 +32,7 @@ module Miasma
           balancer
         end
 
-        # Fetch balancers or update provided balancer
+        # Fetch balancers or update provided balancer data
         #
         # @param balancer [Models::LoadBalancer::Balancer]
         # @return [Array<Models::LoadBalancer::Balancer>]

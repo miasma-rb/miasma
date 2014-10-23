@@ -17,13 +17,27 @@ module Miasma
           end
         end
 
+        class Balancer < Types::ThinModel
+
+          model Miasma::Models::LoadBalancer::Balancer
+          attribute :name, String
+
+          # @return [Miasma::Models::LoadBalancer::Balancer]
+          def expand
+            api.api_for(:load_balancer).balancers.get(self.id || self.name)
+          end
+
+        end
+
         attribute :name, String, :required => true
+        attribute :created, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
+        attribute :load_balancers, Balancer, :multiple => true, :coerce => lambda{|v,obj| Balancer.new(obj.api, v)}
         attribute :minimum_size, Integer, :coerce => lambda{|v| v.to_i}
         attribute :maximum_size, Integer, :coerce => lambda{|v| v.to_i}
         attribute :desired_size, Integer, :coerce => lambda{|v| v.to_i}
         attribute :current_size, Integer, :coerce => lambda{|v| v.to_i}
         attribute :state, Symbol, :allowed_values => []
-        attribute :servers, Server, :multiple => true
+        attribute :servers, Server, :multiple => true, :coerce => lambda{|v,obj| Server.new(obj.api, v)}
 
         on_missing :reload
 

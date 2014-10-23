@@ -8,14 +8,21 @@ module Miasma
       autoload :Server, 'miasma/models/compute/server'
       autoload :Servers, 'miasma/models/compute/servers'
 
-      # Compute instances
+      # All compute instances
       #
-      # @param filter [Hash] filtering options
       # @return [Types::Collection<Models::Compute::Server>] servers
-      def servers(filter={})
+      def servers
         memoize(:servers) do
           Servers.new(self)
         end
+      end
+
+      # Filtered compute instances
+      #
+      # @param filter [Hash] search filter
+      # @option filter [Symbol] :state state of server `Server::VALID_COMPUTE_STATES`
+      # @return [Array<Server>]
+      def server_filter(filter={})
       end
 
       # Create new server instance

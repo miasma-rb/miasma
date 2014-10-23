@@ -175,7 +175,9 @@ module Miasma
             if(param.is_a?(Symbol))
               @missing_method = param
             else
-              param.send(@missing_method)
+              if(@missing_method)
+                param.send(@missing_method)
+              end
               @missing_method
             end
           else

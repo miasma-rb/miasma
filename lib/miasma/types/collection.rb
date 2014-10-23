@@ -27,17 +27,17 @@ module Miasma
       #
       # @return [Array<Model>]
       def reload
-        unmemoize(:collection)
+        clear_memoizations!
         all
       end
 
-      # Return model with given name
+      # Return model with given name or ID
       #
       # @param ident [String, Symbol] model identifier
       # @return [Model, NilClass]
       def get(ident)
-        all.detect do |obj|
-          obj.id == ident
+        memoize(ident) do
+          perform_get(ident)
         end
       end
 
@@ -45,7 +45,10 @@ module Miasma
       #
       # @param args [Hash] filter options
       # @return [Array<Model>]
+      # @todo need to add helper to deep sort args, convert to string
+      #   and hash to use as memoization key
       def filter(args={})
+        memoize(args.to_s)
         raise NotImplementedError
       end
 
@@ -58,6 +61,17 @@ module Miasma
       end
 
       protected
+
+      # Return model with given name or ID
+      #
+      # @param ident [String, Symbol] model identifier
+      # @return [Model, NilClass]
+      def perform_get(ident)
+        all.detect do |obj|
+          obj.id == ident ||
+            (obj.respond_to?(:name) && obj.name == ident)
+        end
+      end
 
       # @return [Array<Model>]
       def perform_population

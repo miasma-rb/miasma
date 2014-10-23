@@ -17,17 +17,16 @@ module Miasma
           raise NotImplementedError
         end
 
-        # @return [Array<Bucket>]
-        def all
-          api.bucket_all
+        # @return [Bucket] new unsaved instance
+        def build(args={})
+          Bucket.new(api, args.to_smash)
         end
 
-        # Create a new bucket
-        #
-        # @param args [Hash] creation options
-        # @return [Bucket]
-        def create
-          api.bucket_create(self)
+        protected
+
+        # @return [Array<Bucket>]
+        def perform_population
+          api.bucket_all
         end
 
       end

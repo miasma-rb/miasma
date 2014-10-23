@@ -295,6 +295,24 @@ module Miasma
           end
         end
 
+        # Build new API for specified type using current provider / creds
+        #
+        # @param type [Symbol] api type
+        # @return [Api]
+        def api_for(type)
+          memoize(type) do
+            creds = attributes.dup
+            creds.delete(:aws_host)
+            Miasma.api(
+              Smash.new(
+                :type => type,
+                :provider => provider,
+                :credentials => creds
+              )
+            )
+          end
+        end
+
         # Setup for API connections
         def connect
           unless(aws_host)
@@ -352,4 +370,5 @@ module Miasma
   end
 
   Models::Compute.autoload :Aws, 'miasma/contrib/aws/compute'
+  Models::LoadBalancer.autoload :Aws, 'miasma/contrib/aws/load_balancer'
 end

@@ -32,7 +32,7 @@ module Miasma
         attribute :name, String, :required => true
         attribute :description, String
         attribute :state, Symbol, :allowed => Orchestration::VALID_RESOURCE_STATES
-        attribute :outputs, Output, :coerce => lambda{|v| Output.new(stack, o) }, :multiple => true
+        attribute :outputs, Output, :coerce => lambda{|v, stack| Output.new(stack, v) }, :multiple => true
         attribute :status, String
         attribute :status_reason, String
         attribute :creation_time, Time

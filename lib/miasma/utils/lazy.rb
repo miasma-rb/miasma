@@ -42,11 +42,9 @@ module Miasma
             if(options[:required] && !args.has_key?(name) && !options.has_key?(:default))
               raise ArgumentError.new("Missing required option: `#{name}`")
             end
-            if(val.nil? && !args.has_key?(name) && (options[:default] || options[:multiple]))
+            if(val.nil? && !args.has_key?(name) && options[:default])
               if(options[:default])
                 val = options[:default].respond_to?(:call) ? options[:default].call : options[:default]
-              else
-                val = []
               end
             end
             if(args.has_key?(name) || val)
@@ -118,7 +116,7 @@ module Miasma
           end
           define_method("#{name}=") do |val|
             values = multiple_values && val.is_a?(Array) ? val : [val]
-            values.map do |item|
+            values.map! do |item|
               valid_type = valid_types.detect do |klass|
                 item.is_a?(klass)
               end
@@ -136,6 +134,7 @@ module Miasma
                   raise ArgumentError.new("Invalid value provided for `#{name}` (#{item.inspect}). Allowed - #{allowed_values.map(&:inspect).join(', ')}")
                 end
               end
+              item
             end
             if(!multiple_values && !val.is_a?(Array))
               dirty[name] = values.first

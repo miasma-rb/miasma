@@ -70,7 +70,7 @@ module Miasma
               :path => '/',
               :params => {
                 'Action' => 'RunInstances',
-               'ImageId' => server.image_id,
+                'ImageId' => server.image_id,
                 'InstanceType' => server.flavor_id,
                 'KeyName' => server.key_name,
                 'MinCount' => 1,

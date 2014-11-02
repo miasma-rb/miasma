@@ -10,6 +10,15 @@ module Miasma
         # Supported version of the AutoScaling API
         API_VERSION = '2010-05-15'
 
+        # Valid stack lookup states
+        STACK_STATES = [
+          "CREATE_COMPLETE", "CREATE_FAILED", "CREATE_IN_PROGRESS", "DELETE_FAILED",
+          "DELETE_IN_PROGRESS", "ROLLBACK_COMPLETE", "ROLLBACK_FAILED", "ROLLBACK_IN_PROGRESS",
+          "UPDATE_COMPLETE", "UPDATE_COMPLETE_CLEANUP_IN_PROGRESS", "UPDATE_IN_PROGRESS",
+          "UPDATE_ROLLBACK_COMPLETE", "UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS", "UPDATE_ROLLBACK_FAILED",
+          "UPDATE_ROLLBACK_IN_PROGRESS"
+        ]
+
         include Contrib::AwsApiCore::ApiCommon
         include Contrib::AwsApiCore::RequestUtils
 
@@ -32,6 +41,9 @@ module Miasma
         def load_stack_data(stack=nil)
           d_params = Smash.new('Action' => 'DescribeStacks')
           l_params = Smash.new('Action' => 'ListStacks')
+          STACK_STATES.each_with_index do |state, idx|
+            l_params["StackStatusFilter.member.#{idx + 1}"] = state.to_s.upcase
+          end
           if(stack)
             d_params['StackName'] = stack.id
           end
@@ -39,33 +51,34 @@ module Miasma
             request(:path => '/', :params => d_params).get(
               :body, 'DescribeStacksResult', 'Stacks', 'member'
             )
-          ].flatten(1)
+          ].flatten(1).compact
           lists = request(:path => '/', :params => l_params)
           [
             lists.get(
               :body, 'ListStacksResponse', 'ListStacksResult',
               'StackSummaries', 'member'
             )
-          ].flatten(1).map do |stk|
+          ].flatten(1).compact.map do |stk|
             desc = descriptions.detect do |d_stk|
               d_stk['StackId'] == stk['StackId']
-            end
-            stk.merge!(d_stk)
+            end || Smash.new
+            stk.merge!(desc)
+            puts "STK: #{stk.inspect}"
             new_stack = stack || Stack.new(self)
             new_stack.load_data(
               :id => stk['StackId'],
-              :stack_name => stk['StackName'],
-              :capabilities => stk['Capabilities'],
+              :name => stk['StackName'],
+              :capabilities => stk.fetch('Capabilities', []).compact,
               :description => stk['Description'],
               :creation_time => stk['CreationTime'],
               :updated_time => stk['LastUpdatedTime'],
-              :notification_topics => stk['NotificationARNs'],
+              :notification_topics => stk.fetch('NotificationARNs', []).compact,
               :timeout_in_minutes => stk['TimeoutInMinutes'],
               :status => stk['StackStatus'],
               :status_reason => stk['StackStatusReason'],
               :state => stk['StackStatus'].downcase.to_sym,
               :template_description => stk['TemplateDescription'],
-              :disable_rollback => stk['DisableRollback'],
+              :disable_rollback => !!stk['DisableRollback'],
               :outputs => [stk.fetch('Outputs', 'member', [])].flatten(1).map{|o|
                 Smash.new(
                   :key => o['OutputKey'],
@@ -73,11 +86,11 @@ module Miasma
                   :description => o['Description']
                 )
               },
-              :parameters => [stk.fetch('Parameters', 'member', [])].flatten(1).map{|param|
-                Smash.new(
-                  param['ParameterKey'] => param['ParameterValue']
-                )
-              }
+              :parameters => Smash[
+                [stk.fetch('Parameters', 'member', [])].flatten(1).map{|param|
+                  [param['ParameterKey'], param['ParameterValue']]
+                }
+              ]
             ).valid_state
           end
         end

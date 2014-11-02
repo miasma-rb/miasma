@@ -18,7 +18,64 @@ module Miasma
         # @param balancer [Models::LoadBalancer::Balancer]
         # @return [Models::LoadBalancer::Balancer]
         def balancer_save(balancer)
-          raise NotImplementedError
+          unless(persisted?)
+            params = Smash.new('LoadBalancerName' => balancer.name)
+            if(balancer.listeners)
+              balancer.listeners.each_with_index do |listener, i|
+                key = "Listeners.member.#{i + 1}"
+                params[key] = Smash.new(
+                  'Protocol' => listener.protocol,
+                  'InstanceProtocol' => listener.instance_protocol,
+                  'LoadBalancerPort' => listener.load_balancer_port,
+                  'InstancePort' => listener.instance_port
+                )
+                if(listener.ssl_certificate_id)
+                  params[key] = listener.ssl_certificate_id
+                end
+              end
+            end
+            result = request(
+              :path => '/',
+              :params => params
+            )
+            balancer.address = result.get(
+              :body, 'CreateLoadBalancerResponse', 'CreateLoadBalancerResult', 'DNSName'
+            )
+            if(balancer.health_check)
+              balancer_health_check(balancer)
+            end
+            if(balancer.servers && !balancer.servers.empty?)
+              balancer_set_instances(balancer)
+            end
+            balancer.load_data(:id => balancer.name).valid_state
+          else
+            if(balancer.dirty?)
+              if(balancer.dirty?(:health_check))
+                balancer_health_check(balancer)
+              end
+              if(balancer.dirty?(:servers))
+                balancer_set_instances(balancer)
+              end
+              balancer.reload
+            end
+            balancer
+          end
+        end
+
+        # Save the load balancer health check
+        #
+        # @param balancer [Models::LoadBalancer::Balancer]
+        # @return [Models::LoadBalancer::Balancer]
+        def balancer_health_check(balancer)
+          balancer
+        end
+
+        # Save the load balancer attached servers
+        #
+        # @param balancer [Models::LoadBalancer::Balancer]
+        # @return [Models::LoadBalancer::Balancer]
+        def balancer_set_instances(balancer)
+          balancer
         end
 
         # Reload the balancer data from the API
@@ -26,7 +83,7 @@ module Miasma
         # @param balancer [Models::LoadBalancer::Balancer]
         # @return [Models::LoadBalancer::Balancer]
         def balancer_reload(balancer)
-          if(balancer.id || balancer.name)
+          if(balancer.id)
             load_balancer_data(balancer)
           end
           balancer

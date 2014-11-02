@@ -66,13 +66,20 @@ module Miasma
           self
         end
 
-        # @return [TrueClass, FalseClass] data is dirty
-        def dirty?
-          if(@_checksum)
-            !dirty.empty? ||
-              @_checksum != Digest::SHA256.hexdigest(MultiJson.dump(data))
+        # Model is dirty or specific attribute is dirty
+        #
+        # @param attr [String, Symbol] name of attribute
+        # @return [TrueClass, FalseClass] model or attribute is dirty
+        def dirty?(attr=nil)
+          if(attr)
+            dirty.has_key?(attr)
           else
-            true
+            if(@_checksum)
+              !dirty.empty? ||
+                @_checksum != Digest::SHA256.hexdigest(MultiJson.dump(data))
+            else
+              true
+            end
           end
         end
 

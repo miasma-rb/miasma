@@ -372,4 +372,5 @@ module Miasma
   Models::Compute.autoload :Aws, 'miasma/contrib/aws/compute'
   Models::LoadBalancer.autoload :Aws, 'miasma/contrib/aws/load_balancer'
   Models::AutoScale.autoload :Aws, 'miasma/contrib/aws/auto_scale'
+  Models::Orchestration.autoload :Aws, 'miasma/contrib/aws/orchestration'
 end

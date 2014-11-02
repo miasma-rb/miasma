@@ -35,8 +35,8 @@ module Miasma
         attribute :outputs, Output, :coerce => lambda{|v, stack| Output.new(stack, v) }, :multiple => true
         attribute :status, String
         attribute :status_reason, String
-        attribute :creation_time, Time
-        attribute :updated_time, Time
+        attribute :creation_time, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
+        attribute :updated_time, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
         attribute :parameters, Hash, :coerce => lambda{|v| v.to_smash }, :default => Smash.new
         attribute :template, Hash, :default => Smash.new, :depends => :perform_template_load, :coerce => lambda{|v| v.to_smash }
         attribute :template_url, String

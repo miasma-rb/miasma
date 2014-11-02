@@ -28,6 +28,7 @@ module Miasma
           attribute :load_balancer_port, Integer, :required => true
           attribute :instance_protocol, String, :required => true
           attribute :instance_port, Integer, :required => true
+          attribute :ssl_certificate_id, [Integer, String]
         end
 
         attribute :name, String

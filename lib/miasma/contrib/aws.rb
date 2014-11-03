@@ -23,13 +23,17 @@ module Miasma
           list = []
           options = next_token ? Smash.new('NextToken' => next_token) : Smash.new
           result = block.call(options)
-          list += result.fetch(*result_key.dup.push(Smash.new))
+          content = result.get(*result_key.dup)
+          if(content.is_a?(Array))
+            list += content
+          else
+            list << content
+          end
           if(token = result.get(:body, 'NextToken'))
             list += all_result_pages(token, *result_key, &block)
           end
           list
         end
-
       end
 
       # @return [String] current time ISO8601 format
@@ -119,7 +123,7 @@ module Miasma
         # @return [String] escaped string
         def safe_escape(string)
           string.to_s.gsub(/([^a-zA-Z0-9_.\-~])/) do
-            '%' << $1.unpack('H2', $1.bytesize).join('%').upcase
+            '%' << $1.unpack('H2' * $1.bytesize).join('%').upcase
           end
         end
 

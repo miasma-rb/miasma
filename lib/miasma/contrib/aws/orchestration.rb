@@ -63,7 +63,6 @@ module Miasma
               d_stk['StackId'] == stk['StackId']
             end || Smash.new
             stk.merge!(desc)
-            puts "STK: #{stk.inspect}"
             new_stack = stack || Stack.new(self)
             new_stack.load_data(
               :id => stk['StackId'],
@@ -179,13 +178,15 @@ module Miasma
           )
           [
             result.fetch(
-              :body, 'DescribeStackResourcesResult',
+              :body, 'DescribeStackResourcesResponse',
+              'DescribeStackResourcesResult',
               'StackResources', 'member', []
             )
           ].flatten(1).compact.map do |res|
             Stack::Resource.new(
               stack,
               :id => res['PhysicalResourceId'],
+              :name => res['LogicalResourceId'],
               :logical_id => res['LogicalResourceId'],
               :type => res['ResourceType'],
               :state => res['ResourceStatus'].downcase.to_sym,
@@ -210,7 +211,7 @@ module Miasma
         # @param stack [Models::Orchestration::Stack]
         # @return [Array<Models::Orchestration::Stack::Event>]
         def event_all(stack, evt_id=nil)
-          results = all_result_pages(nil, :body, 'DescribeStackEventsResult', 'StackEvents', 'member') do |options|
+          results = all_result_pages(nil, :body, 'DescribeStackEventsResponse', 'DescribeStackEventsResult', 'StackEvents', 'member') do |options|
             request(
               :path => '/',
               :params => options.merge(

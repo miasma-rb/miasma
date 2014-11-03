@@ -29,6 +29,10 @@ module Miasma
             :collection => :servers
           ),
           'AWS::ElasticLoadBalancing::LoadBalancer' => Smash.new(
+            :api => :load_balancer,
+            :collection => :balancers
+          ),
+          'AWS::AutoScaling::AutoScalingGroup' => Smash.new(
             :api => :auto_scale,
             :collection => :groups
           )

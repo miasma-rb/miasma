@@ -34,6 +34,7 @@ module Miasma
           end
           list
         end
+
       end
 
       # @return [String] current time ISO8601 format

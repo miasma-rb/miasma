@@ -47,7 +47,7 @@ module Miasma
                 :stack_name => stack.name,
                 :template => MultiJson.dump(stack.template),
                 :parameters => stack.parameters || {},
-                :disable_rollback => !!stack.disable_rollback.to_s
+                :disable_rollback => (!!stack.disable_rollback).to_s
               }
             )
             stack.id = result.get(:body, :stack, :id)

@@ -103,8 +103,39 @@ module Miasma
         # @param stack [Models::Orchestration::Stack]
         # @return [Models::Orchestration::Stack]
         def stack_save(stack)
+          params = Smash.new('StackName' => stack.name)
+          (stack.parameters || {}).each_with_index do |pair, idx|
+            params["Parameters.member.#{idx + 1}.ParameterKey"] = pair.first
+            params["Parameters.member.#{idx + 1}.ParameterValue"] = pair.last
+          end
+          (stack.capabilities || []).each_with_index do |cap, idx|
+            params["Capabilities.member.#{idx + 1}"] = cap
+          end
+          (stack.notification_topics || []).each_with_index do |topic, idx|
+            params["NotificationARNs.member.#{idx + 1}"] = topic
+          end
+          params['TemplateBody'] = MultiJson.dump(stack.template)
           if(stack.persisted?)
+            result = request(
+              :path => '/',
+              :params => Smash.new(
+                'Action' => 'UpdateStack'
+              ).merge(params)
+            )
+            stack
           else
+            if(stack.timeout_in_minutes)
+              params['TimeoutInMinutes'] = stack.timeout_in_minutes
+            end
+            result = request(
+              :path => '/',
+              :params => Smash.new(
+                'Action' => 'CreateStack',
+                'DisableRollback' => !!stack.disable_rollback
+              ).merge(params)
+            )
+            stack.id = result.get(:body, 'CreateStackResponse', 'CreateStackResult', 'StackId')
+            stack.valid_state
           end
         end
 
@@ -152,7 +183,7 @@ module Miasma
               )
             )
             MultiJson.load(
-              result.fetch(:body, 'GetTemplateResult', 'TemplateBody')
+              result.get(:body, 'GetTemplateResponse', 'GetTemplateResult', 'TemplateBody')
             ).to_smash
           else
             Smash.new

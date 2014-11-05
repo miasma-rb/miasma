@@ -20,6 +20,11 @@ module Miasma
           Balancer.new(api, args.to_smash)
         end
 
+        # @return [Balancer] collection item class
+        def model
+          Balancer
+        end
+
         protected
 
         # @return [Array<Balancer>]

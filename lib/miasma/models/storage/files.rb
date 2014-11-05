@@ -33,6 +33,11 @@ module Miasma
           File.new(api, args.to_smash)
         end
 
+        # @return [File] collection item class
+        def model
+          File
+        end
+
         protected
 
         # @return [Array<File>]

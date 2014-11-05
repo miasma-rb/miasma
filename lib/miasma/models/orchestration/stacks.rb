@@ -35,6 +35,11 @@ module Miasma
           Stack.new(api, args.to_smash)
         end
 
+        # @return [Stack] collection items class
+        def model
+          Stack
+        end
+
         protected
 
         # @return [Array<Stack>]

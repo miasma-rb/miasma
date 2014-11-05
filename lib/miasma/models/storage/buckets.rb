@@ -22,6 +22,11 @@ module Miasma
           Bucket.new(api, args.to_smash)
         end
 
+        # @return [Bucket] collection item class
+        def model
+          Bucket
+        end
+
         protected
 
         # @return [Array<Bucket>]

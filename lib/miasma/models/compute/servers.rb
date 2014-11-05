@@ -20,6 +20,11 @@ module Miasma
           Server.new(api, args.to_smash)
         end
 
+        # @return [Server] collection item class
+        def model
+          Server
+        end
+
         protected
 
         # @return [Array<Server>]

@@ -19,6 +19,11 @@ module Miasma
           Group.new(api, args.to_smash)
         end
 
+        # @return [Group] collection item class
+        def model
+          Group
+        end
+
         protected
 
         # @return [Array<Group>]

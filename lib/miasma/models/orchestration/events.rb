@@ -35,6 +35,11 @@ module Miasma
             Event.new(stack, args.to_smash)
           end
 
+          # @return [Event] collection item class
+          def model
+            Event
+          end
+
           # Fetch any new events and add to collection
           #
           # @return [Array<Event>] new events fetched

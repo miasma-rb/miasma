@@ -35,6 +35,11 @@ module Miasma
             Resource.new(stack, args.to_smash)
           end
 
+          # @return [Resource] collection item class
+          def model
+            Resource
+          end
+
           protected
 
           # @return [Array<Resources>]

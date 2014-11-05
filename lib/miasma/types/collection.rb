@@ -77,11 +77,15 @@ module Miasma
         unmemoize(:collection)
         memoize(:collection) do
           loaded.map do |item|
-            instance = self.build(self)
-            instance.load_data(item)
-            instance.valid_state
+            model.from_json(self.api, MultiJson.dump(item))
           end
         end
+        self
+      end
+
+      # @return [Miasma::Types::Model] model class within collection
+      def model
+        raise NotImplementedError
       end
 
       protected

@@ -17,7 +17,11 @@ module Miasma
         # @param json [String]
         # @return [Model]
         def from_json(api, json)
-          self.new(api, MultiJson.load(json).to_smash)
+          instance = self.new(api)
+          instance.data.replace(
+            MultiJson.load(json).to_smash
+          )
+          instance
         end
 
       end

@@ -60,6 +60,30 @@ module Miasma
         raise NotImplementedError
       end
 
+      # @return [String] collection of models
+      def to_json
+        self.all.to_json
+      end
+
+      # Load collection via JSON
+      #
+      # @param json [String]
+      # @return [self]
+      def from_json(json)
+        loaded = MultiJson.load(json)
+        unless(loaded.is_a?(Array))
+          raise TypeError.new "Expecting type `Array` but received `#{loaded.class}`"
+        end
+        unmemoize(:collection)
+        memoize(:collection) do
+          loaded.map do |item|
+            instance = self.build(self)
+            instance.load_data(item)
+            instance.valid_state
+          end
+        end
+      end
+
       protected
 
       # Return model with given name or ID

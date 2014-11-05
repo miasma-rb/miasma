@@ -36,6 +36,18 @@ module Miasma
         )
       end
 
+      class << self
+
+        # Build new instance from JSON string
+        #
+        # @param json [String]
+        # @return [Data]
+        def from_json(json)
+          self.new(MultiJson.load(json).to_smash)
+        end
+
+      end
+
     end
   end
 end

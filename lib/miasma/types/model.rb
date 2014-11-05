@@ -9,6 +9,19 @@ module Miasma
       # @return [Miasma::Types::Api] underlying service API
       attr_reader :api
 
+      class << self
+
+        # Build new model from JSON
+        #
+        # @param api [Miasma::Types::Api]
+        # @param json [String]
+        # @return [Model]
+        def from_json(api, json)
+          self.new(api, MultiJson.load(json).to_smash)
+        end
+
+      end
+
       # Build new model
       #
       # @param api [Miasma::Types::Api] service API

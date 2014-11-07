@@ -54,6 +54,21 @@ module Miasma
             api.resource_reload(self)
           end
 
+          # Resource is within the collection on the api
+          #
+          # @param api [Symbol] api type (:compute, :auto_scale, etc)
+          # @param collection [Symbol] collection within api (:servers, :groups, etc)
+          # @return [TrueClass, FalseClass]
+          def within?(api, collection)
+            begin
+              info = dereference
+              info[:api] == api &&
+                info[:collection] == collection
+            rescue KeyError
+              false
+            end
+          end
+
           include Utils::Immutable
 
         end

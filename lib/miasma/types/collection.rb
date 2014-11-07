@@ -61,7 +61,7 @@ module Miasma
       end
 
       # @return [String] collection of models
-      def to_json
+      def to_json(*_)
         self.all.to_json
       end
 

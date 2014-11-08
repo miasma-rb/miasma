@@ -190,6 +190,28 @@ module Miasma
           end
         end
 
+        # Validate stack template
+        #
+        # @param stack [Stack]
+        # @return [NilClass, String] nil if valid, string error message if invalid
+        def stack_template_validate(stack)
+          begin
+            result = request(
+              :method => :post,
+              :path => '/',
+              :params => Smash.new(
+                'Action' => 'ValidateTemplate',
+                'TemplateBody' => MultiJson.dump(stack.template)
+              )
+            )
+            nil
+          rescue Error::ApiError::RequestError => e
+            MultiXml.parse(e.response.body.to_s).to_smash.get(
+              'ErrorResponse', 'Error', 'Message'
+            )
+          end
+        end
+
         # Return all stacks
         #
         # @param options [Hash] filter

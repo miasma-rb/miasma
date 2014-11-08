@@ -66,7 +66,7 @@ module Miasma
         # @return [TrueClass]
         # @raises [Miasma::Error::OrchestrationError::InvalidTemplate]
         def validate
-          raise NotImplemented
+          perform_template_validate
         end
 
         # Override to scrub custom caches
@@ -118,6 +118,15 @@ module Miasma
         # Proxy destroy action up to the API
         def perform_destroy
           api.stack_destroy(self)
+        end
+
+        # Proxy validate action up to API
+        def perform_template_validate
+          error = api.stack_template_validate(self)
+          if(error)
+            raise Error::OrchestrationError::InvalidTemplate.new(error)
+          end
+          true
         end
 
         # Proxy template loading up to the API

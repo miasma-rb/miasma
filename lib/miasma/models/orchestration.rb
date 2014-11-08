@@ -71,7 +71,15 @@ module Miasma
       # @param stack [Stack]
       # @return [Smash] stack template
       def stack_template_load(stack)
-        raise NotImplemented
+        raise NotImplementedError
+      end
+
+      # Validate stack template
+      #
+      # @param stack [Stack]
+      # @return [NilClass, String] nil if valid, string error message if invalid
+      def stack_template_validate(stack)
+        raise NotImplementedError
       end
 
       # Return all resources for stack

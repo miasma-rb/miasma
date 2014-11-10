@@ -51,9 +51,8 @@ module Miasma
 
       # Return all servers
       #
-      # @param options [Hash] filter
       # @return [Array<Models::Compute::Server>]
-      def server_all(options={})
+      def server_all
         raise NotImplementedError
       end
 

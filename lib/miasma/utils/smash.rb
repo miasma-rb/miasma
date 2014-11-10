@@ -1,4 +1,5 @@
 require 'hashie'
+require 'digest/sha2'
 require 'miasma'
 
 module Miasma
@@ -83,6 +84,13 @@ module Miasma
         self.to_type_converter(::Hash, :to_hash)
       end
 
+      # Calculate checksum of hash (sha256)
+      #
+      # @return [String] checksum
+      def checksum
+        Digest::SHA256.hexdigest(self.to_s)
+      end
+
     end
   end
 
@@ -108,7 +116,9 @@ class Hash
   # @return [Smash]
   def to_type_converter(type, convert_call)
     type.new.tap do |smash|
-      self.each do |k,v|
+      self.sort_by do |entry|
+        entry.first.to_s
+      end.each do |k,v|
         smash[k.is_a?(Symbol) ? k.to_s : k] = smash_conversion(v, convert_call)
       end
     end

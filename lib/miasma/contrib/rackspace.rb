@@ -41,7 +41,8 @@ module Miasma
 
         # @return [Miasma::Contrib::RackspaceApiCore]
         def rackspace_api
-          memoize(:miasma_rackspace_api, :direct) do
+          key = "miasma_rackspace_api_#{attributes.checksum}".to_sym
+          memoize(key, :direct) do
             Miasma::Contrib::RackspaceApiCore.new(attributes)
           end
         end

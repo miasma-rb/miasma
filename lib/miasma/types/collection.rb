@@ -57,7 +57,12 @@ module Miasma
       # @param args [Hash] creation options
       # @return [Model]
       def build(args={})
-        raise NotImplementedError
+        instance = self.model.new(self.api)
+        args.each do |m_name, m_value|
+          m_name = "#{m_name}="
+          instance.send(m_name, m_value)
+        end
+        instance
       end
 
       # @return [String] collection of models

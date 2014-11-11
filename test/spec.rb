@@ -6,6 +6,10 @@ require 'miasma'
 
 spec_dir = File.join(File.dirname(__FILE__), 'specs')
 
+Dir.glob(File.join(spec_dir, 'models', '*.rb')).each do |path|
+  require File.expand_path(path)
+end
+
 Dir.glob(File.join(spec_dir, '**/**/*_spec.rb')).each do |path|
   require File.expand_path(path)
 end

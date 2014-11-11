@@ -25,10 +25,10 @@ module Miasma
 
       # Reload the collection
       #
-      # @return [Array<Model>]
+      # @return [self]
       def reload
         clear_memoizations!
-        all
+        self
       end
 
       # Return model with given name or ID

@@ -53,7 +53,7 @@ module Miasma
           end
           descriptions = [
             request(:path => '/', :params => d_params).get(
-              :body, 'DescribeStacksResult', 'Stacks', 'member'
+              :body, 'DescribeStacksResponse', 'DescribeStacksResult', 'Stacks', 'member'
             )
           ].flatten(1).compact
           lists = request(:path => '/', :params => l_params)
@@ -71,18 +71,18 @@ module Miasma
             new_stack.load_data(
               :id => stk['StackId'],
               :name => stk['StackName'],
-              :capabilities => stk.fetch('Capabilities', []).compact,
+              :capabilities => [stk.get('Capabilities', 'member')].flatten(1).compact,
               :description => stk['Description'],
               :creation_time => stk['CreationTime'],
               :updated_time => stk['LastUpdatedTime'],
-              :notification_topics => stk.fetch('NotificationARNs', []).compact,
+              :notification_topics => [stk.get('NotificationARNs', 'member')].flatten(1).compact,
               :timeout_in_minutes => stk['TimeoutInMinutes'],
               :status => stk['StackStatus'],
               :status_reason => stk['StackStatusReason'],
               :state => stk['StackStatus'].downcase.to_sym,
               :template_description => stk['TemplateDescription'],
               :disable_rollback => !!stk['DisableRollback'],
-              :outputs => [stk.fetch('Outputs', 'member', [])].flatten(1).map{|o|
+              :outputs => [stk.get('Outputs', 'member')].flatten(1).compact.map{|o|
                 Smash.new(
                   :key => o['OutputKey'],
                   :value => o['OutputValue'],
@@ -114,7 +114,11 @@ module Miasma
           (stack.notification_topics || []).each_with_index do |topic, idx|
             params["NotificationARNs.member.#{idx + 1}"] = topic
           end
-          params['TemplateBody'] = MultiJson.dump(stack.template)
+          if(stack.template.empty?)
+            params['UsePreviousTemplate'] = true
+          else
+            params['TemplateBody'] = MultiJson.dump(stack.template)
+          end
           if(stack.persisted?)
             result = request(
               :path => '/',

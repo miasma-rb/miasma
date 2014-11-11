@@ -40,11 +40,20 @@ module Miasma
 
       # Return all buckets
       #
-      # @param options [Hash] filter
       # @return [Array<Models::Storage::Bucket>]
-      def bucket_all(options={})
+      def bucket_all
         raise NotImplementedError
       end
+
+      # Return all files within bucket
+      #
+      # @param bucket [Bucket]
+      # @return [Array<File>]
+      def file_all(bucket)
+        raise NotImplementedError
+      end
+
+
 
     end
   end

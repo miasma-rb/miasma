@@ -1,5 +1,4 @@
 require 'miasma/contrib/aws'
-require_relative '../models/compute_abstract'
 
 describe Miasma::Models::Compute::Aws do
 

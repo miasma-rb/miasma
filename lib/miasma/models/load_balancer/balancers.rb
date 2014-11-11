@@ -15,11 +15,6 @@ module Miasma
           raise NotImplementedError
         end
 
-        # @return [Balancer] new unsaved instance
-        def build(args={})
-          Balancer.new(api, args.to_smash)
-        end
-
         # @return [Balancer] collection item class
         def model
           Balancer

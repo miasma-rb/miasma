@@ -27,14 +27,6 @@ module Miasma
           raise NotImplementedError
         end
 
-        # Build a new stack instance
-        #
-        # @param args [Hash] creation options
-        # @return [Stack]
-        def build(args={})
-          Stack.new(api, args.to_smash)
-        end
-
         # @return [Stack] collection items class
         def model
           Stack

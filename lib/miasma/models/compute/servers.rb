@@ -16,10 +16,6 @@ module Miasma
           raise NotImplementedError
         end
 
-        def build(args={})
-          Server.new(api, args.to_smash)
-        end
-
         # @return [Server] collection item class
         def model
           Server

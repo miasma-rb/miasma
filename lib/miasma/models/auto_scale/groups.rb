@@ -15,10 +15,6 @@ module Miasma
           raise NotImplementedError
         end
 
-        def build(args={})
-          Group.new(api, args.to_smash)
-        end
-
         # @return [Group] collection item class
         def model
           Group

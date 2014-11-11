@@ -125,6 +125,53 @@ p group.servers.all.map(&:expand)
 
 ### Automatic API switching
 
+Resources within a specific provider can span multiple
+API endpoints. To deal with this, the provider API
+implemenetations provide an `#api_for` method which
+will automatically build a new API instance. This
+allows Miasma to hop APIs under the hood to expand
+`ThinModels` as shown above.
+
+## Supported
+
+Miasma is currently under active development and is
+in a beta state. The models are still being filled
+out as well as the specific provider APIs.
+
+### Providers
+
+* AWS
+* Rackspace
+
+### Models
+
+#### AWS
+
+|Model         |Create|Read|Update|Delete|
+|--------------|------|----|------|------|
+|AutoScale     |  X   |    |      |      |
+|BlockStorage  |      |    |      |      |
+|Compute       |  X   | X  |      |  X   |
+|DNS           |      |    |      |      |
+|LoadBalancer  |  X   | X  |  X   |      |
+|Network       |      |    |      |      |
+|Orchestration |  X   | X  |  X   |  X   |
+|Queues        |      |    |      |      |
+|Storage       |      |    |      |      |
+
+#### Rackspace
+
+|Model         |Create|Read|Update|Delete|
+|--------------|------|----|------|------|
+|AutoScale     |  X   |    |      |      |
+|BlockStorage  |      |    |      |      |
+|Compute       |  X   | X  |      |  X   |
+|DNS           |      |    |      |      |
+|LoadBalancer  |      | X  |      |      |
+|Network       |      |    |      |      |
+|Orchestration |  X   | X  |  X   |  X   |
+|Queues        |      |    |      |      |
+|Storage       |      |    |      |      |
 
 ## Info
 

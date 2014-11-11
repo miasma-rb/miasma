@@ -47,7 +47,7 @@ module Miasma
       # @return [TrueClass, FalseClass] save was performed
       # @raises [Miasma::Error::Save]
       def save
-        unless(dirty?)
+        if(dirty?)
           perform_save
           reload
         else

@@ -31,14 +31,14 @@ module Miasma
 
         attribute :name, String, :required => true
         attribute :description, String
-        attribute :state, Symbol, :allowed => Orchestration::VALID_RESOURCE_STATES
+        attribute :state, Symbol, :allowed => Orchestration::VALID_RESOURCE_STATES, :coerce => lambda{|v| v.to_sym}
         attribute :outputs, Output, :coerce => lambda{|v, stack| Output.new(stack, v) }, :multiple => true
         attribute :status, String
         attribute :status_reason, String
         attribute :creation_time, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
         attribute :updated_time, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
-        attribute :parameters, Hash, :coerce => lambda{|v| v.to_smash }, :default => Smash.new
-        attribute :template, Hash, :default => Smash.new, :depends => :perform_template_load, :coerce => lambda{|v| v = MultiJson.load(v) if v.is_a?(String); v.to_smash }
+        attribute :parameters, Smash, :coerce => lambda{|v| v.to_smash }
+        attribute :template, Smash, :depends => :perform_template_load, :coerce => lambda{|v| v = MultiJson.load(v) if v.is_a?(String); v.to_smash }
         attribute :template_url, String
         attribute :template_description, String
         attribute :timeout_in_minutes, Integer

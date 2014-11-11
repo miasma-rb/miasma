@@ -31,9 +31,9 @@ module Miasma
       # @param json [String]
       # @return [self]
       def from_json(json)
-        set_attributes(
+        load_data(
           MultiJson.load(json).to_smash
-        )
+        ).valid_state
       end
 
       class << self

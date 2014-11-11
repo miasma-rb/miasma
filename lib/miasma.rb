@@ -33,14 +33,18 @@ module Miasma
       # just ignore
     end
     base_klass = Models.const_get(args[:type])
-    if(base_klass)
-      api_klass = base_klass.const_get(args[:provider])
-      if(api_klass)
-        api_klass.new(args[:credentials].to_smash)
+    begin
+      if(base_klass)
+        api_klass = base_klass.const_get(args[:provider])
+        if(api_klass)
+          api_klass.new(args[:credentials].to_smash)
+        else
+          raise Error.new "Failed to locate #{args[:type]} API for #{args[:provider].inspect}"
+        end
       else
-        raise Error.new "Failed to locate #{args[:type]} API for #{args[:provider].inspect}"
+        raise Error.new "Failed to locate request API type #{args[:type].inspect}"
       end
-    else
+    rescue NameError
       raise Error.new "Failed to locate request API type #{args[:type].inspect}"
     end
   end

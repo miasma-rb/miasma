@@ -83,7 +83,9 @@ The availabile API is defined first via the models,
 then concrete implementations are built via available
 provider interfaces. This means the provider code is
 structured to support the models instead of the models
-being built around what specific providers may provide.
+being built around specific providers. The result is
+a clean model interface providing consistency regardless
+of the provider backend.
 
 The "weight" of the library is kept light by using a
 few simple approaches. All code is lazy loaded, so nothing
@@ -94,6 +96,35 @@ libraries are also used (`multi_json` and `multi_xml`) allowing
 a choice of actual parsing backends in use. This removes
 dependencies on nokogiri unless it's actually desired and
 increases installation speeds.
+
+## Features
+
+### Thin Models
+
+Thin models are a stripped down model that provides a subset
+of information that an actual instance of the model may
+contain. For instance, an `AutoScale::Group` may contain
+a list of `Compute::Server`s. The collection provided within
+the `AutoScale::Group` will be created via the resulting
+API information on the group itself. However, since
+we can provide expected mappings to what API provides
+`Compute` and know these instances will be within the
+`servers` collection, we can use the `#expand` helper to
+automatically load the full instance:
+
+```ruby
+auto_scale = Miasma.api(:type => :auto_scale, :provider ...)
+group = auto_scale.groups.first
+
+# this list will provide the `ThinModel` instances:
+p group.servers.all
+
+# this list will provide the full instances:
+p group.servers.all.map(&:expand)
+```
+
+### Automatic API switching
+
 
 ## Info
 

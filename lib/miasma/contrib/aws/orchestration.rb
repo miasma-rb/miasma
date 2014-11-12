@@ -122,6 +122,7 @@ module Miasma
           if(stack.persisted?)
             result = request(
               :path => '/',
+              :method => :post,
               :params => Smash.new(
                 'Action' => 'UpdateStack'
               ).merge(params)
@@ -133,6 +134,7 @@ module Miasma
             end
             result = request(
               :path => '/',
+              :method => :post,
               :params => Smash.new(
                 'Action' => 'CreateStack',
                 'DisableRollback' => !!stack.disable_rollback

@@ -54,7 +54,6 @@ MIASMA_COMPUTE_ABSTRACT = ->{
       describe 'instance methods' do
 
         it 'should have a name' do
-          flunk 'tagging needs to be implemented'
           instance.name.must_equal build_args[:name]
         end
 

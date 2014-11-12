@@ -279,7 +279,7 @@ module Miasma
           if(options[:json])
             body = MultiJson.dump(options[:json])
           elsif(options[:form])
-            body = options[:form] # @todo need urlencode stuff (matching!)
+            body = URI.encode_www_form(options[:form])
           end
           hmac.hexdigest_of(body)
         end
@@ -351,11 +351,20 @@ module Miasma
         # @param http_method [Symbol]
         # @param request_args [Array]
         # @return [HTTP::Response]
+        # @note if http_method is :post, params will be automatically
+        #  removed and placed into :form
         def make_request(connection, http_method, request_args)
           dest, options = request_args
           path = URI.parse(dest).path
           options = options.to_smash
           options[:params] = options.fetch(:params, Smash.new).to_smash.deep_merge('Version' => self.class::API_VERSION)
+          if(http_method.to_sym == :post)
+            if(options[:form])
+              options[:form].merge(options.delete(:params))
+            else
+              options[:form] = options.delete(:params)
+            end
+          end
           signature = signer.generate(
             http_method, path, options.merge(
               Smash.new(

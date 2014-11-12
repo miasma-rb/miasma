@@ -55,7 +55,7 @@ module Miasma
         end
 
         def server_reload(server)
-          res = servers.reload
+          res = servers.reload.all
           node = res.detect do |s|
             s.id == server.id
           end

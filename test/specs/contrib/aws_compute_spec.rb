@@ -15,6 +15,14 @@ describe Miasma::Models::Compute::Aws do
   end
 
   let(:compute){ @compute }
+  let(:build_args){
+    Smash.new(
+      :name => 'miasma-test-instance',
+      :image_id => 'ami-6aad335a',
+      :flavor_id => 'm1.small',
+      :key_name => 'chrisroberts-hw'
+    )
+  }
   let(:cassette_prefix){ 'aws_compute' }
 
   instance_exec(&MIASMA_COMPUTE_ABSTRACT)

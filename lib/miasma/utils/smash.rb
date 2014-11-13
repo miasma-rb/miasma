@@ -29,7 +29,7 @@ module Miasma
       end
 
       def merge!(hash)
-        hash = hash.to_smash unless hash.is_a?(::Smash)
+        hash = hash.to_smash
         super(hash)
       end
 
@@ -88,7 +88,7 @@ module Miasma
       #
       # @return [String] checksum
       def checksum
-        Digest::SHA256.hexdigest(self.to_s)
+        Digest::SHA256.hexdigest(self.to_smash.to_s)
       end
 
     end

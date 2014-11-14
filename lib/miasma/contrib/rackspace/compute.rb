@@ -63,8 +63,9 @@ module Miasma
             server.load_data(node.data.dup)
             server.valid_state
           else
-            server.data.clear
+            server.data[:state] = :terminated
             server.dirty.clear
+            server
           end
         end
 

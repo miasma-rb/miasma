@@ -71,7 +71,7 @@ module Miasma
       def request(args)
         args = args.to_smash
         http_method = args.fetch(:method, 'get').to_s.downcase.to_sym
-        unless(HTTP.public_methods.include?(http_method))
+        unless(HTTP::Request::METHODS.include?(http_method))
           raise ArgumentError.new 'Invalid request method provided!'
         end
         request_args = [].tap do |ary|

@@ -32,7 +32,7 @@ module Miasma
           if(token = result.get(:body, 'NextToken'))
             list += all_result_pages(token, *result_key, &block)
           end
-          list
+          list.compact
         end
 
       end

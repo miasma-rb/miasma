@@ -152,7 +152,16 @@ module Miasma
         # @return [Models::Orchestration::Stack]
         def stack_reload(stack)
           if(stack.persisted?)
-            load_stack_data(stack)
+            ustack = Stack.new(self)
+            ustack.id = stack.id
+            load_stack_data(ustack)
+            if(ustack.data[:name])
+              stack.load_data(ustack.attributes).valid_state
+            else
+              stack.status = 'DELETE_COMPLETE'
+              stack.state = :delete_complete
+              stack.valid_state
+            end
           end
           stack
         end

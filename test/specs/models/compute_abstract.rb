@@ -95,12 +95,18 @@ MIASMA_COMPUTE_ABSTRACT = ->{
           end
           instance.state.must_equal :running
           instance.destroy
-          instance.state.must_equal :pending
-          until(instance.state == :terminated)
-            sleep(obj.recording? ? 60 : 0.01)
+          while(instance.state == :running)
+            sleep(obj.recording? ? 10 : 0.01)
             instance.reload
           end
-          instance.state.must_equal :terminated
+          [:pending, :terminated].must_include instance.state
+          if(instance.state == :pending)
+            until(instance.state == :terminated)
+              sleep(obj.recording? ? 60 : 0.01)
+              instance.reload
+            end
+            instance.state.must_equal :terminated
+          end
         end
       end
 

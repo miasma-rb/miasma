@@ -24,7 +24,7 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
 
       it 'should provide #all balancers' do
         VCR.use_cassette("#{cassette_prefix}_balancers_all") do
-          load_balancers.balancers.all.must_be_kind_of Array
+          load_balancer.balancers.all.must_be_kind_of Array
         end
       end
 
@@ -33,7 +33,7 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
     describe Miasma::Models::LoadBalancer::Balancer do
 
       before do
-        @balancer = load_balancers.balancers.build(build_args)
+        @balancer = load_balancer.balancers.build(build_args)
         VCR.use_cassette("#{cassette_prefix}_balancer_before_create") do |obj|
           @balancer.save
           until(@balancer.state == :active)

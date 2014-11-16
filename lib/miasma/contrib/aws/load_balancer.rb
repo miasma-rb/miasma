@@ -18,36 +18,43 @@ module Miasma
         # @param balancer [Models::LoadBalancer::Balancer]
         # @return [Models::LoadBalancer::Balancer]
         def balancer_save(balancer)
-          unless(persisted?)
-            params = Smash.new('LoadBalancerName' => balancer.name)
+          unless(balancer.persisted?)
+            params = Smash.new(
+              'LoadBalancerName' => balancer.name
+            )
+            availability_zones.each_with_index do |az, i|
+              params["AvailabilityZones.member.#{i+1}"] = az
+            end
             if(balancer.listeners)
               balancer.listeners.each_with_index do |listener, i|
                 key = "Listeners.member.#{i + 1}"
-                params[key] = Smash.new(
-                  'Protocol' => listener.protocol,
-                  'InstanceProtocol' => listener.instance_protocol,
-                  'LoadBalancerPort' => listener.load_balancer_port,
-                  'InstancePort' => listener.instance_port
-                )
+                params["#{key}.Protocol"] = listener.protocol
+                params["#{key}.InstanceProtocol"] = listener.instance_protocol
+                params["#{key}.LoadBalancerPort"] = listener.load_balancer_port
+                params["#{key}.InstancePort"] = listener.instance_port
                 if(listener.ssl_certificate_id)
-                  params[key] = listener.ssl_certificate_id
+                  params["#{key}.SSLCertificateId"] = listener.ssl_certificate_id
                 end
               end
             end
             result = request(
               :path => '/',
-              :params => params
+              :params => params.merge(
+                Smash.new(
+                  'Action' => 'CreateLoadBalancer'
+                )
+              )
             )
-            balancer.address = result.get(
-              :body, 'CreateLoadBalancerResponse', 'CreateLoadBalancerResult', 'DNSName'
-            )
+            balancer.public_addresses = [
+              :address => result.get(:body, 'CreateLoadBalancerResponse', 'CreateLoadBalancerResult', 'DNSName')
+            ]
+            balancer.load_data(:id => balancer.name).valid_state
             if(balancer.health_check)
               balancer_health_check(balancer)
             end
             if(balancer.servers && !balancer.servers.empty?)
               balancer_set_instances(balancer)
             end
-            balancer.load_data(:id => balancer.name).valid_state
           else
             if(balancer.dirty?)
               if(balancer.dirty?(:health_check))
@@ -83,7 +90,7 @@ module Miasma
         # @param balancer [Models::LoadBalancer::Balancer]
         # @return [Models::LoadBalancer::Balancer]
         def balancer_reload(balancer)
-          if(balancer.id)
+          if(balancer.persisted?)
             load_balancer_data(balancer)
           end
           balancer
@@ -102,7 +109,7 @@ module Miasma
             :path => '/',
             :params => params
           )
-          [result.get(:body, 'DescribeLoadBalancersResponse', 'DescribeLoadBalancersResult', 'LoadBalancerDescriptions', 'member')].flatten(1).map do |blr|
+          [result.get(:body, 'DescribeLoadBalancersResponse', 'DescribeLoadBalancersResult', 'LoadBalancerDescriptions', 'member')].flatten.compact.map do |blr|
             (balancer || Balancer.new(self)).load_data(
               :id => blr['LoadBalancerName'],
               :name => blr['LoadBalancerName'],
@@ -128,7 +135,21 @@ module Miasma
         # @param balancer [Models::LoadBalancer::Balancer]
         # @return [TrueClass, FalseClass]
         def balancer_destroy(balancer)
-          raise NotImplementedError
+          if(balancer.persisted?)
+            request(
+              :path => '/',
+              :params => Smash.new(
+                'Action' => 'DeleteLoadBalancer',
+                'LoadBalancerName' => balancer.name
+              )
+            )
+            balancer.state = :pending
+            balancer.status = 'DELETE_IN_PROGRESS'
+            balancer.valid_state
+            true
+          else
+            false
+          end
         end
 
         # Return all load balancers
@@ -137,6 +158,25 @@ module Miasma
         # @return [Array<Models::LoadBalancer::Balancer>]
         def balancer_all(options={})
           load_balancer_data
+        end
+
+        protected
+
+        # @return [Array<String>] availability zones
+        def availability_zones
+          memoize(:availability_zones) do
+            res = api_for(:compute).request(
+              :path => '/',
+              :params => Smash.new(
+                'Action' => 'DescribeAvailabilityZones'
+              )
+            ).fetch(:body, 'DescribeAvailabilityZonesResponse', 'availabilityZoneInfo', 'item', [])
+            [res].flatten.compact.map do |item|
+              if(item['zoneState'] == 'available')
+                item['zoneName']
+              end
+            end.compact
+          end
         end
 
       end

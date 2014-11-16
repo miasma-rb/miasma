@@ -132,13 +132,14 @@ will automatically build a new API instance. This
 allows Miasma to hop APIs under the hood to expand
 `ThinModels` as shown above.
 
-## Supported
+## Current status
 
 Miasma is currently under active development and is
-in a beta state. The models are still being filled
-out as well as the specific provider APIs.
+in a beta state. Models are still being implemented
+and spec coverage is following closely behind the
+model completions.
 
-### Providers
+### Currently Supported Providers
 
 * AWS
 * Rackspace

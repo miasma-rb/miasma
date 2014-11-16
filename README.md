@@ -153,7 +153,7 @@ out as well as the specific provider APIs.
 |BlockStorage  |      |    |      |      |
 |Compute       |  X   | X  |      |  X   |
 |DNS           |      |    |      |      |
-|LoadBalancer  |  X   | X  |  X   |      |
+|LoadBalancer  |  X   | X  |  X   |  X   |
 |Network       |      |    |      |      |
 |Orchestration |  X   | X  |  X   |  X   |
 |Queues        |      |    |      |      |

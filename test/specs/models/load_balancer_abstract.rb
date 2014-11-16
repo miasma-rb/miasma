@@ -54,7 +54,9 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
       describe 'collection' do
 
         it 'should include balancer' do
-          load_balancer.balancers.get(balancer.id).wont_be_nil
+          VCR.use_cassette("#{cassette_prefix}_balancer_direct_fetch") do
+            load_balancer.balancers.reload.get(balancer.id).wont_be_nil
+          end
         end
 
       end

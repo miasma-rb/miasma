@@ -1,0 +1,884 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Class: Miasma::Models::Compute::Rackspace
+  
+    &mdash; Miasma
+  
+</title>
+
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '../../../';
+  framesUrl = "../../../frames.html#!Miasma/Models/Compute/Rackspace.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (R)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../../Miasma.html" title="Miasma (module)">Miasma</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../../Models.html" title="Miasma::Models (module)">Models</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Compute.html" title="Miasma::Models::Compute (class)">Compute</a></span></span>
+     &raquo; 
+    <span class="title">Rackspace</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../../class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="../../../method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="../../../file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><h1>Class: Miasma::Models::Compute::Rackspace
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName"><span class='object_link'><a href="../Compute.html" title="Miasma::Models::Compute (class)">Miasma::Models::Compute</a></span></span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next"><span class='object_link'><a href="../../Types/Api.html" title="Miasma::Types::Api (class)">Types::Api</a></span></li>
+          
+            <li class="next"><span class='object_link'><a href="../Compute.html" title="Miasma::Models::Compute (class)">Miasma::Models::Compute</a></span></li>
+          
+            <li class="next">Miasma::Models::Compute::Rackspace</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+      <dt class="r2">Includes:</dt>
+      <dd class="r2"><span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html" title="Miasma::Contrib::RackspaceApiCore::ApiCommon (module)">Contrib::RackspaceApiCore::ApiCommon</a></span></dd>
+      
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/miasma/contrib/rackspace/compute.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="SERVER_STATE_MAP-constant" class="">SERVER_STATE_MAP =
+          <div class="docstring">
+  <div class="discussion">
+    
+<p>Returns map state to valid internal values</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../../../top-level-namespace.html#Smash-constant" title="Smash (constant)">Smash</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>map state to valid internal values</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>Smash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ACTIVE</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='symbol'>:running</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DELETED</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='symbol'>:terminated</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SUSPENDED</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='symbol'>:stopped</span><span class='comma'>,</span>
+  <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>PASSWORD</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='symbol'>:running</span>
+<span class='rparen'>)</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#connection-instance_method" title="#connection (instance method)">- (HTTP) <strong>connection</strong> </a>
+    
+
+    
+  </span>
+  
+    <span class="note title not_defined_here">
+      included
+      from <span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html#connection-instance_method" title="Miasma::Contrib::RackspaceApiCore::ApiCommon#connection (method)">Contrib::RackspaceApiCore::ApiCommon</a></span>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>With auth token provided.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#endpoint-instance_method" title="#endpoint (instance method)">- (String) <strong>endpoint</strong> </a>
+    
+
+    
+  </span>
+  
+    <span class="note title not_defined_here">
+      included
+      from <span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html#endpoint-instance_method" title="Miasma::Contrib::RackspaceApiCore::ApiCommon#endpoint (method)">Contrib::RackspaceApiCore::ApiCommon</a></span>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Endpoint URL.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rackspace_api-instance_method" title="#rackspace_api (instance method)">- (Miasma::Contrib::RackspaceApiCore) <strong>rackspace_api</strong> </a>
+    
+
+    
+  </span>
+  
+    <span class="note title not_defined_here">
+      included
+      from <span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html#rackspace_api-instance_method" title="Miasma::Contrib::RackspaceApiCore::ApiCommon#rackspace_api (method)">Contrib::RackspaceApiCore::ApiCommon</a></span>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#server_all-instance_method" title="#server_all (instance method)">- (Object) <strong>server_all</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#server_change_state-instance_method" title="#server_change_state (instance method)">- (Object) <strong>server_change_state</strong>(server, state) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#server_destroy-instance_method" title="#server_destroy (instance method)">- (Object) <strong>server_destroy</strong>(server) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#server_reload-instance_method" title="#server_reload (instance method)">- (Object) <strong>server_reload</strong>(server) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#server_save-instance_method" title="#server_save (instance method)">- (Object) <strong>server_save</strong>(server) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#token-instance_method" title="#token (instance method)">- (String) <strong>token</strong> </a>
+    
+
+    
+  </span>
+  
+    <span class="note title not_defined_here">
+      included
+      from <span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html#token-instance_method" title="Miasma::Contrib::RackspaceApiCore::ApiCommon#token (method)">Contrib::RackspaceApiCore::ApiCommon</a></span>
+    </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Valid API token.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <p class="notice">This class inherits a constructor from <span class='object_link'><a href="../../Types/Api.html#initialize-instance_method" title="Miasma::Types::Api#initialize (method)">Miasma::Types::Api</a></span></p>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="connection-instance_method">
+  
+    - (<tt>HTTP</tt>) <strong>connection</strong> 
+  
+
+  
+
+  
+    <span class="not_defined_here">
+      Originally defined in module
+        <span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html#connection-instance_method" title="Miasma::Contrib::RackspaceApiCore::ApiCommon#connection (method)">Contrib::RackspaceApiCore::ApiCommon</a></span>
+    </span>
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns with auth token provided</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>HTTP</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>with auth token provided</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="endpoint-instance_method">
+  
+    - (<tt>String</tt>) <strong>endpoint</strong> 
+  
+
+  
+
+  
+    <span class="not_defined_here">
+      Originally defined in module
+        <span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html#endpoint-instance_method" title="Miasma::Contrib::RackspaceApiCore::ApiCommon#endpoint (method)">Contrib::RackspaceApiCore::ApiCommon</a></span>
+    </span>
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns endpoint URL</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>endpoint URL</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rackspace_api-instance_method">
+  
+    - (<tt><span class='object_link'><a href="../../Contrib/RackspaceApiCore.html" title="Miasma::Contrib::RackspaceApiCore (class)">Miasma::Contrib::RackspaceApiCore</a></span></tt>) <strong>rackspace_api</strong> 
+  
+
+  
+
+  
+    <span class="not_defined_here">
+      Originally defined in module
+        <span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html#rackspace_api-instance_method" title="Miasma::Contrib::RackspaceApiCore::ApiCommon#rackspace_api (method)">Contrib::RackspaceApiCore::ApiCommon</a></span>
+    </span>
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../../Contrib/RackspaceApiCore.html" title="Miasma::Contrib::RackspaceApiCore (class)">Miasma::Contrib::RackspaceApiCore</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="server_all-instance_method">
+  
+    - (<tt>Object</tt>) <strong>server_all</strong> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/rackspace/compute.rb', line 72</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_server_all'>server_all</span>
+  <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='lparen'>(</span>
+    <span class='symbol'>:method</span> <span class='op'>=&gt;</span> <span class='symbol'>:get</span><span class='comma'>,</span>
+    <span class='symbol'>:path</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/servers/detail</span><span class='tstring_end'>&#39;</span></span>
+  <span class='rparen'>)</span>
+  <span class='id identifier rubyid_result'>result</span><span class='lbracket'>[</span><span class='symbol'>:body</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:servers</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_srv'>srv</span><span class='op'>|</span>
+    <span class='const'>Server</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
+      <span class='kw'>self</span><span class='comma'>,</span>
+      <span class='symbol'>:id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_srv'>srv</span><span class='lbracket'>[</span><span class='symbol'>:id</span><span class='rbracket'>]</span><span class='comma'>,</span>
+      <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_srv'>srv</span><span class='lbracket'>[</span><span class='symbol'>:name</span><span class='rbracket'>]</span><span class='comma'>,</span>
+      <span class='symbol'>:image_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_srv'>srv</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='symbol'>:image</span><span class='comma'>,</span> <span class='symbol'>:id</span><span class='rparen'>)</span><span class='comma'>,</span>
+      <span class='symbol'>:flavor_id</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_srv'>srv</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='symbol'>:flavor</span><span class='comma'>,</span> <span class='symbol'>:id</span><span class='rparen'>)</span><span class='comma'>,</span>
+      <span class='symbol'>:state</span> <span class='op'>=&gt;</span> <span class='const'>SERVER_STATE_MAP</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='id identifier rubyid_srv'>srv</span><span class='lbracket'>[</span><span class='symbol'>:status</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:pending</span><span class='rparen'>)</span><span class='comma'>,</span>
+      <span class='symbol'>:addresses_private</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_srv'>srv</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:addresses</span><span class='comma'>,</span> <span class='symbol'>:private</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='op'>|</span>
+        <span class='const'>Server</span><span class='op'>::</span><span class='const'>Address</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
+          <span class='symbol'>:version</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_a'>a</span><span class='lbracket'>[</span><span class='symbol'>:version</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='comma'>,</span> <span class='symbol'>:address</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_a'>a</span><span class='lbracket'>[</span><span class='symbol'>:addr</span><span class='rbracket'>]</span>
+        <span class='rparen'>)</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='symbol'>:addresses_public</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_srv'>srv</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:addresses</span><span class='comma'>,</span> <span class='symbol'>:public</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_a'>a</span><span class='op'>|</span>
+        <span class='const'>Server</span><span class='op'>::</span><span class='const'>Address</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
+          <span class='symbol'>:version</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_a'>a</span><span class='lbracket'>[</span><span class='symbol'>:version</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='comma'>,</span> <span class='symbol'>:address</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_a'>a</span><span class='lbracket'>[</span><span class='symbol'>:addr</span><span class='rbracket'>]</span>
+        <span class='rparen'>)</span>
+      <span class='rbrace'>}</span><span class='comma'>,</span>
+      <span class='symbol'>:status</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_srv'>srv</span><span class='lbracket'>[</span><span class='symbol'>:status</span><span class='rbracket'>]</span><span class='comma'>,</span>
+      <span class='symbol'>:key_name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_srv'>srv</span><span class='lbracket'>[</span><span class='symbol'>:key_name</span><span class='rbracket'>]</span>
+    <span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_valid_state'>valid_state</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="server_change_state-instance_method">
+  
+    - (<tt>Object</tt>) <strong>server_change_state</strong>(server, state) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+54
+55</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/rackspace/compute.rb', line 54</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_server_change_state'>server_change_state</span><span class='lparen'>(</span><span class='id identifier rubyid_server'>server</span><span class='comma'>,</span> <span class='id identifier rubyid_state'>state</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="server_destroy-instance_method">
+  
+    - (<tt>Object</tt>) <strong>server_destroy</strong>(server) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/rackspace/compute.rb', line 42</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_server_destroy'>server_destroy</span><span class='lparen'>(</span><span class='id identifier rubyid_server'>server</span><span class='rparen'>)</span>
+  <span class='kw'>if</span><span class='lparen'>(</span><span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_persisted?'>persisted?</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='lparen'>(</span>
+      <span class='symbol'>:expects</span> <span class='op'>=&gt;</span> <span class='int'>204</span><span class='comma'>,</span>
+      <span class='symbol'>:method</span> <span class='op'>=&gt;</span> <span class='symbol'>:delete</span><span class='comma'>,</span>
+      <span class='symbol'>:path</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/servers/</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>this doesn&#39;t even exist</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="server_reload-instance_method">
+  
+    - (<tt>Object</tt>) <strong>server_reload</strong>(server) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/rackspace/compute.rb', line 57</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_server_reload'>server_reload</span><span class='lparen'>(</span><span class='id identifier rubyid_server'>server</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_res'>res</span> <span class='op'>=</span> <span class='id identifier rubyid_servers'>servers</span><span class='period'>.</span><span class='id identifier rubyid_reload'>reload</span><span class='period'>.</span><span class='id identifier rubyid_all'>all</span>
+  <span class='id identifier rubyid_node'>node</span> <span class='op'>=</span> <span class='id identifier rubyid_res'>res</span><span class='period'>.</span><span class='id identifier rubyid_detect'>detect</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span>
+    <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>==</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span>
+  <span class='kw'>end</span>
+  <span class='kw'>if</span><span class='lparen'>(</span><span class='id identifier rubyid_node'>node</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_load_data'>load_data</span><span class='lparen'>(</span><span class='id identifier rubyid_node'>node</span><span class='period'>.</span><span class='id identifier rubyid_data'>data</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_valid_state'>valid_state</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_data'>data</span><span class='lbracket'>[</span><span class='symbol'>:state</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='symbol'>:terminated</span>
+    <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_dirty'>dirty</span><span class='period'>.</span><span class='id identifier rubyid_clear'>clear</span>
+    <span class='id identifier rubyid_server'>server</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="server_save-instance_method">
+  
+    - (<tt>Object</tt>) <strong>server_save</strong>(server) 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/rackspace/compute.rb', line 18</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_server_save'>server_save</span><span class='lparen'>(</span><span class='id identifier rubyid_server'>server</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span><span class='lparen'>(</span><span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_persisted?'>persisted?</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_load_data'>load_data</span><span class='lparen'>(</span><span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='id identifier rubyid_request'>request</span><span class='lparen'>(</span>
+      <span class='symbol'>:expects</span> <span class='op'>=&gt;</span> <span class='int'>202</span><span class='comma'>,</span>
+      <span class='symbol'>:method</span> <span class='op'>=&gt;</span> <span class='symbol'>:post</span><span class='comma'>,</span>
+      <span class='symbol'>:path</span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/servers</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+      <span class='symbol'>:json</span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+        <span class='symbol'>:server</span> <span class='op'>=&gt;</span> <span class='lbrace'>{</span>
+          <span class='symbol'>:flavorRef</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_flavor_id'>flavor_id</span><span class='comma'>,</span>
+          <span class='symbol'>:name</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span>
+          <span class='symbol'>:imageRef</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_image_id'>image_id</span><span class='comma'>,</span>
+          <span class='symbol'>:metadata</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_metadata'>metadata</span><span class='comma'>,</span>
+          <span class='symbol'>:personality</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_personality'>personality</span><span class='comma'>,</span>
+          <span class='symbol'>:key_pair</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_key_name'>key_name</span>
+        <span class='rbrace'>}</span>
+      <span class='rbrace'>}</span>
+    <span class='rparen'>)</span>
+    <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='id identifier rubyid_result'>result</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='symbol'>:body</span><span class='comma'>,</span> <span class='symbol'>:server</span><span class='comma'>,</span> <span class='symbol'>:id</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>WAT DO I DO!?</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="token-instance_method">
+  
+    - (<tt>String</tt>) <strong>token</strong> 
+  
+
+  
+
+  
+    <span class="not_defined_here">
+      Originally defined in module
+        <span class='object_link'><a href="../../Contrib/RackspaceApiCore/ApiCommon.html#token-instance_method" title="Miasma::Contrib::RackspaceApiCore::ApiCommon#token (method)">Contrib::RackspaceApiCore::ApiCommon</a></span>
+    </span>
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns valid API token</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>valid API token</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
+</div>
+    
+  </div>
+
+</div>
+
+    <div id="footer">
+  Generated on Sun Nov 16 08:12:27 2014 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.1.2).
+</div>
+
+  </body>
+</html>

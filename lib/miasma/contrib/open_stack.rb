@@ -8,13 +8,17 @@ module Miasma
     # OpenStack API core helper
     class OpenStackApiCore
 
+      # Authentication helper class
       class Authenticate
 
-        # @return [Smash] token information
+        # @return [Smash] token info
         attr_reader :token
         # @return [Smash] credentials in use
         attr_reader :credentials
 
+        # Create new instance
+        #
+        # @return [self]
         def initialize(credentials)
           @credentials = credentials.to_smash
         end
@@ -47,6 +51,11 @@ module Miasma
           raise NotImplementedError
         end
 
+        # @return [Smash] authentication request body
+        def authentication_request
+          raise NotImplementedError
+        end
+
         protected
 
         # @return [TrueClass] load authenticator
@@ -54,13 +63,11 @@ module Miasma
           !!api_token
         end
 
+        # Authentication implementation compatible for v2
         class Version2 < Authenticate
 
-          # Identify with authentication service and load
-          # token information and service catalog
-          #
-          # @return [TrueClass]
-          def identify_and_load
+          # @return [Smash] authentication request body
+          def authentication_request
             if(credentials[:open_stack_token])
               auth = Smash.new(
                 :token => Smash.new(
@@ -75,8 +82,26 @@ module Miasma
                 )
               )
             end
-            auth['tenantName'] = credentials[:open_stack_tenant_name]
-            result = HTTP.post(File.join(credentials[:open_stack_identity_url], 'tokens'), :json => auth)
+            if(credentials[:open_stack_tenant_name])
+              auth['tenantName'] = credentials[:open_stack_tenant_name]
+            end
+            auth
+          end
+
+          # Identify with authentication service and load
+          # token information and service catalog
+          #
+          # @return [TrueClass]
+          def identify_and_load
+            result = HTTP.post(
+              File.join(
+                credentials[:open_stack_identity_url],
+                'tokens'
+              ),
+              :json => Smash.new(
+                :auth => authentication_request
+              )
+            )
             unless(result.status == 200)
               raise Error::ApiError::AuthenticationError.new('Failed to authenticate', :response => result)
             end
@@ -91,13 +116,11 @@ module Miasma
 
         end
 
+        # Authentication implementation compatible for v2
         class Version3 < Authenticate
 
-          # Identify with authentication service and load
-          # token information and service catalog
-          #
-          # @return [TrueClass]
-          def identify_and_load
+          # @return [Smash] authentication request body
+          def authentication_request
             ident = Smash.new(:methods => [])
             if(credentials[:open_stack_password])
               ident[:methods] << 'password'
@@ -149,10 +172,18 @@ module Miasma
             if(scope)
               auth[:scope] = scope
             end
+            auth
+          end
+
+          # Identify with authentication service and load
+          # token information and service catalog
+          #
+          # @return [TrueClass]
+          def identify_and_load
             result = HTTP.post(
               File.join(credentials[:open_stack_identity_url], 'tokens'),
               :json => Smash.new(
-                :auth => auth
+                :auth => authentication_request
               )
             )
             info = MultiJson.load(result.body.to_s).to_smash[:token]
@@ -169,6 +200,7 @@ module Miasma
 
       end
 
+      # Common API methods
       module ApiCommon
 
         # Set attributes into model
@@ -234,13 +266,26 @@ module Miasma
       def initialize(creds)
         @credentials = creds
         if(creds[:open_stack_identity_url].include?('v3'))
-          @identity = Authenticate::Version3.new(creds)
+          @identity = identity_class('Authenticate::Version3').new(creds)
         elsif(creds[:open_stack_identity_url].include?('v2'))
-          @identity = Authenticate::Version2.new(creds)
+          @identity = identity_class('Authenticate::Version2').new(creds)
         else
           # @todo allow attribute to override?
           raise ArgumentError.new('Failed to determine Identity service version')
         end
+      end
+
+      # @return [Class] class from instance class, falls back to parent
+      def identity_class(i_name)
+        [self.class, Miasma::Contrib::OpenStackApiCore].map do |klass|
+          i_name.split('::').inject(klass) do |memo, key|
+            if(memo.const_defined?(key))
+              memo.const_get(key)
+            else
+              break
+            end
+          end
+        end.compact.first
       end
 
       # Provide end point URL for service
@@ -249,7 +294,7 @@ module Miasma
       # @param region [String] region in use
       # @return [String] public URL
       def endpoint_for(api_name, region)
-        api = API_MAP[api_name]
+        api = self.class.const_get(:API_MAP)[api_name]
         srv = identity.service_catalog.detect do |info|
           info[:name] == api
         end
@@ -264,7 +309,10 @@ module Miasma
           point = srv[:endpoints].first
         end
         if(point)
-          point[:url]
+          point.fetch(
+            :publicURL,
+            point[:url]
+          )
         else
           raise KeyError.new("Lookup failed for `#{api_name}` within region `#{region}`")
         end
@@ -275,14 +323,9 @@ module Miasma
         identity.api_token
       end
 
-      # @return [String] ID of account
-      def account_id
-        identity.token[:tenant][:id]
-      end
-
-
     end
   end
 
   Models::Compute.autoload :OpenStack, 'miasma/contrib/open_stack/compute'
+  Models::Orchestration.autoload :OpenStack, 'miasma/contrib/open_stack/orchestration'
 end

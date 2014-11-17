@@ -182,8 +182,13 @@ module Miasma
             if(param.is_a?(Symbol))
               @missing_method = param
             else
-              if(@missing_method)
-                param.send(@missing_method)
+              if(@missing_method && !@calling_on_missing)
+                @calling_on_missing = true
+                begin
+                  param.send(@missing_method)
+                ensure
+                  @calling_on_missing = false
+                end
               end
               @missing_method
             end

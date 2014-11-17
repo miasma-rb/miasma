@@ -1,21 +1,38 @@
 require 'miasma'
-require 'miasma/utils/smash'
-require 'time'
+require 'miasma/contrib/open_stack'
 
-# @todo refactor to build off openstack API and override to get
-# expected custom behaviors
 module Miasma
   module Contrib
 
     # Rackspace API core helper
-    class RackspaceApiCore
+    class RackspaceApiCore < OpenStackApiCore
 
+      # Authentication helper class
+      class Authenticate < OpenStackApiCore::Authenticate
+        # Authentication implementation compatible for v2
+        class Version2 < OpenStackApiCore::Authenticate::Version2
+
+          # @return [Smash] authentication request body
+          def authentication_request
+            Smash.new(
+              'RAX-KSKEY:apiKeyCredentials' => Smash.new(
+                'username' => credentials[:open_stack_username],
+                'apiKey' => credentials[:open_stack_token]
+              )
+            )
+          end
+
+        end
+      end
+
+      # Common API methods
       module ApiCommon
 
         # Set attributes into model
         #
         # @param klass [Class]
         def self.included(klass)
+          klass.attributes.clear
           klass.class_eval do
             attribute :rackspace_api_key, String, :required => true
             attribute :rackspace_username, String, :required => true
@@ -23,26 +40,8 @@ module Miasma
           end
         end
 
-        # @return [HTTP] with auth token provided
-        def connection
-          super.with_headers('X-Auth-Token' => token)
-        end
-
-        # @return [String] endpoint URL
-        def endpoint
-          rackspace_api.endpoint_for(
-            Utils.snake(self.class.to_s.split('::')[-2]).to_sym,
-            rackspace_region
-          )
-        end
-
-        # @return [String] valid API token
-        def token
-          rackspace_api.api_token
-        end
-
         # @return [Miasma::Contrib::RackspaceApiCore]
-        def rackspace_api
+        def open_stack_api
           key = "miasma_rackspace_api_#{attributes.checksum}".to_sym
           memoize(key, :direct) do
             Miasma::Contrib::RackspaceApiCore.new(attributes)
@@ -72,88 +71,27 @@ module Miasma
         'load_balancer' => 'cloudLoadBalancers'
       )
 
-      # @return [String] username
-      attr_reader :user
-      # @return [Smash] remote service catalog
-      attr_reader :service_catalog
-      # @return [Smash] token information
-      attr_reader :token
-      # @return [Smash] credentials in use
-      attr_reader :credentials
-
       # Create a new api instance
       #
       # @param creds [Smash] credential hash
       # @return [self]
       def initialize(creds)
-        @credentials = creds
-      end
-
-      # Provide end point URL for service
-      #
-      # @param api_name [String] name of api
-      # @param region [String] region in use
-      # @return [String] public URL
-      def endpoint_for(api_name, region)
-        identify_and_load unless service_catalog
-        api = API_MAP[api_name]
-        srv = service_catalog.detect do |info|
-          info[:name] == api
+        if(creds[:rackspace_region].to_s == 'lon')
+          endpoint = AUTH_ENDPOINT[:uk]
+        else
+          endpoint = AUTH_ENDPOINT[:us]
         end
-        unless(srv)
-          raise NotImplementedError.new("No API mapping found for `#{api_name}`")
-        end
-        region = region.to_s.upcase
-        point = srv[:endpoints].detect do |endpoint|
-          endpoint[:region] == region
-        end
-        if(point)
-          point[:publicURL]
-        end
-      end
-
-      # @return [String] API token
-      def api_token
-        if(token.nil? || Time.now > token[:expires])
-          identify_and_load
-        end
-        token[:id]
+        super Smash.new(
+          :open_stack_username => creds[:rackspace_username],
+          :open_stack_token => creds[:rackspace_api_key],
+          :open_stack_region => creds[:rackspace_region],
+          :open_stack_identity_url => endpoint
+        )
       end
 
       # @return [String] ID of account
       def account_id
-        if(token.nil? || Time.now > token[:expires])
-          identify_and_load
-        end
-        token[:tenant][:id]
-      end
-
-      # Identify with authentication service and load
-      # token information and service catalog
-      #
-      # @return [TrueClass]
-      def identify_and_load
-        endpoint = credentials[:rackspace_region].to_s == 'lon' ? AUTH_ENDPOINT[:uk] : AUTH_ENDPOINT[:us]
-        result = HTTP.post(File.join(endpoint, 'tokens'),
-          :json => {
-            'auth' => {
-              'RAX-KSKEY:apiKeyCredentials' => {
-                'username' => credentials[:rackspace_username],
-                'apiKey' => credentials[:rackspace_api_key]
-              }
-            }
-          }
-        )
-        unless(result.status == 200)
-          raise Error::ApiError::AuthenticationError.new('Failed to authenticate', :response => result)
-        end
-        info = MultiJson.load(result.body.to_s).to_smash
-        info = info[:access]
-        @user = info[:user]
-        @service_catalog = info[:serviceCatalog]
-        @token = info[:token]
-        token[:expires] = Time.parse(token[:expires])
-        true
+        identity.token[:tenant][:id]
       end
 
     end

@@ -2,6 +2,8 @@ require 'miasma'
 require 'miasma/utils/smash'
 require 'time'
 
+# @todo refactor to build off openstack API and override to get
+# expected custom behaviors
 module Miasma
   module Contrib
 

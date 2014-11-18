@@ -131,7 +131,12 @@ module Miasma
             extracted_body = result.body.to_s
           end
         else
-          extracted_body = result.body.to_s
+          # @note if body is over 100KB, do not extract
+          if(extracted_headers[:content_length].to_i < 102400)
+            extracted_body = result.body.to_s
+          else
+            extracted_body = result.body
+          end
         end
         Smash.new(
           :response => result,

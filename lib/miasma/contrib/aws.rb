@@ -294,6 +294,7 @@ module Miasma
             attribute :aws_secret_access_key, String, :required => true
             attribute :aws_region, String, :required => true
             attribute :aws_host, String
+            attribute :aws_bucket_region, String
 
             # @return [Contrib::AwsApiCore::SignatureV4]
             attr_reader :signer
@@ -356,7 +357,7 @@ module Miasma
         def make_request(connection, http_method, request_args)
           dest, options = request_args
           path = URI.parse(dest).path
-          options = options.to_smash
+          options = options ? options.to_smash : Smash.new
           options[:params] = options.fetch(:params, Smash.new).to_smash.deep_merge('Version' => self.class::API_VERSION)
           if(http_method.to_sym == :post)
             if(options[:form])
@@ -365,6 +366,7 @@ module Miasma
               options[:form] = options.delete(:params)
             end
           end
+          update_request(connection, options)
           signature = signer.generate(
             http_method, path, options.merge(
               Smash.new(
@@ -378,6 +380,15 @@ module Miasma
           connection.auth(signature).send(http_method, dest, options)
         end
 
+        # Simple callback to allow request option adjustments prior to
+        # signature calculation
+        #
+        # @param opts [Smash] request options
+        # @return [TrueClass]
+        def update_request(con, opts)
+          true
+        end
+
       end
 
     end
@@ -387,4 +398,5 @@ module Miasma
   Models::LoadBalancer.autoload :Aws, 'miasma/contrib/aws/load_balancer'
   Models::AutoScale.autoload :Aws, 'miasma/contrib/aws/auto_scale'
   Models::Orchestration.autoload :Aws, 'miasma/contrib/aws/orchestration'
+  Models::Storage.autoload :Aws, 'miasma/contrib/aws/storage'
 end

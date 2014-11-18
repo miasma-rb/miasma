@@ -14,7 +14,7 @@ module Miasma
           attribute :state, Symbol, :required => true, :allowed_values => Orchestration::VALID_RESOURCE_STATES
           attribute :status, [String, Symbol], :required => true, :coerce => lambda{|v| v.to_s.to_sym}
           attribute :status_reason, String
-          attribute :updated_time, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
+          attribute :updated, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
 
           attr_reader :stack
 

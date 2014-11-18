@@ -74,8 +74,8 @@ module Miasma
               :name => stk['StackName'],
               :capabilities => [stk.get('Capabilities', 'member')].flatten(1).compact,
               :description => stk['Description'],
-              :creation_time => stk['CreationTime'],
-              :updated_time => stk['LastUpdatedTime'],
+              :created => stk['CreationTime'],
+              :updated => stk['LastUpdatedTime'],
               :notification_topics => [stk.get('NotificationARNs', 'member')].flatten(1).compact,
               :timeout_in_minutes => stk['TimeoutInMinutes'],
               :status => stk['StackStatus'],
@@ -265,7 +265,7 @@ module Miasma
               :state => res['ResourceStatus'].downcase.to_sym,
               :status => res['ResourceStatus'],
               :status_reason => res['ResourceStatusReason'],
-              :updated_time => res['Timestamp']
+              :updated => res['Timestamp']
             ).valid_state
           end
         end

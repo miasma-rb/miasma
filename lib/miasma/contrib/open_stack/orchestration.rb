@@ -70,7 +70,7 @@ module Miasma
             stack.load_data(
               :id => stk[:id],
               :capabilities => stk[:capabilities],
-              :creation_time => Time.parse(stk[:creation_time]),
+              :created => Time.parse(stk[:creation_time]),
               :description => stk[:description],
               :disable_rollback => stk[:disable_rollback].to_s.downcase == 'true',
               :notification_topics => stk[:notification_topics],
@@ -80,7 +80,7 @@ module Miasma
               :status_reason => stk[:stack_status_reason],
               :template_description => stk[:template_description],
               :timeout_in_minutes => stk[:timeout_mins].to_s.empty? ? nil : stk[:timeout_mins].to_i,
-              :updated_time => stk[:updated_time].to_s.empty? ? nil : Time.parse(stk[:updated_time]),
+              :updated => stk[:updated_time].to_s.empty? ? nil : Time.parse(stk[:updated_time]),
               :parameters => stk.fetch(:parameters, Smash.new),
               :outputs => stk.fetch(:outputs, []).map{ |output|
                 Smash.new(
@@ -166,7 +166,7 @@ module Miasma
               :state => s[:stack_status].downcase.to_sym,
               :status => s[:stack_status],
               :status_reason => s[:stack_status_reason],
-              :updated_time => s[:updated_time].to_s.empty? ? nil : Time.parse(s[:updated_time])
+              :updated => s[:updated_time].to_s.empty? ? nil : Time.parse(s[:updated_time])
             ).valid_state
           end
         end
@@ -191,7 +191,7 @@ module Miasma
               :state => resource[:resource_status].downcase.to_sym,
               :status => resource[:resource_status],
               :status_reason => resource[:resource_status_reason],
-              :updated_time => Time.parse(resource[:updated_time])
+              :updated => Time.parse(resource[:updated_time])
             ).valid_state
           end
         end

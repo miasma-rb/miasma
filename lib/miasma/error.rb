@@ -29,6 +29,7 @@ module Miasma
       def initialize(msg, args={})
         super
         @response = args.to_smash[:response]
+        @message = msg
         extract_error_message(@response)
       end
 
@@ -54,9 +55,11 @@ module Miasma
           rescue MultiJson::ParseError
             begin
               content = MultiXml.parse(response.body.to_s).to_smash
-              if(content.get('ErrorResponse', 'Error'))
-                @response_error_msg = "#{content.get('ErrorResponse', 'Error', 'Code')}: #{content.get('ErrorResponse', 'Error', 'Message')}"
-              end
+              @response_error_msg = [['ErrorResponse', 'Error'], ['Error']].map do |path|
+                if(result = content.get(*path))
+                  "#{result['Code']}: #{result['Message']}"
+                end
+              end.compact.first
             rescue MultiXml::ParseError
               content = Smash.new
             end
@@ -78,8 +81,7 @@ module Miasma
     # Orchestration error
     class OrchestrationError < Error
       # Template failed to validate
-      class InvalidTemplate < OrchestrationError
-      end
+      class InvalidTemplate < OrchestrationError; end
     end
 
     # Invalid modification request

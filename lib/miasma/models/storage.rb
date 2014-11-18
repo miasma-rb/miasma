@@ -5,19 +5,26 @@ module Miasma
     # Abstract storage API
     class Storage < Types::Api
 
+      autoload :Buckets, 'miasma/models/storage/buckets'
+      autoload :Bucket, 'miasma/models/storage/bucket'
+      autoload :Files, 'miasma/models/storage/files'
+      autoload :File, 'miasma/models/storage/file'
+
       # Storage buckets
       #
       # @param filter [Hash] filtering options
       # @return [Types::Collection<Models::Storage::Bucket>] buckets
       def buckets(args={})
-        Buckets.new(self)
+        memoize(:buckets) do
+          Buckets.new(self)
+        end
       end
 
-      # Create a new bucket
+      # Save bucket
       #
       # @param bucket [Models::Storage::Bucket]
       # @return [Models::Storage::Bucket]
-      def bucket_create(bucket)
+      def bucket_save(bucket)
         raise NotImplementedError
       end
 
@@ -25,16 +32,15 @@ module Miasma
       #
       # @param bucket [Models::Storage::Bucket]
       # @return [TrueClass, FalseClass]
-      def bucket_delete(bucket)
+      def bucket_destroy(bucket)
         raise NotImplementedError
       end
 
-      # Rename bucket
+      # Reload the bucket
       #
       # @param bucket [Models::Storage::Bucket]
-      # @param new_name [String]
-      # @return [Models::Storage::Bucket] new bucket with updated name
-      def bucket_rename(bucket, new_name)
+      # @return [Models::Storage::Bucket]
+      def bucket_reload(bucket)
         raise NotImplementedError
       end
 
@@ -53,7 +59,29 @@ module Miasma
         raise NotImplementedError
       end
 
+      # Save file
+      #
+      # @param file [Models::Storage::File]
+      # @return [Models::Storage::File]
+      def file_save(file)
+        raise NotImplementedError
+      end
 
+      # Destroy file
+      #
+      # @param file [Models::Storage::File]
+      # @return [TrueClass, FalseClass]
+      def file_destroy(file)
+        raise NotImplementedError
+      end
+
+      # Reload the file
+      #
+      # @param file [Models::Storage::File]
+      # @return [Models::Storage::File]
+      def file_reload(file)
+        raise NotImplementedError
+      end
 
     end
   end

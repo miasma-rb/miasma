@@ -6,15 +6,16 @@ module Miasma
     class Storage
 
       # Abstract file
-      class File < Types::Collection
+      class File < Types::Model
 
+        attribute :name, String, :required => true
         attribute :body, IO, :coerce => lambda{|v| StringIO.new(v.to_s) }
         attribute :content_type, String
         attribute :content_disposition, String
         attribute :etag, String
-        attribute :last_modified, DateTime
+        attribute :updated, Time, :coerce => lambda{|t| Time.parse(t.to_s)}
         attribute :size, Integer
-        attribute :metadata, Hash, :coerce => lambda{|o| o.to_smash}
+        attribute :metadata, Smash, :coerce => lambda{|o| o.to_smash}
 
         # @return [Bucket] parent bucket
         attr_reader :bucket

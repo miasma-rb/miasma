@@ -6,27 +6,23 @@ module Miasma
       # Abstract bucket
       class Bucket < Types::Model
 
-        attribute :metadata, Hash, :coerce => lambda{|o| o.to_smash}
+        attribute :name, String, :required => true
+        attribute :created, Time, :coerce => lambda{|t| Time.parse(t.to_s)}
+        attribute :metadata, Smash, :coerce => lambda{|o| o.to_smash}
+
+        # @return [Files]
+        def files
+          memoize(:files) do
+            Files.new(self)
+          end
+        end
 
         # Filter buckets
         #
         # @param filter [Hash]
         # @return [Array<Bucket>]
         def filter(filter={})
-        end
-
-        # Rename bucket
-        #
-        # @param new_name [String]
-        # @return [self]
-        def rename(new_name)
-          perform_rename(new_name)
-        end
-
-        protected
-
-        def perform_rename(new_name)
-          api.bucket_rename(self, new_name)
+          raise NotImplementedError
         end
 
       end

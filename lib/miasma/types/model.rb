@@ -6,6 +6,8 @@ module Miasma
     # Base model
     class Model < Data
 
+      include Utils::Memoization
+
       # @return [Miasma::Types::Api] underlying service API
       attr_reader :api
 

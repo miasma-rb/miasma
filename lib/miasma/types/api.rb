@@ -75,8 +75,9 @@ module Miasma
           raise ArgumentError.new 'Invalid request method provided!'
         end
         request_args = [].tap do |ary|
+          _endpoint = args.delete(:endpoint) || endpoint
           ary.push(
-            File.join(endpoint, args[:path].to_s)
+            File.join(_endpoint, args[:path].to_s)
           )
           options = {}.tap do |opts|
             [:form, :params, :json, :body].each do |key|

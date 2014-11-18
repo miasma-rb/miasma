@@ -77,7 +77,7 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
         end
 
         it 'should have a creation time' do
-          stack.creation_time.must_be_kind_of Time
+          stack.created.must_be_kind_of Time
         end
 
         it 'should have parameters used for creation' do

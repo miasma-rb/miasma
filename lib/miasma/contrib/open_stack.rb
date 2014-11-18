@@ -186,6 +186,9 @@ module Miasma
                 :auth => authentication_request
               )
             )
+            unless(result.status == 200)
+              raise Error::ApiError::AuthenticationError.new('Failed to authenticate!', result)
+            end
             info = MultiJson.load(result.body.to_s).to_smash[:token]
             @service_catalog = info.delete(:catalog)
             @token = Smash.new(

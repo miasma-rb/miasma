@@ -30,7 +30,12 @@ module Miasma
 
         # @return [File] new unsaved instance
         def build(args={})
-          File.new(api, args.to_smash)
+          instance = self.model.new(bucket)
+          args.each do |m_name, m_value|
+            m_name = "#{m_name}="
+            instance.send(m_name, m_value)
+          end
+          instance
         end
 
         # @return [File] collection item class

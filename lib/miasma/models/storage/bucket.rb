@@ -25,6 +25,23 @@ module Miasma
           raise NotImplementedError
         end
 
+        protected
+
+        # Proxy reload action up to the API
+        def perform_reload
+          api.bucket_reload(self)
+        end
+
+        # Proxy save action up to the API
+        def perform_save
+          api.bucket_save(self)
+        end
+
+        # Proxy destroy action up to the API
+        def perform_destroy
+          api.bucket_destroy(self)
+        end
+
       end
 
     end

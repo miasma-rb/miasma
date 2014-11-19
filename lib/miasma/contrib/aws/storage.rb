@@ -205,7 +205,16 @@ module Miasma
         # @param file [Models::Storage::File]
         # @return [TrueClass, FalseClass]
         def file_destroy(file)
-          raise NotImplementedError
+          if(file.persisted?)
+            request(
+              :method => :delete,
+              :path => file.name,
+              :endpoint => bucket_endpoint(file.bucket)
+            )
+            true
+          else
+            false
+          end
         end
 
         # Reload the file

@@ -15,5 +15,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json'
   s.add_dependency 'multi_xml'
   s.add_dependency 'xml-simple'
-  s.files = Dir['lib/**/*'] + %w(miasma.gemspec README.md CHANGELOG.md)
+  s.files = Dir['lib/**/*'] + %w(miasma.gemspec README.md CHANGELOG.md LICENSE)
 end

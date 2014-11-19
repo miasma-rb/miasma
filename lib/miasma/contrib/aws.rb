@@ -333,6 +333,11 @@ module Miasma
           )
         end
 
+        # @return [String] custom escape for aws compat
+        def uri_escape(string)
+          signer.safe_escape(string)
+        end
+
         # @return [HTTP] connection for requests (forces headers)
         def connection
           super.with_headers(

@@ -1,3 +1,4 @@
+require 'stringio'
 require 'miasma'
 
 module Miasma
@@ -88,10 +89,10 @@ module Miasma
           [result.get(:body, 'ListBucketResult', 'Contents')].flatten.compact.map do |file|
             File.new(
               bucket,
+              :id => ::File.join(bucket.name, file['Key']),
               :name => file['Key'],
               :updated => file['LastModified'],
-              :size => file['Size'].to_i,
-              :etag => file['Etag']
+              :size => file['Size'].to_i
             ).valid_state
           end
         end
@@ -101,7 +102,102 @@ module Miasma
         # @param file [Models::Storage::File]
         # @return [Models::Storage::File]
         def file_save(file)
-          raise NotImplementedError
+          if(file.dirty?)
+            file.load_data(file.attributes)
+            args = Smash.new
+            args[:headers] = Smash[
+              Smash.new(
+                :content_type => 'Content-Type',
+                :content_disposition => 'Content-Disposition',
+                :content_encoding => 'Content-Encoding'
+              ).map do |attr, key|
+                if(file.attributes[attr])
+                  [key, file.attributes[attr]]
+                end
+              end.compact
+            ]
+            if(file.attributes[:body].is_a?(IO) && file.body.length >= 102400)
+              upload_id = request(
+                args.merge(
+                  Smash.new(
+                    :path => uri_escape(file.name),
+                    :endpoint => bucket_endpoint(bucket),
+                    :params => {
+                      :uploads => true
+                    }
+                  )
+                )
+              ).get(:body, 'InitiateMultipartUploadResult', 'UploadId')
+              count = 1
+              parts = []
+              file.body.rewind
+              while(content = file.body.read(102400))
+                parts << [
+                  count,
+                  request(
+                    :method => :put,
+                    :path => uri_escape(file.name),
+                    :endpoint => bucket_endpoint(bucket),
+                    :headers => Smash.new(
+                      'Content-Length' => content.size,
+                      'Content-MD5' => Digest::MD5.hexdigest(content)
+                    ),
+                    :params => Smash.new(
+                      'partNumber' => count,
+                      'uploadId' => upload_id
+                    ),
+                    :body => content
+                  ).get(:body, :headers, :etag)
+                ]
+                count += 1
+              end
+              complete = SimpleXml.xml_out(
+                Smash.new(
+                  'CompleteMultipartUpload' => {
+                    'Part' => parts.map{|part|
+                      {'PartNumber' => part.first, 'ETag' => part.last}
+                    }
+                  }
+                ),
+                'AttrPrefix' => true,
+                'KeepRoot' => true
+              )
+              result = request(
+                :method => :post,
+                :path => uri_escape(file.name),
+                :endpoint => bucket_endpoint(file.bucket),
+                :params => Smash.new(
+                  'UploadId' => upload_id
+                ),
+                :headers => Smash.new(
+                  'Content-Length' => complete.size
+                ),
+                :body => complete
+              )
+              file.etag = result.get(:body, 'CompleteMultipartUploadResult', 'ETag')
+            else
+              if(file.attributes[:body].is_a?(IO) || file.attributes[:body].is_a?(StringIO))
+                args[:headers]['Content-Length'] = file.body.length.to_s
+                file.body.rewind
+                args[:body] = file.body.read
+                file.body.rewind
+              end
+              p args
+              result = request(
+                args.merge(
+                  Smash.new(
+                    :method => :put,
+                    :path => uri_escape(file.name),
+                    :endpoint => bucket_endpoint(file.bucket)
+                  )
+                )
+              )
+              file.etag = result.get(:headers, :etag)
+            end
+            file.id = ::File.join(file.bucket.name, file.name)
+            file.valid_state
+          end
+          file
         end
 
         # Destroy file
@@ -117,7 +213,41 @@ module Miasma
         # @param file [Models::Storage::File]
         # @return [Models::Storage::File]
         def file_reload(file)
-          raise NotImplementedError
+          if(file.persisted?)
+            name = file.name
+            result = request(
+              :path => uri_escape(file.name),
+              :endpoint => bucket_endpoint(file.bucket)
+            )
+            file.data.clear && file.dirty.clear
+            info = result[:headers]
+            file.load_data(
+              :id => ::File.join(file.bucket.name, name),
+              :name => name,
+              :updated => info[:last_modified],
+              :etag => info[:etag],
+              :size => info[:content_length].to_i,
+              :content_type => info[:content_type]
+            ).valid_state
+          end
+          file
+        end
+
+        # Fetch the contents of the file
+        #
+        # @param file [Models::Storage::File]
+        # @return [IO, HTTP::Response::Body]
+        def file_body(file)
+          if(file.persisted?)
+            result = request(
+              :path => uri_escape(file.name),
+              :endpoint => bucket_endpoint(file.bucket)
+            )
+            content = result[:body]
+            content.is_a?(String) ? StringIO.new(content) : content
+          else
+            StringIO.new('')
+          end
         end
 
         # Simple callback to allow request option adjustments prior to
@@ -125,8 +255,12 @@ module Miasma
         #
         # @param opts [Smash] request options
         # @return [TrueClass]
+        # @note this only updates when :body is defined. if a :post is
+        # happening (which implicitly forces :form) or :json is used
+        # it will not properly checksum. (but that's probably okay)
         def update_request(con, opts)
-          con.default_headers['x-amz-content-sha256'] = Digest::SHA256.hexdigest('')
+          con.default_headers['x-amz-content-sha256'] = Digest::SHA256.
+            hexdigest(opts.fetch(:body, ''))
           true
         end
 

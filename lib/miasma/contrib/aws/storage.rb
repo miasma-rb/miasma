@@ -1,4 +1,5 @@
 require 'stringio'
+require 'xmlsimple'
 require 'miasma'
 
 module Miasma
@@ -34,7 +35,31 @@ module Miasma
         # @param bucket [Models::Storage::Bucket]
         # @return [Models::Storage::Bucket]
         def bucket_save(bucket)
-          raise NotImplementedError
+          unless(bucket.persisted?)
+            req_args = Smash.new(
+              :method => :put,
+              :path => '/',
+              :endpoint => bucket_endpoint(bucket)
+            )
+            if(aws_bucket_region)
+              req_args[:body] = XmlSimple.xml_out(
+                Smash.new(
+                  'CreateBucketConfiguration' => {
+                    'LocationConstraint' => aws_bucket_region
+                  }
+                ),
+                'AttrPrefix' => true,
+                'KeepRoot' => true
+              )
+              req_args[:headers] = Smash.new(
+                'Content-Length' => req_args[:body].length.to_s
+              )
+            end
+            request(req_args)
+            bucket.id = bucket.name
+            bucket.valid_state
+          end
+          bucket
         end
 
         # Destroy bucket
@@ -42,7 +67,17 @@ module Miasma
         # @param bucket [Models::Storage::Bucket]
         # @return [TrueClass, FalseClass]
         def bucket_destroy(bucket)
-          raise NotImplementedError
+          if(bucket.persisted?)
+            request(
+              :path => '/',
+              :method => :delete,
+              :endpoint => bucket_endpoint(bucket),
+              :expects => 204
+            )
+            true
+          else
+            false
+          end
         end
 
         # Reload the bucket
@@ -50,7 +85,23 @@ module Miasma
         # @param bucket [Models::Storage::Bucket]
         # @return [Models::Storage::Bucket]
         def bucket_reload(bucket)
-          raise NotImplementedError
+          if(bucket.persisted?)
+            begin
+              result = request(
+                :path => '/',
+                :method => :head,
+                :endpoint => bucket_endpoint(bucket)
+              )
+            rescue Error::ApiError::RequestError => e
+              if(e.response.status == 404)
+                bucket.data.clear
+                bucket.dirty.clear
+              else
+                raise
+              end
+            end
+          end
+          bucket
         end
 
         # Custom bucket endpoint
@@ -208,7 +259,8 @@ module Miasma
             request(
               :method => :delete,
               :path => file.name,
-              :endpoint => bucket_endpoint(file.bucket)
+              :endpoint => bucket_endpoint(file.bucket),
+              :expect => 204
             )
             true
           else

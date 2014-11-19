@@ -182,7 +182,6 @@ module Miasma
                 args[:body] = file.body.read
                 file.body.rewind
               end
-              p args
               result = request(
                 args.merge(
                   Smash.new(

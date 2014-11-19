@@ -143,6 +143,7 @@ model completions.
 
 * AWS
 * Rackspace
+* OpenStack
 
 ### Models
 
@@ -150,7 +151,7 @@ model completions.
 
 |Model         |Create|Read|Update|Delete|
 |--------------|------|----|------|------|
-|AutoScale     |  X   |    |      |      |
+|AutoScale     |  X   | X  |      |      |
 |BlockStorage  |      |    |      |      |
 |Compute       |  X   | X  |      |  X   |
 |DNS           |      |    |      |      |
@@ -164,11 +165,25 @@ model completions.
 
 |Model         |Create|Read|Update|Delete|
 |--------------|------|----|------|------|
-|AutoScale     |  X   |    |      |      |
+|AutoScale     |  X   | X  |      |      |
 |BlockStorage  |      |    |      |      |
 |Compute       |  X   | X  |      |  X   |
 |DNS           |      |    |      |      |
 |LoadBalancer  |      | X  |      |      |
+|Network       |      |    |      |      |
+|Orchestration |  X   | X  |  X   |  X   |
+|Queues        |      |    |      |      |
+|Storage       |      |    |      |      |
+
+#### OpenStack
+
+|Model         |Create|Read|Update|Delete|
+|--------------|------|----|------|------|
+|AutoScale     |      |    |      |      |
+|BlockStorage  |      |    |      |      |
+|Compute       |  X   | X  |      |  X   |
+|DNS           |      |    |      |      |
+|LoadBalancer  |      |    |      |      |
 |Network       |      |    |      |      |
 |Orchestration |  X   | X  |  X   |  X   |
 |Queues        |      |    |      |      |

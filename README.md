@@ -158,7 +158,7 @@ model completions.
 |Network       |      |    |      |      |
 |Orchestration |  X   | X  |  X   |  X   |
 |Queues        |      |    |      |      |
-|Storage       |      |    |      |      |
+|Storage       |  X   | X  |  X   |  X   |
 
 #### Rackspace
 

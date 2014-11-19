@@ -37,7 +37,7 @@ module Miasma
         @dirty = Smash.new
         if(model_data)
           if(model_data.is_a?(Hash))
-            load_data(model_data)
+            load_data(model_data) unless model_data.empty?
           else
             raise TypeError.new "Expecting `model_data` to be of type `Hash`. Received: `#{model_data.class}`"
           end
@@ -75,6 +75,7 @@ module Miasma
       #
       # @return [self]
       def reload
+        clear_memoizations!
         perform_reload
         self
       end

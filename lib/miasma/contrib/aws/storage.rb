@@ -311,7 +311,7 @@ module Miasma
 
             )
           else
-            raise 'ack'
+            raise Error::ModelPersistError.new "#{file} has not been saved!"
           end
         end
 

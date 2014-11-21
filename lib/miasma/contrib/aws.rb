@@ -156,23 +156,52 @@ module Miasma
           @service = service
         end
 
-        # Generate the signature
+        # Generate the signature string for AUTH
         #
         # @param http_method [Symbol] HTTP request method
         # @param path [String] request path
         # @param opts [Hash] request options
         # @return [String] signature
         def generate(http_method, path, opts)
+          signature = generate_signature(http_method, path, opts)
+          "#{algorithm} Credential=#{access_key}/#{credential_scope}, SignedHeaders=#{signed_headers(opts[:headers])}, Signature=#{signature}"
+        end
+
+        # Generate URL with signed params
+        #
+        # @param http_method [Symbol] HTTP request method
+        # @param path [String] request path
+        # @param opts [Hash] request options
+        # @return [String] signature
+        def generate_url(http_method, path, opts)
+          opts[:params].merge!(
+            Smash.new(
+              'X-Amz-SignedHeaders' => signed_headers(opts[:headers]),
+              'X-Amz-Algorithm' => algorithm,
+              'X-Amz-Credential' => "#{access_key}/#{credential_scope}"
+            )
+          )
+          signature = generate_signature(http_method, path, opts.merge(:body => 'UNSIGNED-PAYLOAD'))
+          params = opts[:params].merge('X-Amz-Signature' => signature)
+          "https://#{opts[:headers]['Host']}/#{path}?#{canonical_query(params)}"
+        end
+
+        # Generate the signature
+        #
+        # @param http_method [Symbol] HTTP request method
+        # @param path [String] request path
+        # @param opts [Hash] request options
+        # @return [String] signature
+        def generate_signature(http_method, path, opts)
           to_sign = [
             algorithm,
             AwsApiCore.time_iso8601,
             credential_scope,
             hashed_canonical_request(
-              build_canonical_request(http_method, path, opts)
+              can_req = build_canonical_request(http_method, path, opts)
             )
           ].join("\n")
           signature = sign_request(to_sign)
-          "#{algorithm} Credential=#{access_key}/#{credential_scope}, SignedHeaders=#{signed_headers(opts[:headers])}, Signature=#{signature}"
         end
 
         # Sign the request
@@ -226,6 +255,9 @@ module Miasma
         # @param opts [Hash] request options
         # @return [String] canonical request string
         def build_canonical_request(http_method, path, opts)
+          unless(path.start_with?('/'))
+            path = "/#{path}"
+          end
           [
             http_method.to_s.upcase,
             path,
@@ -281,7 +313,11 @@ module Miasma
           elsif(options[:form])
             body = URI.encode_www_form(options[:form])
           end
-          hmac.hexdigest_of(body)
+          if(body == 'UNSIGNED-PAYLOAD')
+            body
+          else
+            hmac.hexdigest_of(body)
+          end
         end
 
       end

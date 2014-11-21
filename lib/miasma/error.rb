@@ -87,5 +87,8 @@ module Miasma
     # Invalid modification request
     class ImmutableError < Error; end
 
+    # Model has not been persisted
+    class ModelPersistError < Error; end
+
   end
 end

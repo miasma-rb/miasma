@@ -61,7 +61,20 @@ module Miasma
           dirty[:body] = io
         end
 
+        # Create accessible URL
+        #
+        # @param timeout_in_seconds [Integer] optional if private (default: 60)
+        # @return [String] URL
+        def url(timeout_in_seconds=60)
+          perform_file_url(timeout_in_seconds)
+        end
+
         protected
+
+        # Proxy URL action up to the API
+        def perform_file_url(secs)
+          api.file_url(self, secs)
+        end
 
         # Proxy reload action up to the API
         def perform_reload

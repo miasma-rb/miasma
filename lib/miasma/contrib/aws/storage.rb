@@ -167,7 +167,7 @@ module Miasma
                 end
               end.compact
             ]
-            if(file.attributes[:body].is_a?(IO) && file.body.length >= 102400)
+            if(file.attributes[:body].is_a?(IO) && file.body.length >= Storage::MAX_BODY_SIZE_FOR_STRINGIFY)
               upload_id = request(
                 args.merge(
                   Smash.new(
@@ -182,7 +182,7 @@ module Miasma
               count = 1
               parts = []
               file.body.rewind
-              while(content = file.body.read(102400))
+              while(content = file.body.read(Storage::READ_BODY_CHUNK_SIZE))
                 parts << [
                   count,
                   request(
@@ -291,6 +291,28 @@ module Miasma
             ).valid_state
           end
           file
+        end
+
+        # Create publicly accessible URL
+        #
+        # @param timeout_secs [Integer] seconds available
+        # @return [String] URL
+        def file_url(file, timeout_secs)
+          if(file.persisted?)
+            signer.generate_url(
+              :get, ::File.join(uri_escape(file.bucket.name), uri_escape(file.name)),
+              :headers => Smash.new(
+                'Host' => aws_host
+              ),
+              :params => Smash.new(
+                'X-Amz-Date' => Contrib::AwsApiCore.time_iso8601,
+                'X-Amz-Expires' => timeout_secs
+              )
+
+            )
+          else
+            raise 'ack'
+          end
         end
 
         # Fetch the contents of the file

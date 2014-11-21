@@ -5,6 +5,11 @@ module Miasma
     # Abstract storage API
     class Storage < Types::Api
 
+      # @return [Integer] max bytes allowed for storing body in string
+      MAX_BODY_SIZE_FOR_STRINGIFY = 102400
+      # @return [Integer] chunking size for reading IO
+      READ_BODY_CHUNK_SIZE = 102400
+
       autoload :Buckets, 'miasma/models/storage/buckets'
       autoload :Bucket, 'miasma/models/storage/bucket'
       autoload :Files, 'miasma/models/storage/files'

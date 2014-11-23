@@ -118,13 +118,13 @@ module Miasma
       # @return [Smash]
       def format_response(result)
         extracted_headers = Smash[result.headers.map{|k,v| [Utils.snake(k), v]}]
-        if(extracted_headers[:content_type].to_s.end_with?('json'))
+        if(extracted_headers[:content_type].to_s.include?('json'))
           begin
             extracted_body = MultiJson.load(result.body.to_s).to_smash
           rescue MultiJson::ParseError
             extracted_body = result.body.to_s
           end
-        elsif(extracted_headers[:content_type].to_s.end_with?('xml'))
+        elsif(extracted_headers[:content_type].to_s.include?('xml'))
           begin
             extracted_body = MultiXml.parse(result.body.to_s).to_smash
           rescue MultiXml::ParseError

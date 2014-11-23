@@ -221,22 +221,6 @@ module Miasma
             attribute :open_stack_domain, String
             attribute :open_stack_project, String
 
-            # Custom request wrapper to force JSON parsing if
-            # body is still string type
-            def openstack_request(*args)
-              result = non_openstack_request(*args)
-              if(result[:body].is_a?(String))
-                begin
-                  result[:body] = MultiJson.load(result[:body]).to_smash
-                rescue MultiJson::ParseError
-                  # do nothing
-                end
-              end
-              result
-            end
-            alias_method :non_openstack_request, :request
-            alias_method :request, :openstack_request
-
           end
         end
 

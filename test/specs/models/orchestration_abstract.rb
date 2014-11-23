@@ -57,6 +57,7 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
         it 'should include stack' do
           VCR.use_cassette("#{cassette_prefix}_stacks_direct_fetch") do
             orchestration.stacks.reload.get(stack.id).wont_be_nil
+            orchestration.stacks.all.detect{|s| s.id == stack.id}.wont_be_nil
           end
         end
 

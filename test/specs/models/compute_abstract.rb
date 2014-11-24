@@ -65,8 +65,10 @@ MIASMA_COMPUTE_ABSTRACT = ->{
           instance.flavor_id.must_equal build_args[:flavor_id]
         end
 
-        it 'should have a public address' do
-          instance.address.must_match /^(\d+)+\.(\d+)\.(\d+)\.(\d+)$/
+        it 'should have an address' do
+          instance.addresses.detect do |addr|
+            addr.version == 4
+          end.address.must_match /^(\d+)+\.(\d+)\.(\d+)\.(\d+)$/
         end
 
         it 'should have a status' do

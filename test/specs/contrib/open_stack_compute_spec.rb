@@ -19,8 +19,8 @@ describe Miasma::Models::Compute::OpenStack do
   let(:build_args){
     Smash.new(
       :name => 'miasma-test-instance',
-      :image_id => '8f3e2989-9cff-4f78-a712-61f865669086',
-      :flavor_id => '1'
+      :image_id => ENV['MIASMA_OPENSTACK_IMAGE'],
+      :flavor_id => ENV['MIASMA_OPENSTACK_FLAVOR']
     )
   }
   let(:cassette_prefix){ 'open_stack' }

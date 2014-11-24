@@ -18,8 +18,8 @@ describe Miasma::Models::Compute::Aws do
   let(:build_args){
     Smash.new(
       :name => 'miasma-test-instance',
-      :image_id => 'ami-b75642f2',
-      :flavor_id => 'm1.small',
+      :image_id => ENV['MIASMA_AWS_IMAGE'],
+      :flavor_id => ENV['MIASMA_AWS_FLAVOR'],
       :key_name => 'default'
     )
   }

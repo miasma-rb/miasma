@@ -25,8 +25,8 @@ describe Miasma::Models::Orchestration::OpenStack do
           'MiasmaTestInstance' => {
             'type' => 'OS::Nova::Server',
             'properties' => {
-              'image' => '8f3e2989-9cff-4f78-a712-61f865669086',
-              'flavor' => '1',
+              'image' => ENV['MIASMA_OPENSTACK_IMAGE'],
+              'flavor' => ENV['MIASMA_OPENSTACK_FLAVOR'],
               'admin_pass' => 'password'
             }
           }

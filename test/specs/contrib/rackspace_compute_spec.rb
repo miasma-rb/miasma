@@ -29,8 +29,8 @@ describe Miasma::Models::Compute::Rackspace do
   let(:build_args){
     Smash.new(
       :name => 'miasma-test-instance',
-      :image_id => 'a3ba4cf5-70b9-4805-afa2-30d1ab81a625',
-      :flavor_id => 'general1-1',
+      :image_id => ENV['MIASMA_RACKSPACE_IMAGE'],
+      :flavor_id => ENV['MIASMA_RACKSPACE_FLAVOR'],
       :key_name => 'default'
     )
   }

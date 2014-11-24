@@ -1,3 +1,5 @@
+require 'open-uri'
+
 MIASMA_STORAGE_ABSTRACT = ->{
 
   # Required `let`s:
@@ -17,7 +19,7 @@ MIASMA_STORAGE_ABSTRACT = ->{
       end
 
       it 'should build new instance for collection' do
-        storage.buckets.build.must_be_kind_of Miasma::MOdels::Storage::Bucket
+        storage.buckets.build.must_be_kind_of Miasma::Models::Storage::Bucket
       end
 
       it 'should provide #all buckets' do
@@ -30,157 +32,87 @@ MIASMA_STORAGE_ABSTRACT = ->{
 
     describe Miasma::Models::Storage::Bucket do
 
-      before do
-        @instance = storage.buckets.build(:name => 'miasma-test-bucket-010')
-        VCR.use_cassette("#{cassette_prefix}_storage_bucket_before_create") do |obj|
-          @instance.save
-          @instance.reload
+      it 'should act like a bucket' do
+        bucket = storage.buckets.build(:name => 'miasma-test-bucket-010')
+        VCR.use_cassette("#{cassette_prefix}_storage_bucket") do |obj|
+          bucket.save
+          bucket.reload
+
+          # should include the bucket
+          storage.buckets.reload.get('miasma-test-bucket-010').wont_be_nil
+          # should have a name
+          bucket.name.must_equal 'miasma-test-bucket-010'
+          # should have a #files collection
+          bucket.files.must_be_kind_of Miasma::Models::Storage::Files
+          #should provide #all files
+          bucket.files.all.must_be_kind_of Array
+          # should include reference to containing bucket
+          bucket.files.bucket.must_equal bucket
+          # should build new instance for collection
+          bucket.files.build.must_be_kind_of Miasma::Models::Storage::File
+
+          file_content = 'blahblahblah'
+          file = bucket.files.build
+          file.name = 'miasma-test-file'
+          file.body = file_content
+          file.save
+          file.reload
+
+          # should have a name
+          file.name.must_equal 'miasma-test-file'
+          # should have a size
+          file.size.must_equal file_content.size
+          # should have an updated timestamp
+          file.updated.must_be_kind_of Time
+          # should create a valid url
+          open(file.url).read.must_equal file_content
+          # should have a body
+          file.body.must_respond_to :readpartial
+          file.body.
+            readpartial(Miasma::Models::Storage::READ_BODY_CHUNK_SIZE).
+            must_equal file_content
+          file.destroy
+
+          big_file_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 2)
+          big_file = bucket.files.build
+          big_file.name = 'miasma-test-file-big'
+          big_file.body = big_file_content
+          big_file.save
+          big_file.reload
+
+          require 'pry'
+          binding.pry
+
+          # should be the correct size
+          big_file.size.must_equal big_file.size
+          # should provide streaming body
+          big_file.body.must_respond_to :readpartial
+          content = big_file.body.readpartial(big_file.size)
+          content.must_equal big_file_content
+          big_file.destroy
+
+          require 'tempfile'
+          local_io_file = Tempfile.new('miasma-storage-test')
+          big_io_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 3)
+          local_io_file.write local_io_content
+          remote_file = bucket.files.build
+          remote_file.name = 'miasma-test-io-object-010'
+          remote_file.body = local_io_file
+          remote_file.save
+          remote_file.reload
+
+          # should be the correct size
+          remote_file.size.must_equal local_file.size
+          # should provide streaming body
+          remote_file.body.must_respond_to :readpartial
+          content = ''
+          while(chunk = big_file.body.readpartial(1024))
+            content << chunk
+          end
+          content.must_equal big_io_content
+          remote_file.destroy
+          bucket.destroy
         end
-      end
-
-      after do
-        VCR.use_cassette("#{cassette_prefix}_storage_bucket_after_create") do |obj|
-          @instance.destroy
-        end
-      end
-
-      let(:bucket){ @instance }
-
-      describe 'test bucket' do
-
-        describe 'buckets collection' do
-
-          it 'should be included within the buckets collection' do
-            VCR.use_cassette("#{cassette_prefix}_storage_bucket_collection") do
-              storage.buckets.reload.get('miasma-test-bucket-010').wont_be_nil
-            end
-          end
-
-        end
-
-        describe 'instance methods' do
-
-          it 'should have a name' do
-            bucket.name.must_equal 'miasma-test-bucket-010'
-          end
-
-          it 'should have a #files collection' do
-            bucket.files.must_be_kind_of Miasma::Models::Storage::Files
-          end
-
-          it 'should provide #all files' do
-            VCR.use_cassette("#{cassette_prefix}_storage_bucket_files_collection") do
-              bucket.files.all.must_be_kind_of Array
-            end
-          end
-
-        end
-
-        describe Miasma::Models::Storage::Files do
-
-          it 'should include reference to containing bucket' do
-            bucket.files.bucket.must_equal bucket
-          end
-
-          it 'should build new instance for collection' do
-            bucket.files.build.must_be_kind_of Miasma::Models::Storage::File
-          end
-
-        end
-
-        describe Miasma::Models::Storage::File do
-
-          before do
-            @file_content = 'blahblahblah'
-            @file = bucket.files.file.build
-            @file.name = 'miasma-test-file'
-            @file.body = @file_content
-            VCR.use_cassette("#{cassette_prefix}_storage_file_before_create") do
-              @file.save
-              @file.reload
-            end
-          end
-
-          after do
-            VCR.use_cassette("#{cassette_prefix}_storage_file_after_create") do
-              @file.destroy
-            end
-          end
-
-          let(:file){ @file }
-          let(:file_content){ @file_content }
-
-          describe 'instance methods' do
-
-            it 'should have a name' do
-              file.name.must_equal 'miasma-test-file'
-            end
-
-            it 'should have a size' do
-              file.size.must_equal file_content.size
-            end
-
-            it 'should have an updated timestamp' do
-              file.updated.must_be_kind_of Time
-            end
-
-            it 'should have a body' do
-              VCR.use_cassette("#{cassette_prefix}_storage_file_body") do
-                file.body.must_respond_to :readpartial
-                file.body
-                  .readpartial(Miasma::Models::Storage::READ_BODY_CHUNK_SIZE).
-                  must_equal file_content
-              end
-            end
-
-          end
-
-        end
-
-        describe 'Large file object' do
-
-          before do
-            @big_file_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 2)
-            @big_file = bucket.files.file.build
-            @big_file.name = 'miasma-test-file-big'
-            @big_file.body = @big_file_content
-            VCR.use_cassette("#{cassette_prefix}_storage_file_before_create_big") do
-              @big_file.save
-              @big_file.reload
-            end
-          end
-
-          after do
-            VCR.use_cassette("#{cassette_prefix}_storage_file_after_create_big") do
-              @big_file.destroy
-            end
-          end
-
-          let(:big_file){ @big_file }
-          let(:big_file_content){ @big_file_content }
-
-          describe 'body access' do
-
-            it 'should be the correct size' do
-              big_file.size.must_equal @big_file.size
-            end
-
-            it 'should provide streaming body' do
-              VCR.use_cassette("#{cassette_prefix}_storage_file_big_body") do
-                big_file.body.must_respond_to :readpartial
-                content = ''
-                while(chunk = big_file.body.readpartial(1024))
-                  content << chunk
-                end
-                content.must_equal big_file_content
-              end
-            end
-
-          end
-
-        end
-
-        # @todo add large tmp file IO based upload
 
       end
 

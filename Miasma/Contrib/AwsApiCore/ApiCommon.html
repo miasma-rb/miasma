@@ -78,7 +78,7 @@
   
   
     <dt class="r1">Included in:</dt>
-    <dd class="r1"><span class='object_link'><a href="../../Models/AutoScale/Aws.html" title="Miasma::Models::AutoScale::Aws (class)">Models::AutoScale::Aws</a></span>, <span class='object_link'><a href="../../Models/Compute/Aws.html" title="Miasma::Models::Compute::Aws (class)">Models::Compute::Aws</a></span>, <span class='object_link'><a href="../../Models/LoadBalancer/Aws.html" title="Miasma::Models::LoadBalancer::Aws (class)">Models::LoadBalancer::Aws</a></span>, <span class='object_link'><a href="../../Models/Orchestration/Aws.html" title="Miasma::Models::Orchestration::Aws (class)">Models::Orchestration::Aws</a></span></dd>
+    <dd class="r1"><span class='object_link'><a href="../../Models/AutoScale/Aws.html" title="Miasma::Models::AutoScale::Aws (class)">Models::AutoScale::Aws</a></span>, <span class='object_link'><a href="../../Models/Compute/Aws.html" title="Miasma::Models::Compute::Aws (class)">Models::Compute::Aws</a></span>, <span class='object_link'><a href="../../Models/LoadBalancer/Aws.html" title="Miasma::Models::LoadBalancer::Aws (class)">Models::LoadBalancer::Aws</a></span>, <span class='object_link'><a href="../../Models/Orchestration/Aws.html" title="Miasma::Models::Orchestration::Aws (class)">Models::Orchestration::Aws</a></span>, <span class='object_link'><a href="../../Models/Storage/Aws.html" title="Miasma::Models::Storage::Aws (class)">Models::Storage::Aws</a></span></dd>
     
   
   
@@ -254,6 +254,55 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#update_request-instance_method" title="#update_request (instance method)">- (TrueClass) <strong>update_request</strong>(con, opts) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Simple callback to allow request option adjustments prior to signature
+calculation.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#uri_escape-instance_method" title="#uri_escape (instance method)">- (String) <strong>uri_escape</strong>(string) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Custom escape for aws compat.</p>
+</div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -278,20 +327,21 @@
       <pre class="lines">
 
 
-291
-292
-293
-294
-295
-296
-297
-298
-299
-300
-301</pre>
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 291</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 327</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_klass'>klass</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_class_eval'>class_eval</span> <span class='kw'>do</span>
@@ -299,6 +349,7 @@
     <span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:aws_secret_access_key</span><span class='comma'>,</span> <span class='const'>String</span><span class='comma'>,</span> <span class='symbol'>:required</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
     <span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:aws_region</span><span class='comma'>,</span> <span class='const'>String</span><span class='comma'>,</span> <span class='symbol'>:required</span> <span class='op'>=&gt;</span> <span class='kw'>true</span>
     <span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:aws_host</span><span class='comma'>,</span> <span class='const'>String</span>
+    <span class='id identifier rubyid_attribute'>attribute</span> <span class='symbol'>:aws_bucket_region</span><span class='comma'>,</span> <span class='const'>String</span>
 
     <span class='comment'># @return [Contrib::AwsApiCore::SignatureV4]
 </span>    <span class='id identifier rubyid_attr_reader'>attr_reader</span> <span class='symbol'>:signer</span>
@@ -374,22 +425,22 @@
       <pre class="lines">
 
 
-307
-308
-309
-310
-311
-312
-313
-314
-315
-316
-317
-318
-319</pre>
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 307</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 344</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_api_for'>api_for</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_memoize'>memoize</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -435,21 +486,21 @@
       <pre class="lines">
 
 
-322
-323
-324
-325
-326
-327
-328
-329
-330
-331
-332
-333</pre>
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 322</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 359</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connect'>connect</span>
   <span class='kw'>unless</span><span class='lparen'>(</span><span class='id identifier rubyid_aws_host'>aws_host</span><span class='rparen'>)</span>
@@ -512,15 +563,15 @@
       <pre class="lines">
 
 
-336
-337
-338
-339
-340
-341</pre>
+378
+379
+380
+381
+382
+383</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 336</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 378</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connection'>connection</span>
   <span class='kw'>super</span><span class='period'>.</span><span class='id identifier rubyid_with_headers'>with_headers</span><span class='lparen'>(</span>
@@ -577,12 +628,12 @@
       <pre class="lines">
 
 
-344
-345
-346</pre>
+386
+387
+388</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 344</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 386</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_endpoint'>endpoint</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>https://</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_aws_host'>aws_host</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -677,38 +728,39 @@ into :form</p>
       <pre class="lines">
 
 
-356
-357
-358
-359
-360
-361
-362
-363
-364
-365
-366
-367
-368
-369
-370
-371
-372
-373
-374
-375
-376
-377
-378
-379</pre>
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 356</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 398</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_make_request'>make_request</span><span class='lparen'>(</span><span class='id identifier rubyid_connection'>connection</span><span class='comma'>,</span> <span class='id identifier rubyid_http_method'>http_method</span><span class='comma'>,</span> <span class='id identifier rubyid_request_args'>request_args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_dest'>dest</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_request_args'>request_args</span>
   <span class='id identifier rubyid_path'>path</span> <span class='op'>=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_dest'>dest</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_path'>path</span>
-  <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_to_smash'>to_smash</span>
+  <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>?</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_to_smash'>to_smash</span> <span class='op'>:</span> <span class='const'>Smash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
   <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:params</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:params</span><span class='comma'>,</span> <span class='const'>Smash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_smash'>to_smash</span><span class='period'>.</span><span class='id identifier rubyid_deep_merge'>deep_merge</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Version</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>API_VERSION</span><span class='rparen'>)</span>
   <span class='kw'>if</span><span class='lparen'>(</span><span class='id identifier rubyid_http_method'>http_method</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='op'>==</span> <span class='symbol'>:post</span><span class='rparen'>)</span>
     <span class='kw'>if</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:form</span><span class='rbracket'>]</span><span class='rparen'>)</span>
@@ -717,6 +769,7 @@ into :form</p>
       <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:form</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:params</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
+  <span class='id identifier rubyid_update_request'>update_request</span><span class='lparen'>(</span><span class='id identifier rubyid_connection'>connection</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_signature'>signature</span> <span class='op'>=</span> <span class='id identifier rubyid_signer'>signer</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span>
     <span class='id identifier rubyid_http_method'>http_method</span><span class='comma'>,</span> <span class='id identifier rubyid_path'>path</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span>
       <span class='const'>Smash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span>
@@ -734,12 +787,146 @@ into :form</p>
 </table>
 </div>
     
+      <div class="method_details ">
+  <h3 class="signature " id="update_request-instance_method">
+  
+    - (<tt>TrueClass</tt>) <strong>update_request</strong>(con, opts) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Simple callback to allow request option adjustments prior to signature
+calculation</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>opts</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../../../top-level-namespace.html#Smash-constant" title="Smash (constant)">Smash</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>request options</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>TrueClass</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+429
+430
+431</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 429</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_update_request'>update_request</span><span class='lparen'>(</span><span class='id identifier rubyid_con'>con</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="uri_escape-instance_method">
+  
+    - (<tt>String</tt>) <strong>uri_escape</strong>(string) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns custom escape for aws compat</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>custom escape for aws compat</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+373
+374
+375</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/contrib/aws.rb', line 373</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_uri_escape'>uri_escape</span><span class='lparen'>(</span><span class='id identifier rubyid_string'>string</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_signer'>signer</span><span class='period'>.</span><span class='id identifier rubyid_safe_escape'>safe_escape</span><span class='lparen'>(</span><span class='id identifier rubyid_string'>string</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
 
     <div id="footer">
-  Generated on Sun Nov 16 08:12:25 2014 by
+  Generated on Mon Nov 24 13:09:26 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

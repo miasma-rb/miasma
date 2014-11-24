@@ -607,7 +607,12 @@ set</p>
 190
 191
 192
-193</pre>
+193
+194
+195
+196
+197
+198</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/miasma/utils/lazy.rb', line 180</span>
@@ -617,8 +622,13 @@ set</p>
     <span class='kw'>if</span><span class='lparen'>(</span><span class='id identifier rubyid_param'>param</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span><span class='rparen'>)</span>
       <span class='ivar'>@missing_method</span> <span class='op'>=</span> <span class='id identifier rubyid_param'>param</span>
     <span class='kw'>else</span>
-      <span class='kw'>if</span><span class='lparen'>(</span><span class='ivar'>@missing_method</span><span class='rparen'>)</span>
-        <span class='id identifier rubyid_param'>param</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='ivar'>@missing_method</span><span class='rparen'>)</span>
+      <span class='kw'>if</span><span class='lparen'>(</span><span class='ivar'>@missing_method</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@calling_on_missing</span><span class='rparen'>)</span>
+        <span class='ivar'>@calling_on_missing</span> <span class='op'>=</span> <span class='kw'>true</span>
+        <span class='kw'>begin</span>
+          <span class='id identifier rubyid_param'>param</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='ivar'>@missing_method</span><span class='rparen'>)</span>
+        <span class='kw'>ensure</span>
+          <span class='ivar'>@calling_on_missing</span> <span class='op'>=</span> <span class='kw'>false</span>
+        <span class='kw'>end</span>
       <span class='kw'>end</span>
       <span class='ivar'>@missing_method</span>
     <span class='kw'>end</span>
@@ -693,13 +703,13 @@ set</p>
       <pre class="lines">
 
 
-200
-201
-202
-203</pre>
+205
+206
+207
+208</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/utils/lazy.rb', line 200</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/utils/lazy.rb', line 205</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_attributes'>set_attributes</span><span class='lparen'>(</span><span class='id identifier rubyid_attrs'>attrs</span><span class='rparen'>)</span>
   <span class='ivar'>@attributes</span> <span class='op'>=</span> <span class='id identifier rubyid_attrs'>attrs</span><span class='period'>.</span><span class='id identifier rubyid_to_smash'>to_smash</span>
@@ -715,7 +725,7 @@ set</p>
 </div>
 
     <div id="footer">
-  Generated on Sun Nov 16 08:12:25 2014 by
+  Generated on Mon Nov 24 13:09:26 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

@@ -171,6 +171,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#files-instance_method" title="#files (instance method)">- (Files) <strong>files</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#filter-instance_method" title="#filter (instance method)">- (Array&lt;Bucket&gt;) <strong>filter</strong>(filter = {}) </a>
     
 
@@ -192,34 +214,12 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#rename-instance_method" title="#rename (instance method)">- (self) <strong>rename</strong>(new_name) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Rename bucket.</p>
-</div></span>
-  
-</li>
-
-      
     </ul>
   
 
 
+  
+  
   
   
   
@@ -291,7 +291,63 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="filter-instance_method">
+  <h3 class="signature first" id="files-instance_method">
+  
+    - (<tt><span class='object_link'><a href="Files.html" title="Miasma::Models::Storage::Files (class)">Files</a></span></tt>) <strong>files</strong> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Files.html" title="Miasma::Models::Storage::Files (class)">Files</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+14
+15
+16
+17
+18</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage/bucket.rb', line 14</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_files'>files</span>
+  <span class='id identifier rubyid_memoize'>memoize</span><span class='lparen'>(</span><span class='symbol'>:files</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='const'>Files</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="filter-instance_method">
   
     - (<tt>Array&lt;<span class='object_link'><a href="" title="Miasma::Models::Storage::Bucket (class)">Bucket</a></span>&gt;</tt>) <strong>filter</strong>(filter = {}) 
   
@@ -339,6 +395,19 @@
     </li>
   
 </ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -346,82 +415,15 @@
       <pre class="lines">
 
 
-15
-16</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage/bucket.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage/bucket.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_filter'>filter</span><span class='lparen'>(</span><span class='id identifier rubyid_filter'>filter</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="rename-instance_method">
-  
-    - (<tt>self</tt>) <strong>rename</strong>(new_name) 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Rename bucket</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>new_name</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>self</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-22
-23
-24</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage/bucket.rb', line 22</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_rename'>rename</span><span class='lparen'>(</span><span class='id identifier rubyid_new_name'>new_name</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_perform_rename'>perform_rename</span><span class='lparen'>(</span><span class='id identifier rubyid_new_name'>new_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -433,7 +435,7 @@
 </div>
 
     <div id="footer">
-  Generated on Sun Nov 16 08:12:27 2014 by
+  Generated on Mon Nov 24 13:09:28 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

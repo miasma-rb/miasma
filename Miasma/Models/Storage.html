@@ -97,7 +97,7 @@
   
     <dt class="r2 last">Defined in:</dt>
     <dd class="r2 last">lib/miasma/models/storage.rb<span class="defines">,<br />
-  lib/miasma/models/storage/file.rb,<br /> lib/miasma/models/storage/files.rb,<br /> lib/miasma/models/storage/bucket.rb,<br /> lib/miasma/models/storage/buckets.rb</span>
+  lib/miasma/contrib/aws/storage.rb,<br /> lib/miasma/models/storage/file.rb,<br /> lib/miasma/models/storage/files.rb,<br /> lib/miasma/models/storage/bucket.rb,<br /> lib/miasma/models/storage/buckets.rb</span>
 </dd>
   
 </dl>
@@ -114,16 +114,95 @@
 <div class="tags">
   
 
-</div><h2>Defined Under Namespace</h2>
+</div><div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="Storage/Aws.html" title="Miasma::Models::Storage::Aws (class)">Aws</a></span></p>
+</div>
+<h2>Defined Under Namespace</h2>
 <p class="children">
   
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Bucket</a></span>, <span class='object_link'><a href="Storage/Buckets.html" title="Miasma::Models::Storage::Buckets (class)">Buckets</a></span>, <span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">File</a></span>, <span class='object_link'><a href="Storage/Files.html" title="Miasma::Models::Storage::Files (class)">Files</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Storage/Aws.html" title="Miasma::Models::Storage::Aws (class)">Aws</a></span>, <span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Bucket</a></span>, <span class='object_link'><a href="Storage/Buckets.html" title="Miasma::Models::Storage::Buckets (class)">Buckets</a></span>, <span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">File</a></span>, <span class='object_link'><a href="Storage/Files.html" title="Miasma::Models::Storage::Files (class)">Files</a></span>
     
   
 </p>
+
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="MAX_BODY_SIZE_FOR_STRINGIFY-constant" class="">MAX_BODY_SIZE_FOR_STRINGIFY =
+          <div class="docstring">
+  <div class="discussion">
+    
+<p>Returns max bytes allowed for storing body in string</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>max bytes allowed for storing body in string</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='int'>102400</span></pre></dd>
+      
+        <dt id="READ_BODY_CHUNK_SIZE-constant" class="">READ_BODY_CHUNK_SIZE =
+          <div class="docstring">
+  <div class="discussion">
+    
+<p>Returns chunking size for reading IO</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>chunking size for reading IO</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='int'>102400</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -166,31 +245,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#bucket_create-instance_method" title="#bucket_create (instance method)">- (Models::Storage::Bucket) <strong>bucket_create</strong>(bucket) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Create a new bucket.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#bucket_delete-instance_method" title="#bucket_delete (instance method)">- (TrueClass, FalseClass) <strong>bucket_delete</strong>(bucket) </a>
+      <a href="#bucket_destroy-instance_method" title="#bucket_destroy (instance method)">- (TrueClass, FalseClass) <strong>bucket_destroy</strong>(bucket) </a>
     
 
     
@@ -214,7 +269,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#bucket_rename-instance_method" title="#bucket_rename (instance method)">- (Models::Storage::Bucket) <strong>bucket_rename</strong>(bucket, new_name) </a>
+      <a href="#bucket_reload-instance_method" title="#bucket_reload (instance method)">- (Models::Storage::Bucket) <strong>bucket_reload</strong>(bucket) </a>
     
 
     
@@ -229,7 +284,31 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Rename bucket.</p>
+<p>Reload the bucket.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#bucket_save-instance_method" title="#bucket_save (instance method)">- (Models::Storage::Bucket) <strong>bucket_save</strong>(bucket) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Save bucket.</p>
 </div></span>
   
 </li>
@@ -278,6 +357,78 @@
   
     <span class="summary_desc"><div class='inline'>
 <p>Return all files within bucket.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#file_destroy-instance_method" title="#file_destroy (instance method)">- (TrueClass, FalseClass) <strong>file_destroy</strong>(file) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Destroy file.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#file_reload-instance_method" title="#file_reload (instance method)">- (Models::Storage::File) <strong>file_reload</strong>(file) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Reload the file.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#file_save-instance_method" title="#file_save (instance method)">- (Models::Storage::File) <strong>file_save</strong>(file) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Save file.</p>
 </div></span>
   
 </li>
@@ -356,12 +507,12 @@
       <pre class="lines">
 
 
-44
-45
-46</pre>
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_bucket_all'>bucket_all</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
@@ -372,91 +523,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="bucket_create-instance_method">
+  <h3 class="signature " id="bucket_destroy-instance_method">
   
-    - (<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>) <strong>bucket_create</strong>(bucket) 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Create a new bucket</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>bucket</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>NotImplementedError</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-20
-21
-22</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 20</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_bucket_create'>bucket_create</span><span class='lparen'>(</span><span class='id identifier rubyid_bucket'>bucket</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="bucket_delete-instance_method">
-  
-    - (<tt>TrueClass</tt>, <tt>FalseClass</tt>) <strong>bucket_delete</strong>(bucket) 
+    - (<tt>TrueClass</tt>, <tt>FalseClass</tt>) <strong>bucket_destroy</strong>(bucket) 
   
 
   
@@ -520,14 +589,14 @@
       <pre class="lines">
 
 
-28
-29
-30</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 40</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_bucket_delete'>bucket_delete</span><span class='lparen'>(</span><span class='id identifier rubyid_bucket'>bucket</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_bucket_destroy'>bucket_destroy</span><span class='lparen'>(</span><span class='id identifier rubyid_bucket'>bucket</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -536,9 +605,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="bucket_rename-instance_method">
+  <h3 class="signature " id="bucket_reload-instance_method">
   
-    - (<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>) <strong>bucket_rename</strong>(bucket, new_name) 
+    - (<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>) <strong>bucket_reload</strong>(bucket) 
   
 
   
@@ -547,7 +616,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Rename bucket</p>
+<p>Reload the bucket</p>
 
 
   </div>
@@ -567,17 +636,6 @@
       
     </li>
   
-    <li>
-      
-        <span class='name'>new_name</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-    </li>
-  
 </ul>
 
 <p class="tag_title">Returns:</p>
@@ -589,11 +647,6 @@
         <span class='type'>(<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>)</span>
       
       
-      
-        &mdash;
-        <div class='inline'>
-<p>new bucket with updated name</p>
-</div>
       
     </li>
   
@@ -618,14 +671,96 @@
       <pre class="lines">
 
 
-37
-38
-39</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 48</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_bucket_rename'>bucket_rename</span><span class='lparen'>(</span><span class='id identifier rubyid_bucket'>bucket</span><span class='comma'>,</span> <span class='id identifier rubyid_new_name'>new_name</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_bucket_reload'>bucket_reload</span><span class='lparen'>(</span><span class='id identifier rubyid_bucket'>bucket</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="bucket_save-instance_method">
+  
+    - (<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>) <strong>bucket_save</strong>(bucket) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Save bucket</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>bucket</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Storage/Bucket.html" title="Miasma::Models::Storage::Bucket (class)">Models::Storage::Bucket</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_bucket_save'>bucket_save</span><span class='lparen'>(</span><span class='id identifier rubyid_bucket'>bucket</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -697,15 +832,19 @@
       <pre class="lines">
 
 
-12
-13
-14</pre>
+22
+23
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_buckets'>buckets</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='const'>Buckets</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_memoize'>memoize</span><span class='lparen'>(</span><span class='symbol'>:buckets</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='const'>Buckets</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -779,14 +918,260 @@
       <pre class="lines">
 
 
-52
-53
-54</pre>
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_file_all'>file_all</span><span class='lparen'>(</span><span class='id identifier rubyid_bucket'>bucket</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="file_destroy-instance_method">
+  
+    - (<tt>TrueClass</tt>, <tt>FalseClass</tt>) <strong>file_destroy</strong>(file) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Destroy file</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>file</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">Models::Storage::File</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>TrueClass</tt>, <tt>FalseClass</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+79
+80
+81</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 79</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_file_destroy'>file_destroy</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="file_reload-instance_method">
+  
+    - (<tt><span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">Models::Storage::File</a></span></tt>) <strong>file_reload</strong>(file) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Reload the file</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>file</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">Models::Storage::File</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">Models::Storage::File</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+87
+88
+89</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 87</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_file_reload'>file_reload</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="file_save-instance_method">
+  
+    - (<tt><span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">Models::Storage::File</a></span></tt>) <strong>file_save</strong>(file) 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Save file</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>file</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">Models::Storage::File</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Storage/File.html" title="Miasma::Models::Storage::File (class)">Models::Storage::File</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+71
+72
+73</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/storage.rb', line 71</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_file_save'>file_save</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -799,7 +1184,7 @@
 </div>
 
     <div id="footer">
-  Generated on Sun Nov 16 08:12:26 2014 by
+  Generated on Mon Nov 24 13:09:27 2014 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

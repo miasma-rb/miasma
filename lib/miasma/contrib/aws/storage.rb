@@ -260,7 +260,7 @@ module Miasma
               :method => :delete,
               :path => file.name,
               :endpoint => bucket_endpoint(file.bucket),
-              :expect => 204
+              :expects => 204
             )
             true
           else

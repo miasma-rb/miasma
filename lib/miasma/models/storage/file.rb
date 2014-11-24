@@ -45,7 +45,13 @@ module Miasma
         # @note object returned will provide #readpartial
         def body
           unless(attributes[:body])
-            data[:body] ||= api.file_body(self)
+            begin
+              _body = api.file_body(self)
+              _body.stream!
+              data[:body] = api.file_body(self)
+            rescue HTTP::StateError
+              data[:body] = StringIO.new(_body.to_s)
+            end
           end
           attributes[:body]
         end
@@ -55,7 +61,7 @@ module Miasma
         # @param io [IO, String]
         # @return [IO]
         def body=(io)
-          unless(io.is_a?(IO))
+          unless(io.respond_to?(:readpartial))
             io = StringIO.new(io)
           end
           dirty[:body] = io
@@ -67,6 +73,16 @@ module Miasma
         # @return [String] URL
         def url(timeout_in_seconds=60)
           perform_file_url(timeout_in_seconds)
+        end
+
+        # Destroy file
+        #
+        # @return [self]
+        def destroy
+          perform_destroy
+          data.clear
+          dirty.clear
+          self
         end
 
         protected

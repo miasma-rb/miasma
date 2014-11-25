@@ -259,6 +259,8 @@ module Miasma
         'identity' => 'keystone'
       )
 
+      include Miasma::Utils::Memoization
+
       # @return [Miasma::Contrib::OpenStackApiCore::Authenticate]
       attr_reader :identity
 
@@ -268,10 +270,15 @@ module Miasma
       # @return [self]
       def initialize(creds)
         @credentials = creds
+        memo_key = "miasma_open_stack_identity_#{creds.checksum}"
         if(creds[:open_stack_identity_url].include?('v3'))
-          @identity = identity_class('Authenticate::Version3').new(creds)
+          @identity = memoize(memo_key, :direct) do
+            identity_class('Authenticate::Version3').new(creds)
+          end
         elsif(creds[:open_stack_identity_url].include?('v2'))
-          @identity = identity_class('Authenticate::Version2').new(creds)
+          @identity = memoize(memo_key, :direct) do
+            identity_class('Authenticate::Version2').new(creds)
+          end
         else
           # @todo allow attribute to override?
           raise ArgumentError.new('Failed to determine Identity service version')

@@ -5,6 +5,7 @@ module Miasma
     class AutoScale
       class Rackspace < AutoScale
 
+        include Contrib::OpenStackApiCore::ApiCommon
         include Contrib::RackspaceApiCore::ApiCommon
 
         # Save auto scale group

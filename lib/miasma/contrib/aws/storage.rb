@@ -52,7 +52,7 @@ module Miasma
                 'KeepRoot' => true
               )
               req_args[:headers] = Smash.new(
-                'Content-Length' => req_args[:body].length.to_s
+                'Content-Length' => req_args[:body].size.to_s
               )
             end
             request(req_args)
@@ -167,7 +167,7 @@ module Miasma
                 end
               end.compact
             ]
-            if(file.attributes[:body].is_a?(IO) && file.body.length >= Storage::MAX_BODY_SIZE_FOR_STRINGIFY)
+            if(file.attributes[:body].is_a?(IO) && file.body.size >= Storage::MAX_BODY_SIZE_FOR_STRINGIFY)
               upload_id = request(
                 args.merge(
                   Smash.new(
@@ -228,7 +228,7 @@ module Miasma
               file.etag = result.get(:body, 'CompleteMultipartUploadResult', 'ETag')
             else
               if(file.attributes[:body].is_a?(IO) || file.attributes[:body].is_a?(StringIO))
-                args[:headers]['Content-Length'] = file.body.length.to_s
+                args[:headers]['Content-Length'] = file.body.size.to_s
                 file.body.rewind
                 args[:body] = file.body.read
                 file.body.rewind

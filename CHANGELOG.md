@@ -1,3 +1,9 @@
+# v0.2.4
+* Make `Storage::File#body` setup provider responsibility
+* Fix module usage within RS to properly squash existing methods
+* Allow RS identity to be shared where applicable
+* Fix creation time attribute population of stacks within OpenStack provider
+
 # v0.2.2
 * Add support for pre-signed AWS URLs
 * Add `#url` method to `Storage::File` model

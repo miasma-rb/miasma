@@ -220,7 +220,6 @@ module Miasma
             attribute :open_stack_tenant_name, String
             attribute :open_stack_domain, String
             attribute :open_stack_project, String
-
           end
         end
 

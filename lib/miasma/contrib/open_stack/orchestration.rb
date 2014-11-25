@@ -160,7 +160,7 @@ module Miasma
             Stack.new(
               self,
               :id => s[:id],
-              :creation_time => Time.parse(s[:creation_time]),
+              :created => Time.parse(s[:creation_time]),
               :description => s[:description],
               :name => s[:stack_name],
               :state => s[:stack_status].downcase.to_sym,

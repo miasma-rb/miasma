@@ -45,13 +45,7 @@ module Miasma
         # @note object returned will provide #readpartial
         def body
           unless(attributes[:body])
-            begin
-              _body = api.file_body(self)
-              _body.stream!
-              data[:body] = api.file_body(self)
-            rescue HTTP::StateError
-              data[:body] = StringIO.new(_body.to_s)
-            end
+            data[:body] = api.file_body(self)
           end
           attributes[:body]
         end

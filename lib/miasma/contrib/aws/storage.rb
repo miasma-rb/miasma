@@ -171,7 +171,7 @@ module Miasma
               upload_id = request(
                 args.merge(
                   Smash.new(
-                    :path => uri_escape(file.name),
+                    :path => file_path(file),
                     :endpoint => bucket_endpoint(bucket),
                     :params => {
                       :uploads => true
@@ -187,7 +187,7 @@ module Miasma
                   count,
                   request(
                     :method => :put,
-                    :path => uri_escape(file.name),
+                    :path => file_path(file),
                     :endpoint => bucket_endpoint(bucket),
                     :headers => Smash.new(
                       'Content-Length' => content.size,
@@ -215,7 +215,7 @@ module Miasma
               )
               result = request(
                 :method => :post,
-                :path => uri_escape(file.name),
+                :path => file_path(file),
                 :endpoint => bucket_endpoint(file.bucket),
                 :params => Smash.new(
                   'UploadId' => upload_id
@@ -237,7 +237,7 @@ module Miasma
                 args.merge(
                   Smash.new(
                     :method => :put,
-                    :path => uri_escape(file.name),
+                    :path => file_path(file),
                     :endpoint => bucket_endpoint(file.bucket)
                   )
                 )
@@ -258,7 +258,7 @@ module Miasma
           if(file.persisted?)
             request(
               :method => :delete,
-              :path => file.name,
+              :path => file_path(file),
               :endpoint => bucket_endpoint(file.bucket),
               :expects => 204
             )
@@ -276,7 +276,7 @@ module Miasma
           if(file.persisted?)
             name = file.name
             result = request(
-              :path => uri_escape(file.name),
+              :path => file_path(file),
               :endpoint => bucket_endpoint(file.bucket)
             )
             file.data.clear && file.dirty.clear
@@ -300,7 +300,7 @@ module Miasma
         def file_url(file, timeout_secs)
           if(file.persisted?)
             signer.generate_url(
-              :get, ::File.join(uri_escape(file.bucket.name), uri_escape(file.name)),
+              :get, ::File.join(uri_escape(file.bucket.name), file_path(file)),
               :headers => Smash.new(
                 'Host' => aws_host
               ),
@@ -322,11 +322,20 @@ module Miasma
         def file_body(file)
           if(file.persisted?)
             result = request(
-              :path => uri_escape(file.name),
+              :path => file_path(file),
               :endpoint => bucket_endpoint(file.bucket)
             )
             content = result[:body]
-            content.is_a?(String) ? StringIO.new(content) : content
+            begin
+              if(content.is_a?(String))
+                StringIO.new(content)
+              else
+                content.stream!
+                content
+              end
+            rescue HTTP::StateError
+              StringIO.new(content.to_s)
+            end
           else
             StringIO.new('')
           end
@@ -344,6 +353,13 @@ module Miasma
           con.default_headers['x-amz-content-sha256'] = Digest::SHA256.
             hexdigest(opts.fetch(:body, ''))
           true
+        end
+
+        # @return [String] escaped file path
+        def file_path(file)
+          file.name.split('/').map do |part|
+            uri_escape(part)
+          end.join('/')
         end
 
       end

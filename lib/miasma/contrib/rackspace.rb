@@ -48,6 +48,11 @@ module Miasma
           end
         end
 
+        # @return [String]
+        def open_stack_region
+          rackspace_region
+        end
+
       end
 
       # @return [Smash] Authentication endpoints

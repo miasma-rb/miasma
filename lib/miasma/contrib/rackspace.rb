@@ -33,25 +33,28 @@ module Miasma
         # @param klass [Class]
         def self.included(klass)
           klass.attributes.clear
+
           klass.class_eval do
             attribute :rackspace_api_key, String, :required => true
             attribute :rackspace_username, String, :required => true
             attribute :rackspace_region, String, :required => true
+
+            # @return [Miasma::Contrib::RackspaceApiCore]
+            def open_stack_api
+              key = "miasma_rackspace_api_#{attributes.checksum}".to_sym
+              memoize(key, :direct) do
+                Miasma::Contrib::RackspaceApiCore.new(attributes)
+              end
+            end
+
+            # @return [String]
+            def open_stack_region
+              rackspace_region
+            end
+
           end
         end
 
-        # @return [Miasma::Contrib::RackspaceApiCore]
-        def open_stack_api
-          key = "miasma_rackspace_api_#{attributes.checksum}".to_sym
-          memoize(key, :direct) do
-            Miasma::Contrib::RackspaceApiCore.new(attributes)
-          end
-        end
-
-        # @return [String]
-        def open_stack_region
-          rackspace_region
-        end
 
       end
 

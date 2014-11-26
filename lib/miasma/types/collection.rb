@@ -48,8 +48,10 @@ module Miasma
       # @todo need to add helper to deep sort args, convert to string
       #   and hash to use as memoization key
       def filter(args={})
-        memoize(args.to_s)
-        raise NotImplementedError
+        key = "filter_#{args.to_smash.checksum}"
+        memoize(key) do
+          perform_filter(args)
+        end
       end
 
       # Build a new model
@@ -109,6 +111,17 @@ module Miasma
       # @return [Array<Model>]
       def perform_population
         raise NotImplementedError
+      end
+
+      # @return [Array<Model>]
+      def perform_filter(args)
+        if(args[:prefix])
+          all.find_all do |item|
+            item.name.start_with?(args[:prefix])
+          end
+        else
+          all
+        end
       end
 
     end

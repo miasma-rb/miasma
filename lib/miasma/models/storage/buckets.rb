@@ -8,15 +8,6 @@ module Miasma
       # Abstract bucket collection
       class Buckets < Types::Collection
 
-        # Return buckets matching given filter
-        #
-        # @param options [Hash] filter options
-        # @return [Array<Bucket>]
-        # @option options [String] :prefix key prefix
-        def filter(options={})
-          raise NotImplementedError
-        end
-
         # @return [Bucket] new unsaved instance
         def build(args={})
           Bucket.new(api, args.to_smash)

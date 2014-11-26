@@ -25,7 +25,7 @@ module Miasma
         # @return [Array<File>]
         # @option options [String] :prefix key prefix
         def filter(options={})
-          raise NotImplementedError
+          super
         end
 
         # @return [File] new unsaved instance
@@ -48,6 +48,11 @@ module Miasma
         # @return [Array<File>]
         def perform_population
           api.file_all(bucket)
+        end
+
+        # @return [Array<File>]
+        def perform_filter(args)
+          api.file_filter(bucket, args)
         end
 
       end

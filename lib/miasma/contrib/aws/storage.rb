@@ -128,6 +128,33 @@ module Miasma
           end
         end
 
+        # Return filtered files
+        #
+        # @param args [Hash] filter options
+        # @return [Array<Models::Storage::File>]
+        def file_filter(bucket, args)
+          if(args[:prefix])
+            result = request(
+              :path => '/',
+              :endpoint => bucket_endpoint(bucket),
+              :params => Smash.new(
+                :prefix => args[:prefix]
+              )
+            )
+            [result.get(:body, 'ListBucketResult', 'Contents')].flatten.compact.map do |file|
+              File.new(
+                bucket,
+                :id => ::File.join(bucket.name, file['Key']),
+                :name => file['Key'],
+                :updated => file['LastModified'],
+                :size => file['Size'].to_i
+              ).valid_state
+            end
+          else
+            bucket_all
+          end
+        end
+
         # Return all files within bucket
         #
         # @param bucket [Bucket]
@@ -330,7 +357,9 @@ module Miasma
               if(content.is_a?(String))
                 StringIO.new(content)
               else
-                content.stream!
+                if(content.respond_to?(:stream!))
+                  content.stream!
+                end
                 content
               end
             rescue HTTP::StateError

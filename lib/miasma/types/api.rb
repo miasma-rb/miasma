@@ -66,6 +66,7 @@ module Miasma
       # @option args [String, Symbol] :method HTTP request method
       # @option args [String] :path request path
       # @option args [Integer] :expects expected response status code
+      # @option args [TrueClass, FalseClass] :disable_body_extraction do not auto-parse response body
       # @return [Smash] {:result => HTTP::Response, :headers => Smash, :body => Object}
       # @raises [Error::ApiError::RequestError]
       def request(args)
@@ -96,7 +97,7 @@ module Miasma
         unless(result.code == args.fetch(:expects, 200).to_i)
           raise Error::ApiError::RequestError.new(result.reason, :response => result)
         end
-        format_response(result)
+        format_response(result, !args[:disable_body_extraction])
       end
 
       # Perform request
@@ -115,22 +116,26 @@ module Miasma
       # Makes best attempt at formatting response
       #
       # @param result [HTTP::Response]
+      # @param extract_body [TrueClass, FalseClass] automatically extract body
       # @return [Smash]
-      def format_response(result)
+      def format_response(result, extract_body=true)
         extracted_headers = Smash[result.headers.map{|k,v| [Utils.snake(k), v]}]
-        if(extracted_headers[:content_type].to_s.include?('json'))
-          begin
-            extracted_body = MultiJson.load(result.body.to_s).to_smash
-          rescue MultiJson::ParseError
-            extracted_body = result.body.to_s
+        if(extract_body)
+          if(extracted_headers[:content_type].to_s.include?('json'))
+            begin
+              extracted_body = MultiJson.load(result.body.to_s).to_smash
+            rescue MultiJson::ParseError
+              extracted_body = result.body.to_s
+            end
+          elsif(extracted_headers[:content_type].to_s.include?('xml'))
+            begin
+              extracted_body = MultiXml.parse(result.body.to_s).to_smash
+            rescue MultiXml::ParseError
+              extracted_body = result.body.to_s
+            end
           end
-        elsif(extracted_headers[:content_type].to_s.include?('xml'))
-          begin
-            extracted_body = MultiXml.parse(result.body.to_s).to_smash
-          rescue MultiXml::ParseError
-            extracted_body = result.body.to_s
-          end
-        else
+        end
+        unless(extracted_body)
           # @note if body is over 100KB, do not extract
           if(extracted_headers[:content_length].to_i < 102400)
             extracted_body = result.body.to_s

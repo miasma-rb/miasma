@@ -350,7 +350,8 @@ module Miasma
           if(file.persisted?)
             result = request(
               :path => file_path(file),
-              :endpoint => bucket_endpoint(file.bucket)
+              :endpoint => bucket_endpoint(file.bucket),
+              :disable_body_extraction => true
             )
             content = result[:body]
             begin

@@ -46,12 +46,11 @@ module Miasma
         begin
           begin
             content = MultiJson.load(response.body.to_s).to_smash
-            msgs = content.values.map do |arg|
-              arg[:message]
-            end.compact
-            unless(msgs.empty?)
-              @response_error_msg = msgs.join(' - ')
-            end
+            @response_error_msg = [[:error, :message]].map do |path|
+              if(result = content.get(*path))
+                "#{content[:code]}: #{result}"
+              end
+            end.flatten.compact.first
           rescue MultiJson::ParseError
             begin
               content = MultiXml.parse(response.body.to_s).to_smash

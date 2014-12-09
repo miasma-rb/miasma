@@ -1,3 +1,8 @@
+# v0.2.6
+* Add default filter implementation on collection
+* Allow disable of automatic body extraction
+* Always return streamish object store file body
+
 # v0.2.4
 * Make `Storage::File#body` setup provider responsibility
 * Fix module usage within RS to properly squash existing methods

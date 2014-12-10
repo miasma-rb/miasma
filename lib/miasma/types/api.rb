@@ -65,7 +65,7 @@ module Miasma
       # @param args [Hash] options
       # @option args [String, Symbol] :method HTTP request method
       # @option args [String] :path request path
-      # @option args [Integer] :expects expected response status code
+      # @option args [Integer, Array<Integer>] :expects expected response status code
       # @option args [TrueClass, FalseClass] :disable_body_extraction do not auto-parse response body
       # @return [Smash] {:result => HTTP::Response, :headers => Smash, :body => Object}
       # @raises [Error::ApiError::RequestError]
@@ -94,7 +94,7 @@ module Miasma
           _connection = connection
         end
         result = make_request(_connection, http_method, request_args)
-        unless(result.code == args.fetch(:expects, 200).to_i)
+        unless([args.fetch(:expects, 200)].flatten.compact.map(&:to_i).include?(result.code))
           raise Error::ApiError::RequestError.new(result.reason, :response => result)
         end
         format_response(result, !args[:disable_body_extraction])

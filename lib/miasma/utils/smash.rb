@@ -80,15 +80,15 @@ module Miasma
       # Convert to Hash
       #
       # @return [Hash]
-      def to_hash
-        self.to_type_converter(::Hash, :to_hash)
+      def to_hash(*args)
+        self.to_type_converter(::Hash, :to_hash, *args)
       end
 
       # Calculate checksum of hash (sha256)
       #
       # @return [String] checksum
       def checksum
-        Digest::SHA256.hexdigest(self.to_smash.to_s)
+        Digest::SHA256.hexdigest(self.to_smash(:sorted).to_s)
       end
 
     end
@@ -102,8 +102,8 @@ class Hash
   # Convert to Smash
   #
   # @return [Smash]
-  def to_smash
-    self.to_type_converter(::Smash, :to_smash)
+  def to_smash(*args)
+    self.to_type_converter(::Smash, :to_smash, *args)
   end
   alias_method :hulk_smash, :to_smash
 
@@ -114,12 +114,17 @@ class Hash
   # @param type [Class] hash type
   # @param convert_call [Symbol] builtin hash convert
   # @return [Smash]
-  def to_type_converter(type, convert_call)
+  def to_type_converter(type, convert_call, *args)
     type.new.tap do |smash|
-      self.sort_by do |entry|
-        entry.first.to_s
-      end.each do |k,v|
-        smash[k.is_a?(Symbol) ? k.to_s : k] = smash_conversion(v, convert_call)
+      if(args.include?(:sorted))
+        process = self.sort_by do |entry|
+          entry.first.to_s
+        end
+      else
+        process = self
+      end
+      process.each do |k,v|
+        smash[k.is_a?(Symbol) ? k.to_s : k] = smash_conversion(v, convert_call, *args)
       end
     end
   end
@@ -129,13 +134,13 @@ class Hash
   # @param obj [Object]
   # @param convert_call [Symbol] builtin hash convert
   # @return [Smash, Object]
-  def smash_conversion(obj, convert_call)
+  def smash_conversion(obj, convert_call, *args)
     case obj
     when Hash
-      obj.send(convert_call)
+      obj.send(convert_call, *args)
     when Array
       obj.map do |i|
-        smash_conversion(i, convert_call)
+        smash_conversion(i, convert_call, *args)
       end
     else
       obj

@@ -230,6 +230,17 @@ module Miasma
           end
         end
 
+        # Return single stack
+        #
+        # @param ident [String] name or ID
+        # @return [Stack]
+        def stack_get(ident)
+          i = Stack.new(self)
+          i.id = ident
+          i.reload
+          i.name ? i : nil
+        end
+
         # Return all stacks
         #
         # @param options [Hash] filter

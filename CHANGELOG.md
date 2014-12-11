@@ -1,3 +1,9 @@
+# v0.2.8
+* Allow multiple expected response codes
+* Fix API type provided when building server instance from ASG
+* Remove automatic key sorting on Smash conversions
+* Allow name based matching for data loading within AWS orchestration
+
 # v0.2.6
 * Add default filter implementation on collection
 * Allow disable of automatic body extraction

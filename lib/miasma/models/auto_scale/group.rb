@@ -37,7 +37,7 @@ module Miasma
         attribute :desired_size, Integer, :coerce => lambda{|v| v.to_i}
         attribute :current_size, Integer, :coerce => lambda{|v| v.to_i}
         attribute :state, Symbol, :allowed_values => []
-        attribute :servers, Server, :multiple => true, :coerce => lambda{|v,obj| Server.new(obj.api, v)}
+        attribute :servers, Server, :multiple => true, :coerce => lambda{|v,obj| Server.new(obj.api_for(:compute), v)}
 
         on_missing :reload
 

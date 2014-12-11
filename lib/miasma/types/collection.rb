@@ -97,7 +97,7 @@ module Miasma
 
       protected
 
-      # Return model with given name or ID
+      # Return model with given ID
       #
       # @param ident [String, Symbol] model identifier
       # @return [Model, NilClass]
@@ -105,7 +105,7 @@ module Miasma
         i = model.new(api)
         i.id = ident
         begin
-          i.reload
+          i.valid_state.reload
         rescue Error::ApiError::RequestError => e
           if(e.code == 404)
             nil

@@ -28,6 +28,15 @@ module Miasma
           api.stack_all
         end
 
+        # @return [Stack]
+        def perform_get(ident)
+          if(api.respond_to?(:stack_get))
+            api.stack_get(ident)
+          else
+            super
+          end
+        end
+
       end
 
     end

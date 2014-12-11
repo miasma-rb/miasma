@@ -89,20 +89,21 @@ module Miasma
             request(:path => '/', :params => options.merge('Action' => 'DescribeInstances'))
           end
           results.map do |srv|
-            srv = srv[:instancesSet][:item]
-            Server.new(
-              self,
-              :id => srv[:instanceId],
-              :name => srv.fetch(:tagSet, :item, []).map{|tag| tag[:value] if tag.is_a?(Hash) && tag[:key] == 'Name'}.compact.first,
-              :image_id => srv[:imageId],
-              :flavor_id => srv[:instanceType],
-              :state => SERVER_STATE_MAP.fetch(srv.get(:instanceState, :name), :pending),
-              :addresses_private => [Server::Address.new(:version => 4, :address => srv[:privateIpAddress])],
-              :addresses_public => [Server::Address.new(:version => 4, :address => srv[:ipAddress])],
-              :status => srv.get(:instanceState, :name),
-              :key_name => srv[:keyName]
-            ).valid_state
-          end
+            [srv[:instancesSet][:item]].flatten.compact.map do |srv|
+              Server.new(
+                self,
+                :id => srv[:instanceId],
+                :name => srv.fetch(:tagSet, :item, []).map{|tag| tag[:value] if tag.is_a?(Hash) && tag[:key] == 'Name'}.compact.first,
+                :image_id => srv[:imageId],
+                :flavor_id => srv[:instanceType],
+                :state => SERVER_STATE_MAP.fetch(srv.get(:instanceState, :name), :pending),
+                :addresses_private => [Server::Address.new(:version => 4, :address => srv[:privateIpAddress])],
+                :addresses_public => [Server::Address.new(:version => 4, :address => srv[:ipAddress])],
+                :status => srv.get(:instanceState, :name),
+                :key_name => srv[:keyName]
+              ).valid_state
+            end
+          end.flatten
         end
 
       end

@@ -67,7 +67,9 @@ module Miasma
               d_stk['StackId'] == stk['StackId']
             end || Smash.new
             stk.merge!(desc)
-            next if stack && stack.id != stk['StackId']
+            if(stack)
+              next if stack.id != stk['StackId'] && stk['StackId'].split('/')[1] != stack.id
+            end
             new_stack = stack || Stack.new(self)
             new_stack.load_data(
               :id => stk['StackId'],

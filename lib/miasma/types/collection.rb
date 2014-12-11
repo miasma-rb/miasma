@@ -97,21 +97,14 @@ module Miasma
 
       protected
 
-      # Return model with given ID
+      # Return model with given ID or name
       #
       # @param ident [String, Symbol] model identifier
       # @return [Model, NilClass]
       def perform_get(ident)
-        i = model.new(api)
-        i.id = ident
-        begin
-          i.valid_state.reload
-        rescue Error::ApiError::RequestError => e
-          if(e.code == 404)
-            nil
-          else
-            raise
-          end
+        all.detect do |obj|
+          obj.id == ident ||
+            (obj.respond_to?(:name) && obj.name == ident)
         end
       end
 

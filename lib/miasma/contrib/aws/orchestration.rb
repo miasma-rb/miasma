@@ -50,12 +50,14 @@ module Miasma
           end
           if(stack)
             d_params['StackName'] = stack.id
-          end
-          descriptions = all_result_pages(nil, :body, 'DescribeStacksResponse', 'DescribeStacksResult', 'Stacks', 'member') do |options|
-            request(
-              :path => '/',
-              :params => options.merge(d_params)
-            )
+            descriptions = all_result_pages(nil, :body, 'DescribeStacksResponse', 'DescribeStacksResult', 'Stacks', 'member') do |options|
+              request(
+                :path => '/',
+                :params => options.merge(d_params)
+              )
+            end
+          else
+            descriptions = []
           end
           lists = all_result_pages(nil, :body, 'ListStacksResponse', 'ListStacksResult', 'StackSummaries', 'member') do |options|
             request(
@@ -79,7 +81,7 @@ module Miasma
               :created => stk['CreationTime'],
               :updated => stk['LastUpdatedTime'],
               :notification_topics => [stk.get('NotificationARNs', 'member')].flatten(1).compact,
-              :timeout_in_minutes => stk['TimeoutInMinutes'],
+              :timeout_in_minutes => stk['TimeoutInMinutes'] ? stk['TimeoutInMinutes'].to_i : nil,
               :status => stk['StackStatus'],
               :status_reason => stk['StackStatusReason'],
               :state => stk['StackStatus'].downcase.to_sym,

@@ -29,8 +29,9 @@ module Miasma
           else
             list << content
           end
-          if(token = result.get(:body, 'NextToken'))
-            list += all_result_pages(token, *result_key, &block)
+          set = result.get(*result_key.slice(0, 3))
+          if(set && set['NextToken'])
+            list += all_result_pages(set['NextToken'], *result_key, &block)
           end
           list.compact
         end

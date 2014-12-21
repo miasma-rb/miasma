@@ -49,11 +49,9 @@ module Miasma
           if(group)
             params.merge('AutoScalingGroupNames.member.1' => group.id || group.name)
           end
-          result = request(
-            :path => '/',
-            :params => params
-          )
-          [result.get(:body, 'DescribeAutoScalingGroupsResponse', 'DescribeAutoScalingGroupsResult', 'AutoScalingGroups', 'member')].flatten(1).compact.map do |grp|
+          result = all_result_pages(nil, :body, 'DescribeAutoScalingGroupsResponse', 'DescribeAutoScalingGroupsResult', 'AutoScalingGroups', 'member') do |options|
+            request(:path => '/', :params => options.merge('Action' => 'DescribeInstances'))
+          end.map do |grp|
             (group || Group.new(self)).load_data(
               :id => grp['AutoScalingGroupName'],
               :name => grp['AutoScalingGroupName'],

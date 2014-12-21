@@ -51,18 +51,18 @@ module Miasma
           if(stack)
             d_params['StackName'] = stack.id
           end
-          descriptions = [
-            request(:path => '/', :params => d_params).get(
-              :body, 'DescribeStacksResponse', 'DescribeStacksResult', 'Stacks', 'member'
+          descriptions = all_result_pages(nil, :body, 'DescribeStacksResponse', 'DescribeStacksResult', 'Stacks', 'member') do |options|
+            request(
+              :path => '/',
+              :params => d_params
             )
-          ].flatten(1).compact
-          lists = request(:path => '/', :params => l_params)
-          [
-            lists.get(
-              :body, 'ListStacksResponse', 'ListStacksResult',
-              'StackSummaries', 'member'
+          end
+          lists = all_result_pages(nil, :body, 'ListStacksResponse', 'ListStacksResult', 'StackSummaries', 'member') do |options|
+            request(
+              :path => '/',
+              :params => l_params
             )
-          ].flatten(1).compact.map do |stk|
+          end.map do |stk|
             desc = descriptions.detect do |d_stk|
               d_stk['StackId'] == stk['StackId']
             end || Smash.new
@@ -255,20 +255,15 @@ module Miasma
         # @param stack [Models::Orchestration::Stack]
         # @return [Array<Models::Orchestration::Stack::Resource>]
         def resource_all(stack)
-          result = request(
-            :path => '/',
-            :params => Smash.new(
-              'Action' => 'DescribeStackResources',
-              'StackName' => stack.id
+          results = all_result_pages(nil, :body, 'DescribeStackResourcesResponse', 'DescribeStackResourcesResult', 'StackResources', 'member') do |options|
+            request(
+              :path => '/',
+              :params => Smash.new(
+                'Action' => 'DescribeStackResources',
+                'StackName' => stack.id
+              )
             )
-          )
-          [
-            result.fetch(
-              :body, 'DescribeStackResourcesResponse',
-              'DescribeStackResourcesResult',
-              'StackResources', 'member', []
-            )
-          ].flatten(1).compact.map do |res|
+          end.map do |res|
             Stack::Resource.new(
               stack,
               :id => res['PhysicalResourceId'],

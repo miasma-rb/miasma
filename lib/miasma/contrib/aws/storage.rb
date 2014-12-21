@@ -117,8 +117,13 @@ module Miasma
         #
         # @return [Array<Models::Storage::Bucket>]
         def bucket_all
-          result = request(:path => '/')
-          [result.get(:body, 'ListAllMyBucketsResult', 'Buckets', 'Bucket')].flatten.compact.map do |bkt|
+          result = all_result_pages(nil, :body, 'ListAllMyBucketsResult', 'Buckets', 'Bucket') do |options|
+            request(
+              :path => '/',
+              :params => options
+            )
+          end
+          result.map do |bkt|
             Bucket.new(
               self,
               :id => bkt['Name'],
@@ -160,11 +165,14 @@ module Miasma
         # @param bucket [Bucket]
         # @return [Array<File>]
         def file_all(bucket)
-          result = request(
-            :path => '/',
-            :endpoint => bucket_endpoint(bucket)
-          )
-          [result.get(:body, 'ListBucketResult', 'Contents')].flatten.compact.map do |file|
+          result = all_result_pages(nil, :body, 'ListBucketResult', 'Contents') do |options|
+            request(
+              :path => '/',
+              :params => options,
+              :endpoint => bucket_endpoint(bucket)
+            )
+          end
+          result.map do |file|
             File.new(
               bucket,
               :id => ::File.join(bucket.name, file['Key']),

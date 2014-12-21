@@ -54,13 +54,13 @@ module Miasma
           descriptions = all_result_pages(nil, :body, 'DescribeStacksResponse', 'DescribeStacksResult', 'Stacks', 'member') do |options|
             request(
               :path => '/',
-              :params => d_params
+              :params => options.merge(d_params)
             )
           end
           lists = all_result_pages(nil, :body, 'ListStacksResponse', 'ListStacksResult', 'StackSummaries', 'member') do |options|
             request(
               :path => '/',
-              :params => l_params
+              :params => options.merge(l_params)
             )
           end.map do |stk|
             desc = descriptions.detect do |d_stk|
@@ -258,9 +258,11 @@ module Miasma
           results = all_result_pages(nil, :body, 'DescribeStackResourcesResponse', 'DescribeStackResourcesResult', 'StackResources', 'member') do |options|
             request(
               :path => '/',
-              :params => Smash.new(
-                'Action' => 'DescribeStackResources',
-                'StackName' => stack.id
+              :params => options.merge(
+                Smash.new(
+                  'Action' => 'DescribeStackResources',
+                  'StackName' => stack.id
+                )
               )
             )
           end.map do |res|

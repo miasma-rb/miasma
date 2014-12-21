@@ -105,10 +105,12 @@ module Miasma
           if(balancer)
             params.merge('LoadBalancerNames.member.1' => balancer.id || balancer.name)
           end
-          result = request(
-            :path => '/',
-            :params => params
-          )
+          result = all_result_pages(nil, :body, 'DescribeAutoScalingGroupsResponse', 'DescribeAutoScalingGroupsResult', 'AutoScalingGroups', 'member') do |options|
+            request(
+              :path => '/',
+              :params => options.merge(params)
+            )
+          end
           [result.get(:body, 'DescribeLoadBalancersResponse', 'DescribeLoadBalancersResult', 'LoadBalancerDescriptions', 'member')].flatten.compact.map do |blr|
             (balancer || Balancer.new(self)).load_data(
               :id => blr['LoadBalancerName'],

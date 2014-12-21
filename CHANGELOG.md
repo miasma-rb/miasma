@@ -1,3 +1,7 @@
+# V0.2.10
+* Add auto-follow to paginated results on aws
+* Speed up stack list building on aws
+
 # v0.2.8
 * Allow multiple expected response codes
 * Fix API type provided when building server instance from ASG

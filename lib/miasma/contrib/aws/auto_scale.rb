@@ -50,7 +50,10 @@ module Miasma
             params.merge('AutoScalingGroupNames.member.1' => group.id || group.name)
           end
           result = all_result_pages(nil, :body, 'DescribeAutoScalingGroupsResponse', 'DescribeAutoScalingGroupsResult', 'AutoScalingGroups', 'member') do |options|
-            request(:path => '/', :params => options.merge('Action' => 'DescribeInstances'))
+            request(
+              :path => '/',
+              :params => options.merge(params)
+            )
           end.map do |grp|
             (group || Group.new(self)).load_data(
               :id => grp['AutoScalingGroupName'],

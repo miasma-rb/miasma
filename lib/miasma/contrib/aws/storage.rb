@@ -335,7 +335,6 @@ module Miasma
                 'X-Amz-Date' => Contrib::AwsApiCore.time_iso8601,
                 'X-Amz-Expires' => timeout_secs
               )
-
             )
           else
             raise Error::ModelPersistError.new "#{file} has not been saved!"

@@ -256,7 +256,8 @@ module Miasma
         'compute' => 'nova',
         'orchestration' => 'heat',
         'network' => 'neutron',
-        'identity' => 'keystone'
+        'identity' => 'keystone',
+        'storage' => 'swift'
       )
 
       include Miasma::Utils::Memoization
@@ -338,4 +339,5 @@ module Miasma
 
   Models::Compute.autoload :OpenStack, 'miasma/contrib/open_stack/compute'
   Models::Orchestration.autoload :OpenStack, 'miasma/contrib/open_stack/orchestration'
+  Models::Storage.autoload :OpenStack, 'miasma/contrib/open_stack/storage'
 end

@@ -219,6 +219,7 @@ module Miasma
         # @return [IO, HTTP::Response::Body]
         def file_body(file)
           if(file.persisted?)
+            result = request(:path => full_path(file))
             content = result[:body]
             begin
               if(content.is_a?(String))
@@ -239,7 +240,7 @@ module Miasma
 
         # @return [String] escaped bucket name
         def bucket_path(bucket)
-          uri_escape(bucket.id)
+          uri_escape(bucket.name)
         end
 
         # @return [String] escaped file path

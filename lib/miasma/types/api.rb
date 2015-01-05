@@ -123,13 +123,27 @@ module Miasma
         if(extract_body)
           if(extracted_headers[:content_type].to_s.include?('json'))
             begin
-              extracted_body = MultiJson.load(result.body.to_s).to_smash
+              extracted_body = MultiJson.load(result.body.to_s)
+              if(extracted_body.respond_to?(:to_smash))
+                extracted_body = extracted_body.to_smash
+              elsif(extracted_body.respond_to?(:map!))
+                extracted_body.map! do |i|
+                  i.respond_to?(:to_smash) ? i.to_smash : i
+                end
+              end
             rescue MultiJson::ParseError
               extracted_body = result.body.to_s
             end
           elsif(extracted_headers[:content_type].to_s.include?('xml'))
             begin
-              extracted_body = MultiXml.parse(result.body.to_s).to_smash
+              extracted_body = MultiXml.parse(result.body.to_s)
+              if(extracted_body.respond_to?(:to_smash))
+                extracted_body = extracted_body.to_smash
+              elsif(extracted_body.respond_to?(:map!))
+                extracted_body.map! do |i|
+                  i.respond_to?(:to_smash) ? i.to_smash : i
+                end
+              end
             rescue MultiXml::ParseError
               extracted_body = result.body.to_s
             end

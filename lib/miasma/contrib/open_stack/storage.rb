@@ -1,4 +1,5 @@
 require 'miasma'
+require 'securerandom'
 
 module Miasma
   module Models
@@ -150,7 +151,68 @@ module Miasma
         # @param file [Models::Storage::File]
         # @return [Models::Storage::File]
         def file_save(file)
-          raise NotImplementedError
+          if(file.dirty?)
+            file.load_data(file.attributes)
+            args = Smash.new
+            args[:headers] = Smash[
+              Smash.new(
+                :content_type => 'Content-Type',
+                :content_disposition => 'Content-Disposition',
+                :content_encoding => 'Content-Encoding'
+              ).map do |attr, key|
+                if(file.attributes[attr])
+                  [key, file.attributes[attr]]
+                end
+              end.compact
+            ]
+            if(file.attributes[:body].is_a?(IO) && file.body.size >= Storage::MAX_BODY_SIZE_FOR_STRINGIFY)
+              parts = []
+              file.body.rewind
+              while(content = file.body.read(Storage::READ_BODY_CHUNK_SIZE))
+                data = Smash.new(
+                  :path => "segments/#{full_path(file)}-#{SecureRandom.uuid}",
+                  :etag => Digest::MD5.hexdigest(content),
+                  :size_bytes => content.length
+                )
+                request(
+                  :path => data[:path],
+                  :method => :put,
+                  :expects => 201,
+                  :headers => {
+                    'Content-Length' => data[:size_bytes],
+                    'Etag' => data[:etag]
+                  }
+                )
+                parts << data
+              end
+              result = request(
+                :path => full_path(file),
+                :method => :put,
+                :expects => 201,
+                :params => {
+                  'multipart-manifest' => :put
+                },
+                :json => parts
+              )
+            else
+              if(file.attributes[:body].is_a?(IO) || file.attributes[:body].is_a?(StringIO))
+                args[:headers]['Content-Length'] = file.body.size.to_s
+                file.body.rewind
+                args[:body] = file.body.read
+                file.body.rewind
+              end
+              result = request(
+                args.merge(
+                  :method => :put,
+                  :expects => 201,
+                  :path => full_path(file)
+                )
+              )
+            end
+            file.id = ::File.join(file.bucket.name, file.name)
+            file.reload
+          end
+          file
         end
 
         # Destroy file
@@ -194,7 +256,7 @@ module Miasma
               end
               data[:metadata] = meta unless meta.empty?
             end
-            file.load_data(file.attributes.deep_merge(data))
+            file.load_data(file.attributes.deep_merge(new_info))
             file.valid_state
           end
           file

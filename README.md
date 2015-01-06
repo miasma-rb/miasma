@@ -141,54 +141,17 @@ model completions.
 
 ### Currently Supported Providers
 
-* AWS
-* Rackspace
-* OpenStack
+Coverage currently varies from provider to provider
+based on functionality restrictions and in progress
+implementation goals. The README on each library
+should provide a simple feature matrix for a quick
+check on support availability:
 
-### Models
-
-#### AWS
-
-|Model         |Create|Read|Update|Delete|
-|--------------|------|----|------|------|
-|AutoScale     |  X   | X  |      |      |
-|BlockStorage  |      |    |      |      |
-|Compute       |  X   | X  |      |  X   |
-|DNS           |      |    |      |      |
-|LoadBalancer  |  X   | X  |  X   |  X   |
-|Network       |      |    |      |      |
-|Orchestration |  X   | X  |  X   |  X   |
-|Queues        |      |    |      |      |
-|Storage       |  X   | X  |  X   |  X   |
-
-#### Rackspace
-
-|Model         |Create|Read|Update|Delete|
-|--------------|------|----|------|------|
-|AutoScale     |  X   | X  |      |      |
-|BlockStorage  |      |    |      |      |
-|Compute       |  X   | X  |      |  X   |
-|DNS           |      |    |      |      |
-|LoadBalancer  |      | X  |      |      |
-|Network       |      |    |      |      |
-|Orchestration |  X   | X  |  X   |  X   |
-|Queues        |      |    |      |      |
-|Storage       |      |    |      |      |
-
-#### OpenStack
-
-|Model         |Create|Read|Update|Delete|
-|--------------|------|----|------|------|
-|AutoScale     |      |    |      |      |
-|BlockStorage  |      |    |      |      |
-|Compute       |  X   | X  |      |  X   |
-|DNS           |      |    |      |      |
-|LoadBalancer  |      |    |      |      |
-|Network       |      |    |      |      |
-|Orchestration |  X   | X  |  X   |  X   |
-|Queues        |      |    |      |      |
-|Storage       |      |    |      |      |
+* [AWS](https://github.com/miasma-rb/miasma-aws)
+* [Rackspace](https://github.com/miasma-rb/miasma-rackspace)
+* [OpenStack](https://github.com/miasma-rb/miasma-open-stack)
+* [Local](https://github.com/miasma-rb/miasma-local)
 
 ## Info
 
-* Repository: https://github.com/chrisroberts/miasma
+* Repository: https://github.com/miasma-rb/miasma

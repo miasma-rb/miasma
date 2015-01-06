@@ -15,5 +15,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'multi_json'
   s.add_dependency 'multi_xml'
   s.add_dependency 'xml-simple'
+  # Include provider libs that do not have outside deps
+  s.add_dependency 'miasma-aws'
+  s.add_dependency 'miasma-open-stack'
+  s.add_dependency 'miasma-rackspace'
+  s.executables << 'miasma-test'
   s.files = Dir['lib/**/*'] + %w(miasma.gemspec README.md CHANGELOG.md LICENSE)
 end

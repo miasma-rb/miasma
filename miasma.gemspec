@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.summary = 'Smoggy API'
   s.author = 'Chris Roberts'
   s.email = 'code@chrisroberts.org'
-  s.homepage = 'https://github.com/chrisroberts/miasma'
+  s.homepage = 'https://github.com/miasma-rb/miasma'
   s.description = 'Smoggy API'
   s.license = 'Apache 2.0'
   s.require_path = 'lib'

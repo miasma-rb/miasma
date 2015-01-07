@@ -80,9 +80,6 @@ MIASMA_STORAGE_ABSTRACT = ->{
           big_file.save
           big_file.reload
 
-          require 'pry'
-          binding.pry
-
           # should be the correct size
           big_file.size.must_equal big_file.size
           # should provide streaming body
@@ -94,7 +91,7 @@ MIASMA_STORAGE_ABSTRACT = ->{
           require 'tempfile'
           local_io_file = Tempfile.new('miasma-storage-test')
           big_io_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 3)
-          local_io_file.write local_io_content
+          local_io_file.write big_io_content
           remote_file = bucket.files.build
           remote_file.name = 'miasma-test-io-object-010'
           remote_file.body = local_io_file
@@ -102,12 +99,15 @@ MIASMA_STORAGE_ABSTRACT = ->{
           remote_file.reload
 
           # should be the correct size
-          remote_file.size.must_equal local_file.size
+          remote_file.size.must_equal local_io_file.size
           # should provide streaming body
           remote_file.body.must_respond_to :readpartial
           content = ''
-          while(chunk = big_file.body.readpartial(1024))
-            content << chunk
+          begin
+            while(chunk = remote_file.body.readpartial(1024))
+              content << chunk
+            end
+          rescue EOFError
           end
           content.must_equal big_io_content
           remote_file.destroy

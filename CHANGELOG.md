@@ -1,3 +1,8 @@
+# v0.2.12
+* Extract provider implementations to standalone libraries
+* Add test helper executable
+* Update API body extraction to retype Array contents
+
 # V0.2.10
 * Add auto-follow to paginated results on aws
 * Speed up stack list building on aws

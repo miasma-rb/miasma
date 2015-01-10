@@ -8,6 +8,42 @@ module Miasma
       # Abstract file
       class File < Types::Model
 
+        # Simple wrapper to keep consistent reading behavior
+        class Streamable
+
+          # @return [Object] IO-ish thing
+          attr_reader :io
+
+          def initialize(io_item)
+            unless(io_item.respond_to?(:readpartial))
+              raise TypeError.new 'Instance must respond to `#readpartial`'
+            end
+            @io = io_item
+          end
+
+          # Proxy missing methods to io
+          def method_missing(method_name, *args, &block)
+            if(io.respond_to?(method_name))
+              io.send(method_name, *args, &block)
+            else
+              raise
+            end
+          end
+
+          # Customized readpartial to automatically hand EOF
+          #
+          # @param length [Integer] length to read
+          # @return [String]
+          def readpartial(length=nil)
+            begin
+              io.readpartial(length)
+            rescue EOFError
+              nil
+            end
+          end
+
+        end
+
         attribute :name, String, :required => true
         attribute :content_type, String
         attribute :content_disposition, String

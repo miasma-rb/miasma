@@ -68,9 +68,7 @@ MIASMA_STORAGE_ABSTRACT = ->{
           open(file.url).read.must_equal file_content
           # should have a body
           file.body.must_respond_to :readpartial
-          file.body.
-            readpartial(Miasma::Models::Storage::READ_BODY_CHUNK_SIZE).
-            must_equal file_content
+          file.body.readpartial(Miasma::Models::Storage::READ_BODY_CHUNK_SIZE).must_equal file_content
           file.destroy
 
           big_file_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 2)
@@ -103,11 +101,8 @@ MIASMA_STORAGE_ABSTRACT = ->{
           # should provide streaming body
           remote_file.body.must_respond_to :readpartial
           content = ''
-          begin
-            while(chunk = remote_file.body.readpartial(1024))
-              content << chunk
-            end
-          rescue EOFError
+          while(chunk = remote_file.body.readpartial(1024))
+            content << chunk
           end
           content.must_equal big_io_content
           remote_file.destroy

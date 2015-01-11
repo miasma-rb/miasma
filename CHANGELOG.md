@@ -2,6 +2,7 @@
 * Extract provider implementations to standalone libraries
 * Add test helper executable
 * Update API body extraction to retype Array contents
+* Add streamable helper for consistent storage file read
 
 # V0.2.10
 * Add auto-follow to paginated results on aws

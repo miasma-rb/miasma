@@ -103,8 +103,7 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Abstract file collection</p>
+    <p>Abstract file collection</p>
 
 
   </div>
@@ -146,8 +145,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Underlying service API.</p>
+    <span class="summary_desc"><div class='inline'><p>Underlying service API.</p>
 </div></span>
   
 </li>
@@ -175,8 +173,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Parent bucket.</p>
+    <span class="summary_desc"><div class='inline'><p>Parent bucket.</p>
 </div></span>
   
 </li>
@@ -212,8 +209,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>New unsaved instance.</p>
+    <span class="summary_desc"><div class='inline'><p>New unsaved instance.</p>
 </div></span>
   
 </li>
@@ -236,8 +232,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Return files matching given filter.</p>
+    <span class="summary_desc"><div class='inline'><p>Return files matching given filter.</p>
 </div></span>
   
 </li>
@@ -262,8 +257,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Create new instance.</p>
+    <span class="summary_desc"><div class='inline'><p>Create new instance.</p>
 </div></span>
   
 </li>
@@ -286,8 +280,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Collection item class.</p>
+    <span class="summary_desc"><div class='inline'><p>Collection item class.</p>
 </div></span>
   
 </li>
@@ -314,8 +307,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Create new instance</p>
+    <p>Create new instance</p>
 
 
   </div>
@@ -334,8 +326,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>parent bucket</p>
+        <div class='inline'><p>parent bucket</p>
 </div>
       
     </li>
@@ -389,8 +380,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns underlying service API</p>
+    <p>Returns underlying service API</p>
 
 
   </div>
@@ -408,8 +398,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>underlying service API</p>
+        <div class='inline'><p>underlying service API</p>
 </div>
       
     </li>
@@ -432,8 +421,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns parent bucket</p>
+    <p>Returns parent bucket</p>
 
 
   </div>
@@ -451,8 +439,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>parent bucket</p>
+        <div class='inline'><p>parent bucket</p>
 </div>
       
     </li>
@@ -498,8 +485,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns new unsaved instance</p>
+    <p>Returns new unsaved instance</p>
 
 
   </div>
@@ -517,8 +503,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>new unsaved instance</p>
+        <div class='inline'><p>new unsaved instance</p>
 </div>
       
     </li>
@@ -567,8 +552,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Return files matching given filter</p>
+    <p>Return files matching given filter</p>
 
 
   </div>
@@ -589,8 +573,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>filter options</p>
+        <div class='inline'><p>filter options</p>
 </div>
       
     </li>
@@ -610,8 +593,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>key prefix</p>
+            &mdash; <div class='inline'><p>key prefix</p>
 </div>
           
         </li>
@@ -626,19 +608,6 @@
       
       
         <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="File.html" title="Miasma::Models::Storage::File (class)">File</a></span>&gt;</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>NotImplementedError</tt>)</span>
       
       
       
@@ -660,7 +629,7 @@
       <pre class="code"><span class="info file"># File 'lib/miasma/models/storage/files.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_filter'>filter</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
+  <span class='kw'>super</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -678,8 +647,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns collection item class</p>
+    <p>Returns collection item class</p>
 
 
   </div>
@@ -697,8 +665,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>collection item class</p>
+        <div class='inline'><p>collection item class</p>
 </div>
       
     </li>
@@ -731,7 +698,7 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Nov 24 13:09:28 2014 by
+  Generated on Sun Jan 11 07:08:49 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

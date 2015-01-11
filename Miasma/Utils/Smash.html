@@ -107,8 +107,7 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Customized Hash</p>
+    <p>Customized Hash</p>
 
 
   </div>
@@ -148,8 +147,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Calculate checksum of hash (sha256).</p>
+    <span class="summary_desc"><div class='inline'><p>Calculate checksum of hash (sha256).</p>
 </div></span>
   
 </li>
@@ -172,8 +170,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Fetch value at given path or return a default value.</p>
+    <span class="summary_desc"><div class='inline'><p>Fetch value at given path or return a default value.</p>
 </div></span>
   
 </li>
@@ -198,8 +195,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Create new instance.</p>
+    <span class="summary_desc"><div class='inline'><p>Create new instance.</p>
 </div></span>
   
 </li>
@@ -246,8 +242,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Get value at given path.</p>
+    <span class="summary_desc"><div class='inline'><p>Get value at given path.</p>
 </div></span>
   
 </li>
@@ -270,8 +265,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Set value at given path.</p>
+    <span class="summary_desc"><div class='inline'><p>Set value at given path.</p>
 </div></span>
   
 </li>
@@ -280,7 +274,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#to_hash-instance_method" title="#to_hash (instance method)">- (Hash) <strong>to_hash</strong> </a>
+      <a href="#to_hash-instance_method" title="#to_hash (instance method)">- (Hash) <strong>to_hash</strong>(*args) </a>
     
 
     
@@ -294,8 +288,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Convert to Hash.</p>
+    <span class="summary_desc"><div class='inline'><p>Convert to Hash.</p>
 </div></span>
   
 </li>
@@ -324,8 +317,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Create new instance</p>
+    <p>Create new instance</p>
 
 
   </div>
@@ -344,8 +336,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>argument list</p>
+        <div class='inline'><p>argument list</p>
 </div>
       
     </li>
@@ -406,8 +397,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Calculate checksum of hash (sha256)</p>
+    <p>Calculate checksum of hash (sha256)</p>
 
 
   </div>
@@ -425,8 +415,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>checksum</p>
+        <div class='inline'><p>checksum</p>
 </div>
       
     </li>
@@ -447,7 +436,7 @@
       <pre class="code"><span class="info file"># File 'lib/miasma/utils/smash.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_checksum'>checksum</span>
-  <span class='const'>Digest</span><span class='op'>::</span><span class='const'>SHA256</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_smash'>to_smash</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
+  <span class='const'>Digest</span><span class='op'>::</span><span class='const'>SHA256</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_smash'>to_smash</span><span class='lparen'>(</span><span class='symbol'>:sorted</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -465,8 +454,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Fetch value at given path or return a default value</p>
+    <p>Fetch value at given path or return a default value</p>
 
 
   </div>
@@ -485,8 +473,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>key path to walk. last value default to return</p>
+        <div class='inline'><p>key path to walk. last value default to return</p>
 </div>
       
     </li>
@@ -504,8 +491,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>value at key or default value</p>
+        <div class='inline'><p>value at key or default value</p>
 </div>
       
     </li>
@@ -582,8 +568,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Get value at given path</p>
+    <p>Get value at given path</p>
 
 
   </div>
@@ -602,8 +587,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>key path to walk</p>
+        <div class='inline'><p>key path to walk</p>
 </div>
       
     </li>
@@ -668,8 +652,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Set value at given path</p>
+    <p>Set value at given path</p>
 
 
   </div>
@@ -688,8 +671,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>key path to walk. set last value to given path</p>
+        <div class='inline'><p>key path to walk. set last value to given path</p>
 </div>
       
     </li>
@@ -707,8 +689,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>value set</p>
+        <div class='inline'><p>value set</p>
 </div>
       
     </li>
@@ -763,7 +744,7 @@
       <div class="method_details ">
   <h3 class="signature " id="to_hash-instance_method">
   
-    - (<tt><span class='object_link'><a href="../../Hash.html" title="Hash (class)">Hash</a></span></tt>) <strong>to_hash</strong> 
+    - (<tt><span class='object_link'><a href="../../Hash.html" title="Hash (class)">Hash</a></span></tt>) <strong>to_hash</strong>(*args) 
   
 
   
@@ -771,8 +752,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Convert to Hash</p>
+    <p>Convert to Hash</p>
 
 
   </div>
@@ -806,8 +786,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/miasma/utils/smash.rb', line 83</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_to_hash'>to_hash</span>
-  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_type_converter'>to_type_converter</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Hash</span><span class='comma'>,</span> <span class='symbol'>:to_hash</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_to_hash'>to_hash</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+  <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_to_type_converter'>to_type_converter</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Hash</span><span class='comma'>,</span> <span class='symbol'>:to_hash</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -819,7 +799,7 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Nov 24 13:09:26 2014 by
+  Generated on Sun Jan 11 07:08:48 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

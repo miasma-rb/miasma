@@ -103,8 +103,7 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Abstract stack collection</p>
+    <p>Abstract stack collection</p>
 
 
   </div>
@@ -146,8 +145,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Underlying service API.</p>
+    <span class="summary_desc"><div class='inline'><p>Underlying service API.</p>
 </div></span>
   
 </li>
@@ -183,32 +181,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Return stacks matching given filter.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#get-instance_method" title="#get (instance method)">- (Stack) <strong>get</strong>(ident) </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Locate stack by name or ID.</p>
+    <span class="summary_desc"><div class='inline'><p>Return stacks matching given filter.</p>
 </div></span>
   
 </li>
@@ -231,8 +204,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Collection items class.</p>
+    <span class="summary_desc"><div class='inline'><p>Collection items class.</p>
 </div></span>
   
 </li>
@@ -273,8 +245,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns underlying service API</p>
+    <p>Returns underlying service API</p>
 
 
   </div>
@@ -292,8 +263,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>underlying service API</p>
+        <div class='inline'><p>underlying service API</p>
 </div>
       
     </li>
@@ -321,8 +291,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Return stacks matching given filter</p>
+    <p>Return stacks matching given filter</p>
 
 
   </div>
@@ -343,8 +312,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>filter options</p>
+        <div class='inline'><p>filter options</p>
 </div>
       
     </li>
@@ -364,8 +332,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>current stack state</p>
+            &mdash; <div class='inline'><p>current stack state</p>
 </div>
           
         </li>
@@ -406,95 +373,15 @@
       <pre class="lines">
 
 
-26
-27
-28</pre>
+15
+16
+17</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/orchestration/stacks.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/orchestration/stacks.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_filter'>filter</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>NotImplementedError</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="get-instance_method">
-  
-    - (<tt><span class='object_link'><a href="Stack.html" title="Miasma::Models::Orchestration::Stack (class)">Stack</a></span></tt>) <strong>get</strong>(ident) 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Locate stack by name or ID</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>ident</span>
-      
-      
-        <span class='type'>(<tt>String</tt>, <tt>Numeric</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>name or ID</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="Stack.html" title="Miasma::Models::Orchestration::Stack (class)">Stack</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-14
-15
-16
-17
-18
-19</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/orchestration/stacks.rb', line 14</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_ident'>ident</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_all'>all</span><span class='period'>.</span><span class='id identifier rubyid_detect'>detect</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_stack'>stack</span><span class='op'>|</span>
-    <span class='id identifier rubyid_stack'>stack</span><span class='period'>.</span><span class='id identifier rubyid_id'>id</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='id identifier rubyid_ident'>ident</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>||</span>
-      <span class='id identifier rubyid_stack'>stack</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='id identifier rubyid_ident'>ident</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
-  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -512,8 +399,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns collection items class</p>
+    <p>Returns collection items class</p>
 
 
   </div>
@@ -531,8 +417,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>collection items class</p>
+        <div class='inline'><p>collection items class</p>
 </div>
       
     </li>
@@ -545,12 +430,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+20
+21
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/miasma/models/orchestration/stacks.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/miasma/models/orchestration/stacks.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_model'>model</span>
   <span class='const'>Stack</span>
@@ -565,7 +450,7 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Nov 24 13:09:29 2014 by
+  Generated on Sun Jan 11 07:08:49 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

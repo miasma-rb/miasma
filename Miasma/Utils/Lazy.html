@@ -90,8 +90,7 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Adds functionality to facilitate laziness</p>
+    <p>Adds functionality to facilitate laziness</p>
 
 
   </div>
@@ -141,8 +140,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Injects laziness into class.</p>
+    <span class="summary_desc"><div class='inline'><p>Injects laziness into class.</p>
 </div></span>
   
 </li>
@@ -168,8 +166,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Injects laziness into class</p>
+    <p>Injects laziness into class</p>
 
 
   </div>
@@ -211,7 +208,11 @@
 227
 228
 229
-230</pre>
+230
+231
+232
+233
+234</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/miasma/utils/lazy.rb', line 217</span>
@@ -224,7 +225,11 @@
     <span class='kw'>class</span> <span class='op'>&lt;&lt;</span> <span class='kw'>self</span>
 
       <span class='kw'>def</span> <span class='id identifier rubyid_inherited'>inherited</span><span class='lparen'>(</span><span class='id identifier rubyid_klass'>klass</span><span class='rparen'>)</span>
-        <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_set_attributes'>set_attributes</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
+        <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_set_attributes'>set_attributes</span><span class='lparen'>(</span>
+          <span class='const'>MultiJson</span><span class='period'>.</span><span class='id identifier rubyid_load'>load</span><span class='lparen'>(</span>
+            <span class='const'>MultiJson</span><span class='period'>.</span><span class='id identifier rubyid_dump'>dump</span><span class='lparen'>(</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_attributes'>attributes</span><span class='rparen'>)</span>
+          <span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_smash'>to_smash</span>
+        <span class='rparen'>)</span>
       <span class='kw'>end</span>
 
     <span class='kw'>end</span>
@@ -240,7 +245,7 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Nov 24 13:09:25 2014 by
+  Generated on Sun Jan 11 07:08:47 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

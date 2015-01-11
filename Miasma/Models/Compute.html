@@ -97,7 +97,7 @@
   
     <dt class="r2 last">Defined in:</dt>
     <dd class="r2 last">lib/miasma/models/compute.rb<span class="defines">,<br />
-  lib/miasma/contrib/aws/compute.rb,<br /> lib/miasma/models/compute/server.rb,<br /> lib/miasma/models/compute/servers.rb,<br /> lib/miasma/contrib/rackspace/compute.rb,<br /> lib/miasma/contrib/open_stack/compute.rb</span>
+  lib/miasma/models/compute/server.rb,<br /> lib/miasma/models/compute/servers.rb</span>
 </dd>
   
 </dl>
@@ -105,8 +105,7 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Abstract compute API</p>
+    <p>Abstract compute API</p>
 
 
   </div>
@@ -114,17 +113,13 @@
 <div class="tags">
   
 
-</div><div id="subclasses">
-  <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="Compute/Aws.html" title="Miasma::Models::Compute::Aws (class)">Aws</a></span>, <span class='object_link'><a href="Compute/OpenStack.html" title="Miasma::Models::Compute::OpenStack (class)">OpenStack</a></span></p>
-</div>
-<h2>Defined Under Namespace</h2>
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Compute/Aws.html" title="Miasma::Models::Compute::Aws (class)">Aws</a></span>, <span class='object_link'><a href="Compute/OpenStack.html" title="Miasma::Models::Compute::OpenStack (class)">OpenStack</a></span>, <span class='object_link'><a href="Compute/Rackspace.html" title="Miasma::Models::Compute::Rackspace (class)">Rackspace</a></span>, <span class='object_link'><a href="Compute/Server.html" title="Miasma::Models::Compute::Server (class)">Server</a></span>, <span class='object_link'><a href="Compute/Servers.html" title="Miasma::Models::Compute::Servers (class)">Servers</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Compute/Server.html" title="Miasma::Models::Compute::Server (class)">Server</a></span>, <span class='object_link'><a href="Compute/Servers.html" title="Miasma::Models::Compute::Servers (class)">Servers</a></span>
     
   
 </p>
@@ -160,8 +155,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Return all servers.</p>
+    <span class="summary_desc"><div class='inline'><p>Return all servers.</p>
 </div></span>
   
 </li>
@@ -184,8 +178,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Change server to desired state.</p>
+    <span class="summary_desc"><div class='inline'><p>Change server to desired state.</p>
 </div></span>
   
 </li>
@@ -208,8 +201,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Delete server instance.</p>
+    <span class="summary_desc"><div class='inline'><p>Delete server instance.</p>
 </div></span>
   
 </li>
@@ -232,8 +224,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Filtered compute instances.</p>
+    <span class="summary_desc"><div class='inline'><p>Filtered compute instances.</p>
 </div></span>
   
 </li>
@@ -256,8 +247,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Reload the server data from the API.</p>
+    <span class="summary_desc"><div class='inline'><p>Reload the server data from the API.</p>
 </div></span>
   
 </li>
@@ -280,8 +270,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Create new server instance.</p>
+    <span class="summary_desc"><div class='inline'><p>Create new server instance.</p>
 </div></span>
   
 </li>
@@ -304,8 +293,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>All compute instances.</p>
+    <span class="summary_desc"><div class='inline'><p>All compute instances.</p>
 </div></span>
   
 </li>
@@ -343,8 +331,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Return all servers</p>
+    <p>Return all servers</p>
 
 
   </div>
@@ -410,8 +397,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Change server to desired state</p>
+    <p>Change server to desired state</p>
 
 
   </div>
@@ -441,8 +427,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>:start, :stop, :restart</p>
+        <div class='inline'><p>:start, :stop, :restart</p>
 </div>
       
     </li>
@@ -508,8 +493,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Delete server instance</p>
+    <p>Delete server instance</p>
 
 
   </div>
@@ -590,8 +574,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Filtered compute instances</p>
+    <p>Filtered compute instances</p>
 
 
   </div>
@@ -612,8 +595,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>search filter</p>
+        <div class='inline'><p>search filter</p>
 </div>
       
     </li>
@@ -633,8 +615,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>state of server `Server::VALID_COMPUTE_STATES`</p>
+            &mdash; <div class='inline'><p>state of server <code>Server::VALID_COMPUTE_STATES</code></p>
 </div>
           
         </li>
@@ -686,8 +667,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Reload the server data from the API</p>
+    <p>Reload the server data from the API</p>
 
 
   </div>
@@ -768,8 +748,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Create new server instance</p>
+    <p>Create new server instance</p>
 
 
   </div>
@@ -850,8 +829,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>All compute instances</p>
+    <p>All compute instances</p>
 
 
   </div>
@@ -869,8 +847,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>servers</p>
+        <div class='inline'><p>servers</p>
 </div>
       
     </li>
@@ -907,7 +884,7 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Nov 24 13:09:27 2014 by
+  Generated on Sun Jan 11 07:08:48 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

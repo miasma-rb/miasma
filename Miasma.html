@@ -80,7 +80,7 @@
   
     <dt class="r1 last">Defined in:</dt>
     <dd class="r1 last">lib/miasma.rb<span class="defines">,<br />
-  lib/miasma/error.rb,<br /> lib/miasma/utils.rb,<br /> lib/miasma/types.rb,<br /> lib/miasma/models.rb,<br /> lib/miasma/version.rb,<br /> lib/miasma/types/api.rb,<br /> lib/miasma/types/data.rb,<br /> lib/miasma/utils/lazy.rb,<br /> lib/miasma/types/model.rb,<br /> lib/miasma/utils/smash.rb,<br /> lib/miasma/contrib/aws.rb,<br /> lib/miasma/models/compute.rb,<br /> lib/miasma/models/storage.rb,<br /> lib/miasma/utils/immutable.rb,<br /> lib/miasma/types/collection.rb,<br /> lib/miasma/types/thin_model.rb,<br /> lib/miasma/contrib/rackspace.rb,<br /> lib/miasma/models/auto_scale.rb,<br /> lib/miasma/utils/memoization.rb,<br /> lib/miasma/contrib/open_stack.rb,<br /> lib/miasma/contrib/aws/storage.rb,<br /> lib/miasma/models/storage/file.rb,<br /> lib/miasma/contrib/aws/compute.rb,<br /> lib/miasma/models/load_balancer.rb,<br /> lib/miasma/utils/animal_strings.rb,<br /> lib/miasma/models/orchestration.rb,<br /> lib/miasma/models/storage/files.rb,<br /> lib/miasma/models/storage/bucket.rb,<br /> lib/miasma/models/compute/server.rb,<br /> lib/miasma/contrib/aws/auto_scale.rb,<br /> lib/miasma/models/compute/servers.rb,<br /> lib/miasma/models/storage/buckets.rb,<br /> lib/miasma/models/auto_scale/group.rb,<br /> lib/miasma/models/auto_scale/groups.rb,<br /> lib/miasma/contrib/rackspace/compute.rb,<br /> lib/miasma/contrib/aws/orchestration.rb,<br /> lib/miasma/contrib/aws/load_balancer.rb,<br /> lib/miasma/models/orchestration/event.rb,<br /> lib/miasma/models/orchestration/stack.rb,<br /> lib/miasma/contrib/open_stack/compute.rb,<br /> lib/miasma/models/orchestration/events.rb,<br /> lib/miasma/models/orchestration/stacks.rb,<br /> lib/miasma/contrib/rackspace/auto_scale.rb,<br /> lib/miasma/models/load_balancer/balancer.rb,<br /> lib/miasma/models/orchestration/resource.rb,<br /> lib/miasma/models/orchestration/resources.rb,<br /> lib/miasma/models/load_balancer/balancers.rb,<br /> lib/miasma/contrib/rackspace/orchestration.rb,<br /> lib/miasma/contrib/rackspace/load_balancer.rb,<br /> lib/miasma/contrib/open_stack/orchestration.rb</span>
+  lib/miasma/types.rb,<br /> lib/miasma/error.rb,<br /> lib/miasma/utils.rb,<br /> lib/miasma/models.rb,<br /> lib/miasma/version.rb,<br /> lib/miasma/types/api.rb,<br /> lib/miasma/types/data.rb,<br /> lib/miasma/utils/lazy.rb,<br /> lib/miasma/utils/smash.rb,<br /> lib/miasma/types/model.rb,<br /> lib/miasma/models/compute.rb,<br /> lib/miasma/models/storage.rb,<br /> lib/miasma/utils/immutable.rb,<br /> lib/miasma/types/collection.rb,<br /> lib/miasma/types/thin_model.rb,<br /> lib/miasma/utils/memoization.rb,<br /> lib/miasma/models/auto_scale.rb,<br /> lib/miasma/models/storage/file.rb,<br /> lib/miasma/models/load_balancer.rb,<br /> lib/miasma/models/orchestration.rb,<br /> lib/miasma/utils/animal_strings.rb,<br /> lib/miasma/models/storage/files.rb,<br /> lib/miasma/models/storage/bucket.rb,<br /> lib/miasma/models/compute/server.rb,<br /> lib/miasma/models/storage/buckets.rb,<br /> lib/miasma/models/compute/servers.rb,<br /> lib/miasma/models/auto_scale/group.rb,<br /> lib/miasma/models/auto_scale/groups.rb,<br /> lib/miasma/models/orchestration/event.rb,<br /> lib/miasma/models/orchestration/stack.rb,<br /> lib/miasma/models/orchestration/stacks.rb,<br /> lib/miasma/models/orchestration/events.rb,<br /> lib/miasma/models/orchestration/resource.rb,<br /> lib/miasma/models/load_balancer/balancer.rb,<br /> lib/miasma/models/load_balancer/balancers.rb,<br /> lib/miasma/models/orchestration/resources.rb</span>
 </dd>
   
 </dl>
@@ -90,7 +90,7 @@
 <p class="children">
   
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Miasma/Contrib.html" title="Miasma::Contrib (module)">Contrib</a></span>, <span class='object_link'><a href="Miasma/Models.html" title="Miasma::Models (module)">Models</a></span>, <span class='object_link'><a href="Miasma/Types.html" title="Miasma::Types (module)">Types</a></span>, <span class='object_link'><a href="Miasma/Utils.html" title="Miasma::Utils (module)">Utils</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Miasma/Models.html" title="Miasma::Models (module)">Models</a></span>, <span class='object_link'><a href="Miasma/Types.html" title="Miasma::Types (module)">Types</a></span>, <span class='object_link'><a href="Miasma/Utils.html" title="Miasma::Utils (module)">Utils</a></span>
     
   
     
@@ -106,8 +106,7 @@
         <dt id="VERSION-constant" class="">VERSION =
           <div class="docstring">
   <div class="discussion">
-    
-<p>current library version</p>
+    <p>current library version</p>
 
 
   </div>
@@ -117,7 +116,7 @@
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.2.2</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
+        <dd><pre class="code"><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.2.12</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span></pre></dd>
       
     </dl>
   
@@ -153,8 +152,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Generate and API connection.</p>
+    <span class="summary_desc"><div class='inline'><p>Generate and API connection.</p>
 </div></span>
   
 </li>
@@ -180,8 +178,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Generate and API connection</p>
+    <p>Generate and API connection</p>
 
 
   </div>
@@ -218,8 +215,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>API type (:compute, :dns, etc)</p>
+            &mdash; <div class='inline'><p>API type (:compute, :dns, etc)</p>
 </div>
           
         </li>
@@ -231,8 +227,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Service provider</p>
+            &mdash; <div class='inline'><p>Service provider</p>
 </div>
           
         </li>
@@ -244,8 +239,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Service provider credentials</p>
+            &mdash; <div class='inline'><p>Service provider credentials</p>
 </div>
           
         </li>
@@ -334,7 +328,7 @@
 </div>
 
     <div id="footer">
-  Generated on Mon Nov 24 13:09:25 2014 by
+  Generated on Sun Jan 11 07:08:47 2015 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.8.7.6 (ruby-2.1.2).
 </div>

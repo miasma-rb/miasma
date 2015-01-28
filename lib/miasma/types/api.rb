@@ -6,6 +6,13 @@ module Miasma
     # Remote API connection
     class Api
 
+      # HTTP request methods that are allowed retry
+      VALID_REQUEST_RETRY_METHODS=[:get, :head]
+      # Maximum allowed HTTP request retries (for non-HTTP related errors)
+      MAX_REQUEST_RETRIES=5
+      # Seconds to pause between retries
+      REQUEST_RETRY_DELAY=0.5
+
       include Miasma::Utils::Lazy
       include Miasma::Utils::Memoization
 
@@ -93,11 +100,35 @@ module Miasma
         else
           _connection = connection
         end
-        result = make_request(_connection, http_method, request_args)
+        result = retryable_request(http_method) do
+          make_request(_connection, http_method, request_args)
+        end
         unless([args.fetch(:expects, 200)].flatten.compact.map(&:to_i).include?(result.code))
           raise Error::ApiError::RequestError.new(result.reason, :response => result)
         end
         format_response(result, !args[:disable_body_extraction])
+      end
+
+      # If HTTP request method is allowed to be retried then retry
+      # request on non-response failures. Otherwise just re-raise
+      # immediately
+      #
+      # @param http_method [Symbol] HTTP request method
+      # @yield request to be retried if allowed
+      # @return [Object] result of block
+      def retryable_request(http_method)
+        attempts = VALID_REQUEST_RETRY_METHODS.include?(http_method) ? 0 :nil
+        begin
+          yield
+        rescue => e
+          if(attempts && attempts < MAX_REQUEST_RETRIES)
+            attempts += 1
+            sleep RETRY_REQUEST_DELAY
+            retry
+          else
+            raise
+          end
+        end
       end
 
       # Perform request

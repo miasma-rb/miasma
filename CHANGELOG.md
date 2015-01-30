@@ -1,3 +1,6 @@
+# v0.2.14
+* Add non-response failure retry support on non-modify requests
+
 # v0.2.12
 * Extract provider implementations to standalone libraries
 * Add test helper executable

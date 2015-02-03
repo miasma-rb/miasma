@@ -17,11 +17,13 @@ module Miasma
       # )
 
       # @return [Array<Symbol>] valid resource states
-      VALID_RESOURCE_STATES = [:create_complete, :create_in_progress, :create_failed,
+      VALID_RESOURCE_STATES = [
+        :create_complete, :create_in_progress, :create_failed,
         :delete_complete, :delete_in_progress, :delete_failed,
         :rollback_complete, :rollback_in_progress, :rollback_failed,
         :update_complete, :update_in_progress, :update_failed,
-        :update_rollback_complete, :update_rollback_in_progress, :update_rollback_failed
+        :update_rollback_complete, :update_rollback_in_progress,
+        :update_rollback_failed, :unknown
       ]
 
       # Orchestration stacks

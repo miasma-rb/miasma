@@ -10,6 +10,13 @@ module Miasma
           model Miasma::Models::Compute::Server
         end
 
+        class ServerState < Types::ThinModel
+          model Miasma::Models::Compute::Server
+          attribute :reason, String
+          attribute :state, Symbol, :allowed_values => [:up, :down, :unknown], :required => true
+          attribute :status, String, :required => true
+        end
+
         class Address < Types::Data
           attribute :address, String, :required => true
           attribute :version, Integer, :default => 4
@@ -41,6 +48,7 @@ module Miasma
         attribute :listeners, Listener, :coerce => lambda{|v| Listener.new(v)}, :multiple => true
         attribute :created, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
         attribute :updated, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
+        attribute :server_states, ServerState, :multiple => true, :coerce => lambda{|v| ServerState.new(v)}
 
         on_missing :reload
 

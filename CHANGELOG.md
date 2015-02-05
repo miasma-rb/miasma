@@ -1,3 +1,8 @@
+# v0.2.16
+* Add `:unknown` as allowed state value for orchestration stacks
+* Add load balancer attribute for instance states
+* Add thin model for load balancer instance states
+
 # v0.2.14
 * Add non-response failure retry support on non-modify requests
 

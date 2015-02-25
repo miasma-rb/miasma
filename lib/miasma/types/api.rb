@@ -123,7 +123,7 @@ module Miasma
         rescue => e
           if(attempts && attempts < MAX_REQUEST_RETRIES)
             attempts += 1
-            sleep RETRY_REQUEST_DELAY
+            sleep REQUEST_RETRY_DELAY
             retry
           else
             raise

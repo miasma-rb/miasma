@@ -152,32 +152,15 @@ module Miasma
       def format_response(result, extract_body=true)
         extracted_headers = Smash[result.headers.map{|k,v| [Utils.snake(k), v]}]
         if(extract_body)
+          body_content = result.body.to_s
           if(extracted_headers[:content_type].to_s.include?('json'))
-            begin
-              extracted_body = MultiJson.load(result.body.to_s)
-              if(extracted_body.respond_to?(:to_smash))
-                extracted_body = extracted_body.to_smash
-              elsif(extracted_body.respond_to?(:map!))
-                extracted_body.map! do |i|
-                  i.respond_to?(:to_smash) ? i.to_smash : i
-                end
-              end
-            rescue MultiJson::ParseError
-              extracted_body = result.body.to_s
-            end
+            extracted_body = from_json(body_content) || body_content
           elsif(extracted_headers[:content_type].to_s.include?('xml'))
-            begin
-              extracted_body = MultiXml.parse(result.body.to_s)
-              if(extracted_body.respond_to?(:to_smash))
-                extracted_body = extracted_body.to_smash
-              elsif(extracted_body.respond_to?(:map!))
-                extracted_body.map! do |i|
-                  i.respond_to?(:to_smash) ? i.to_smash : i
-                end
-              end
-            rescue MultiXml::ParseError
-              extracted_body = result.body.to_s
-            end
+            extracted_body = from_xml(body_content) || body_content
+          else
+            extracted_body = from_json(body_content) ||
+              from_xml(body_content) ||
+              body_content
           end
         end
         unless(extracted_body)
@@ -193,6 +176,30 @@ module Miasma
           :headers => extracted_headers,
           :body => extracted_body
         )
+      end
+
+      # Convert from JSON
+      #
+      # @param string [String]
+      # @return [Hash, Array, NilClass]
+      def from_json(string)
+        begin
+          MultiJson.load(string).to_smash
+        rescue MultiJson::ParseError
+          nil
+        end
+      end
+
+      # Convert from JSON
+      #
+      # @param string [String]
+      # @return [Hash, Array, NilClass]
+      def from_xml(string)
+        begin
+          MultiXml.parse(string).to_smash
+        rescue MultiXml::ParseError
+          nil
+        end
       end
 
     end

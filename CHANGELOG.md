@@ -1,3 +1,8 @@
+# v0.2.18
+* Fix constant name used for retry interval (#9)
+* Provide better automatic conversion of response body
+* Update size limits for storage files
+
 # v0.2.16
 * Add `:unknown` as allowed state value for orchestration stacks
 * Add load balancer attribute for instance states

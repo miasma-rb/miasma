@@ -25,5 +25,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'vcr'
   s.add_development_dependency 'webmock'
-  s.files = Dir['lib/**/*'] + %w(miasma.gemspec README.md CHANGELOG.md LICENSE)
+  s.files = Dir['{bin,lib,test}/**/*'] + %w(miasma.gemspec README.md CHANGELOG.md LICENSE)
 end

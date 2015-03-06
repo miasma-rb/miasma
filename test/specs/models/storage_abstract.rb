@@ -71,7 +71,7 @@ MIASMA_STORAGE_ABSTRACT = ->{
           file.body.readpartial(Miasma::Models::Storage::READ_BODY_CHUNK_SIZE).must_equal file_content
           file.destroy
 
-          big_file_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 2)
+          big_file_content = '*' * Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY
           big_file = bucket.files.build
           big_file.name = 'miasma-test-file-big'
           big_file.body = big_file_content
@@ -88,8 +88,10 @@ MIASMA_STORAGE_ABSTRACT = ->{
 
           require 'tempfile'
           local_io_file = Tempfile.new('miasma-storage-test')
-          big_io_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 3)
+          big_io_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 2)
           local_io_file.write big_io_content
+          local_io_file.flush
+          local_io_file.rewind
           remote_file = bucket.files.build
           remote_file.name = 'miasma-test-io-object-010'
           remote_file.body = local_io_file

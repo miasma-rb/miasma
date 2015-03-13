@@ -153,6 +153,11 @@ module Miasma
         extracted_headers = Smash[result.headers.map{|k,v| [Utils.snake(k), v]}]
         if(extract_body)
           body_content = result.body.to_s
+          body_content.encode!('UTF-8', 'binary',
+            :invalid => :replace,
+            :undef => :replace,
+            :replace => ''
+          )
           if(extracted_headers[:content_type].to_s.include?('json'))
             extracted_body = from_json(body_content) || body_content
           elsif(extracted_headers[:content_type].to_s.include?('xml'))

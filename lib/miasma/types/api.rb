@@ -21,12 +21,22 @@ module Miasma
       # @param creds [Smash] credentials
       # @return [self]
       def initialize(creds)
+        custom_setup(creds)
         if(creds.is_a?(Hash))
           load_data(creds)
         else
           raise TypeError.new "Expecting `credentials` to be of type `Hash`. Received: `#{creds.class}`"
         end
         connect
+      end
+
+      # Simple hook for concrete APIs to make adjustments prior to
+      # initialization and connection
+      #
+      # @param creds [Hash]
+      # @return [TrueClass]
+      def custom_setup(creds)
+        true
       end
 
       # @return [Symbol] name of provider

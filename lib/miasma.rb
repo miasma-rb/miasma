@@ -20,20 +20,21 @@ module Miasma
   # @option args [Hash] :credentials Service provider credentials
   def self.api(args={})
     args = Utils::Smash.new(args)
-    [:type, :provider, :credentials].each do |key|
+    [:type, :provider].each do |key|
       unless(args[key])
         raise ArgumentError.new "Missing required api argument `#{key.inspect}`!"
       end
     end
     args[:type] = Utils.camel(args[:type].to_s).to_sym
     args[:provider] = Utils.camel(args[:provider].to_s).to_sym
+    args[:credentials] ||= {}
     begin
       require "miasma/contrib/#{Utils.snake(args[:provider])}"
     rescue LoadError
       # just ignore
     end
-    base_klass = Models.const_get(args[:type])
     begin
+      base_klass = Models.const_get(args[:type])
       if(base_klass)
         api_klass = base_klass.const_get(args[:provider])
         if(api_klass)

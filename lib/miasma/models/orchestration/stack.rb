@@ -42,6 +42,12 @@ module Miasma
         attribute :template_url, String
         attribute :template_description, String
         attribute :timeout_in_minutes, Integer
+        attribute :tags, Smash, :coerce => lambda{|v| v.to_smash}
+        # TODO: This is new in AWS but I like this better for the
+        # attribute. For now, keep both but i would like to deprecate
+        # out the disable_rollback and provide the same functionality
+        # via this attribute.
+        attribute :on_failure, String, :allowed => %w(nothing rollback delete), :coerce => lambda{|v| v.to_s.downcase}
         attribute :disable_rollback, [TrueClass, FalseClass]
         attribute :notification_topics, String, :multiple => true
         attribute :capabilities, String, :multiple => true

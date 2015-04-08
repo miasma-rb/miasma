@@ -8,6 +8,8 @@ module Miasma
 
       include Utils::Memoization
 
+      attribute :custom, Smash, :coerce => lambda{|v| v.to_smash}, :default => Smash.new
+
       # @return [Miasma::Types::Api] underlying service API
       attr_reader :api
 
@@ -42,6 +44,7 @@ module Miasma
             raise TypeError.new "Expecting `model_data` to be of type `Hash`. Received: `#{model_data.class}`"
           end
         end
+        self.custom = {}
       end
 
       # Save changes to the model

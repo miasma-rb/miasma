@@ -43,10 +43,10 @@ module Miasma
           raise Error.new "Failed to locate #{args[:type]} API for #{args[:provider].inspect}"
         end
       else
-        raise Error.new "Failed to locate request API type #{args[:type].inspect}"
+        raise Error.new "Failed to locate requested API type #{args[:type].inspect} for #{args[:provider].inspect}"
       end
-    rescue NameError
-      raise Error.new "Failed to locate request API type #{args[:type].inspect}"
+    rescue NameError => e
+      raise Error.new "Failed to locate requested API type #{args[:type].inspect}"
     end
   end
 

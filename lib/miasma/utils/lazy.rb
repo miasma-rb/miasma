@@ -119,7 +119,7 @@ module Miasma
           define_method(name) do
             send(depends_on) if depends_on
             self.class.on_missing(self) unless data.has_key?(name) || dirty.has_key?(name)
-            dirty[name] || data[name]
+            dirty[name] || data[name] || self.class.attributes[name][:default]
           end
           define_method("#{name}=") do |val|
             values = multiple_values && val.is_a?(Array) ? val : [val]

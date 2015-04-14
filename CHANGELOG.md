@@ -1,3 +1,10 @@
+# v0.2.20
+* Add scrubbing response prior to parsing to prevent XML related errors
+* Stub credentials if none are provided
+* Add setup stub to allow implementations an entry point for custom behavior
+* Add container attribute for unsupported attributes within model
+* Provide better error output when loading fails
+
 # v0.2.18
 * Fix constant name used for retry interval (#9)
 * Provide better automatic conversion of response body

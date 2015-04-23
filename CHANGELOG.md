@@ -1,3 +1,6 @@
+# v0.2.22
+* Fix lazy attribute loading on subclasses
+
 # v0.2.20
 * Add scrubbing response prior to parsing to prevent XML related errors
 * Stub credentials if none are provided

@@ -1,5 +1,7 @@
 # Load in dependencies
 require 'http'
+require 'bogo'
+require 'bogo/http_proxy'
 require 'multi_json'
 require 'multi_xml'
 

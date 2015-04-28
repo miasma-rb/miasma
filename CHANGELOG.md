@@ -1,3 +1,7 @@
+# v0.2.24
+* Add support for `http_proxy`, `https_proxy`, and `no_proxy` (#11)
+* Use common helper modules for bogo library (#10)
+
 # v0.2.22
 * Fix lazy attribute loading on subclasses
 

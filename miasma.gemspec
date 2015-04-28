@@ -10,11 +10,11 @@ Gem::Specification.new do |s|
   s.description = 'Smoggy API'
   s.license = 'Apache 2.0'
   s.require_path = 'lib'
-  s.add_runtime_dependency 'hashie'
   s.add_runtime_dependency 'http'
   s.add_runtime_dependency 'multi_json'
   s.add_runtime_dependency 'multi_xml'
   s.add_runtime_dependency 'xml-simple'
+  s.add_runtime_dependency 'bogo', '>= 0.1.20', '< 1.0'
   # Include provider libs that do not have outside deps
   s.add_runtime_dependency 'miasma-aws'
   s.add_runtime_dependency 'miasma-open-stack'

@@ -104,7 +104,7 @@ module Miasma
       def perform_get(ident)
         all.detect do |obj|
           obj.id == ident ||
-            (obj.respond_to?(:name) && obj.name == ident)
+            (obj.respond_to?(:name) && !obj.name.nil? && obj.name == ident)
         end
       end
 

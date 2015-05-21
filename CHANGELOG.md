@@ -1,3 +1,6 @@
+# v0.2.26
+* Update Collection#get to not match name if nil
+
 # v0.2.24
 * Add support for `http_proxy`, `https_proxy`, and `no_proxy` (#11)
 * Use common helper modules for bogo library (#10)

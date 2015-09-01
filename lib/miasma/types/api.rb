@@ -109,10 +109,11 @@ module Miasma
           _connection = connection
         end
         result = retryable_request(http_method) do
-          make_request(_connection, http_method, request_args)
-          unless([args.fetch(:expects, 200)].flatten.compact.map(&:to_i).include?(result.code))
-            raise Error::ApiError::RequestError.new(result.reason, :response => result)
+          res = make_request(_connection, http_method, request_args)
+          unless([args.fetch(:expects, 200)].flatten.compact.map(&:to_i).include?(res.code))
+            raise Error::ApiError::RequestError.new(res.reason, :response => res)
           end
+          res
         end
         format_response(result, !args[:disable_body_extraction])
       end

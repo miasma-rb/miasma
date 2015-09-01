@@ -110,9 +110,9 @@ module Miasma
         end
         result = retryable_request(http_method) do
           make_request(_connection, http_method, request_args)
-        end
-        unless([args.fetch(:expects, 200)].flatten.compact.map(&:to_i).include?(result.code))
-          raise Error::ApiError::RequestError.new(result.reason, :response => result)
+          unless([args.fetch(:expects, 200)].flatten.compact.map(&:to_i).include?(result.code))
+            raise Error::ApiError::RequestError.new(result.reason, :response => result)
+          end
         end
         format_response(result, !args[:disable_body_extraction])
       end
@@ -126,10 +126,10 @@ module Miasma
       # @return [Object] result of block
       def retryable_request(http_method, &block)
         Bogo::Retry.build(
-          attributes.fetch(:retry_type, :exponential),
-          :max_attempts => VALID_REQUEST_RETRY_METHODS.include?(http_method) ? attributes.fetch(:retry_max, MAX_REQUEST_RETRIES) : 1,
-          :wait_interval => attributes[:retry_interval],
-          :ui => attributes[:retry_ui],
+          data.fetch(:retry_type, :exponential),
+          :max_attempts => VALID_REQUEST_RETRY_METHODS.include?(http_method) ? data.fetch(:retry_max, MAX_REQUEST_RETRIES) : 1,
+          :wait_interval => data[:retry_interval],
+          :ui => data[:retry_ui],
           :auto_run => false,
           &block
         ).run!

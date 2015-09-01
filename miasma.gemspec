@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'multi_json'
   s.add_runtime_dependency 'multi_xml'
   s.add_runtime_dependency 'xml-simple'
-  s.add_runtime_dependency 'bogo', '>= 0.1.20', '< 1.0'
+  s.add_runtime_dependency 'bogo', '>= 0.1.27', '< 1.0'
   # Include provider libs that do not have outside deps
   s.add_runtime_dependency 'miasma-aws'
   s.add_runtime_dependency 'miasma-open-stack'

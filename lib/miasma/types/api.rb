@@ -10,8 +10,6 @@ module Miasma
       VALID_REQUEST_RETRY_METHODS=[:get, :head]
       # Maximum allowed HTTP request retries (for non-HTTP related errors)
       MAX_REQUEST_RETRIES=5
-      # Seconds to pause between retries
-      REQUEST_RETRY_DELAY=0.5
 
       include Miasma::Utils::Lazy
       include Miasma::Utils::Memoization
@@ -126,19 +124,15 @@ module Miasma
       # @param http_method [Symbol] HTTP request method
       # @yield request to be retried if allowed
       # @return [Object] result of block
-      def retryable_request(http_method)
-        attempts = VALID_REQUEST_RETRY_METHODS.include?(http_method) ? 0 :nil
-        begin
-          yield
-        rescue => e
-          if(attempts && attempts < MAX_REQUEST_RETRIES)
-            attempts += 1
-            sleep REQUEST_RETRY_DELAY
-            retry
-          else
-            raise
-          end
-        end
+      def retryable_request(http_method, &block)
+        Bogo::Retry.build(
+          attributes.fetch(:retry_type, :exponential),
+          :max_attempts => VALID_REQUEST_RETRY_METHODS.include?(http_method) ? attributes.fetch(:retry_max, MAX_REQUEST_RETRIES) : 1,
+          :wait_interval => attributes[:retry_interval],
+          :ui => attributes[:retry_ui],
+          :auto_run => false,
+          &block
+        ).run!
       end
 
       # Perform request

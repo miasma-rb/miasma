@@ -1,3 +1,7 @@
+# v0.2.28
+* Include original exception information on API load failures
+* Provide better retry functionality on non-modify requests
+
 # v0.2.26
 * Update Collection#get to not match name if nil
 

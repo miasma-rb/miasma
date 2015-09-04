@@ -13,7 +13,10 @@ module Miasma
 
       ## mapping example
       # RESOURCE_MAPPING = Smash.new(
-      #   'AWS::EC2::Instance' => Miasma::Models::Compute::Server
+      #   'AWS::EC2::Instance' => Smash.new(
+      #     :api => :compute,
+      #     :collection => :servers
+      #   )
       # )
 
       # @return [Array<Symbol>] valid resource states

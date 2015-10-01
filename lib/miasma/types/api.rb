@@ -128,12 +128,28 @@ module Miasma
       def retryable_request(http_method, &block)
         Bogo::Retry.build(
           data.fetch(:retry_type, :exponential),
-          :max_attempts => VALID_REQUEST_RETRY_METHODS.include?(http_method) ? data.fetch(:retry_max, MAX_REQUEST_RETRIES) : 1,
+          :max_attempts => retryable_allowed?(http_method) ? data.fetch(:retry_max, MAX_REQUEST_RETRIES) : 0,
           :wait_interval => data[:retry_interval],
           :ui => data[:retry_ui],
           :auto_run => false,
           &block
-        ).run!
+        ).run!{|e| perform_request_retry(e) }
+      end
+
+      # Determine if request type is allowed to be retried
+      #
+      # @param http_method [Symbol] request type
+      # @return [TrueClass, FalseClass]
+      def retryable_allowed?(http_method)
+        VALID_REQUEST_RETRY_METHODS.include?(http_method)
+      end
+
+      # Determine if a retry on the request should be performed
+      #
+      # @param exception [Exception]
+      # @return [TrueClass, FalseClass]
+      def perform_request_retry(exception)
+        true
       end
 
       # Perform request

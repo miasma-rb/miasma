@@ -1,3 +1,6 @@
+# v0.2.30
+* Provide interface for API implementations to customize retry behavior
+
 # v0.2.28
 * Include original exception information on API load failures
 * Provide better retry functionality on non-modify requests

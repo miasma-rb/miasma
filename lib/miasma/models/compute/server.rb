@@ -24,8 +24,8 @@ module Miasma
         end
 
         attribute :name, String, :required => true
-        attribute :image_id, [String, Numeric], :required => true
-        attribute :flavor_id, [String, Numeric], :required => true
+        attribute :image_id, [String, Numeric]
+        attribute :flavor_id, [String, Numeric]
         attribute :state, Symbol, :allowed => VALID_COMPUTE_STATES
         attribute :status, String
         attribute :addresses_public, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
@@ -34,6 +34,8 @@ module Miasma
         attribute :personality, [Hash, String], :default => {}
         attribute :metadata, Hash, :coerce => lambda{|o| o.to_smash}
         attribute :key_name, String
+
+        on_missing :reload
 
         # @return [Array<Smash>]
         def addresses

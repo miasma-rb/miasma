@@ -1,3 +1,7 @@
+# v0.2.32
+* Add API stub for after setup modifications (#17)
+* Allow Server attributes to be lazy loaded
+
 # v0.2.30
 * Provide interface for API implementations to customize retry behavior
 

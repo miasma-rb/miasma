@@ -25,6 +25,7 @@ module Miasma
         else
           raise TypeError.new "Expecting `credentials` to be of type `Hash`. Received: `#{creds.class}`"
         end
+        after_setup(creds)
         connect
       end
 
@@ -34,6 +35,15 @@ module Miasma
       # @param creds [Hash]
       # @return [TrueClass]
       def custom_setup(creds)
+        true
+      end
+
+      # Simple hook for concrete APIs to make adjustments after
+      # attribute population and prior to connection
+      #
+      # @param creds [Hash]
+      # @return [TrueClass]
+      def after_setup(creds)
         true
       end
 

@@ -77,7 +77,7 @@ module Miasma
 
       # @return [HTTP]
       def connection
-        HTTP.with_headers('User-Agent' => "miasma/v#{Miasma::VERSION}")
+        HTTP.headers('User-Agent' => "miasma/v#{Miasma::VERSION}")
       end
 
       # @return [String] url endpoint
@@ -113,7 +113,7 @@ module Miasma
           ary.push(options) unless options.empty?
         end
         if(args[:headers])
-          _connection = connection.with_headers(args[:headers])
+          _connection = connection.headers(args[:headers])
           args.delete(:headers)
         else
           _connection = connection

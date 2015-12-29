@@ -1,3 +1,6 @@
+# v0.2.34
+* Remove deprecated method usage on http library
+
 # v0.2.32
 * Add API stub for after setup modifications (#17)
 * Allow Server attributes to be lazy loaded

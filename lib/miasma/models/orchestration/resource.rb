@@ -16,6 +16,8 @@ module Miasma
           attribute :status_reason, String
           attribute :updated, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
 
+          on_missing :reload
+
           attr_reader :stack
 
           def initialize(stack, args={})

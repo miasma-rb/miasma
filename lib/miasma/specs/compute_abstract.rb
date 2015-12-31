@@ -3,9 +3,8 @@ MIASMA_COMPUTE_ABSTRACT = ->{
   # Required `let`s:
   # * compute: compute API
   # * build_args: server build arguments [Smash]
-  # * cassette_prefix: cassette file prefix [String]
 
-  describe Miasma::Models::Compute do
+  describe Miasma::Models::Compute, :vcr do
 
     it 'should provide #servers collection' do
       compute.servers.must_be_kind_of Miasma::Models::Compute::Servers
@@ -23,9 +22,7 @@ MIASMA_COMPUTE_ABSTRACT = ->{
       end
 
       it 'should provide #all servers' do
-        VCR.use_cassette("#{cassette_prefix}_servers_all") do
-          compute.servers.all.must_be_kind_of Array
-        end
+        compute.servers.all.must_be_kind_of Array
       end
 
     end
@@ -34,19 +31,15 @@ MIASMA_COMPUTE_ABSTRACT = ->{
 
       before do
         @instance = compute.servers.build(build_args)
-        VCR.use_cassette("#{cassette_prefix}_server_before_create") do |obj|
-          @instance.save
-          until(@instance.state == :running)
-            sleep(obj.recording? ? 60 : 0.01)
-            @instance.reload
-          end
+        @instance.save
+        until(@instance.state == :running)
+          sleep(20)
+          @instance.reload
         end
       end
 
       after do
-        VCR.use_cassette("#{cassette_prefix}_server_after_destroy") do
-          @instance.destroy
-        end
+        @instance.destroy
       end
 
       let(:instance){ @instance }
@@ -85,30 +78,28 @@ MIASMA_COMPUTE_ABSTRACT = ->{
 
     describe 'instance lifecycle' do
       it 'should create new server, reload details and destroy server' do
-        VCR.use_cassette("#{cassette_prefix}_servers_create") do |obj|
-          instance = compute.servers.build(build_args)
-          instance.save
-          instance.id.wont_be_nil
-          instance.state.must_equal :pending
-          compute.servers.reload.get(instance.id).wont_be_nil
-          until(instance.state == :running)
+        instance = compute.servers.build(build_args)
+        instance.save
+        instance.id.wont_be_nil
+        instance.state.must_equal :pending
+        compute.servers.reload.get(instance.id).wont_be_nil
+        until(instance.state == :running)
+          sleep(obj.recording? ? 60 : 0.01)
+          instance.reload
+        end
+        instance.state.must_equal :running
+        instance.destroy
+        while(instance.state == :running)
+          sleep(obj.recording? ? 10 : 0.01)
+          instance.reload
+        end
+        [:pending, :terminated].must_include instance.state
+        if(instance.state == :pending)
+          until(instance.state == :terminated)
             sleep(obj.recording? ? 60 : 0.01)
             instance.reload
           end
-          instance.state.must_equal :running
-          instance.destroy
-          while(instance.state == :running)
-            sleep(obj.recording? ? 10 : 0.01)
-            instance.reload
-          end
-          [:pending, :terminated].must_include instance.state
-          if(instance.state == :pending)
-            until(instance.state == :terminated)
-              sleep(obj.recording? ? 60 : 0.01)
-              instance.reload
-            end
-            instance.state.must_equal :terminated
-          end
+          instance.state.must_equal :terminated
         end
       end
 

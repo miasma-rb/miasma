@@ -30,16 +30,25 @@ MIASMA_COMPUTE_ABSTRACT = ->{
     describe Miasma::Models::Compute::Server do
 
       before do
-        @instance = compute.servers.build(build_args)
-        @instance.save
-        until(@instance.state == :running)
-          sleep(20)
-          @instance.reload
+        unless($miasma_instance)
+          VCR.use_cassette('Miasma_Models_Compute_Aws/GLOBAL_compute_instance_create') do
+            @instance = compute.servers.build(build_args)
+            @instance.save
+            until(@instance.state == :running)
+              miasma_spec_sleep
+              @instance.reload
+            end
+            $miasma_instance = @instance
+          end
+          Kernel.at_exit do
+            VCR.use_cassette('Miasma_Models_Compute_Aws/GLOBAL_compute_instance_destroy') do
+              $miasma_instance.destroy
+            end
+          end
+        else
+          @instance = $miasma_instance
         end
-      end
-
-      after do
-        @instance.destroy
+        @instance.reload
       end
 
       let(:instance){ @instance }
@@ -84,19 +93,19 @@ MIASMA_COMPUTE_ABSTRACT = ->{
         instance.state.must_equal :pending
         compute.servers.reload.get(instance.id).wont_be_nil
         until(instance.state == :running)
-          sleep(obj.recording? ? 60 : 0.01)
+          miasma_spec_sleep
           instance.reload
         end
         instance.state.must_equal :running
         instance.destroy
         while(instance.state == :running)
-          sleep(obj.recording? ? 10 : 0.01)
+          miasma_spec_sleep
           instance.reload
         end
         [:pending, :terminated].must_include instance.state
         if(instance.state == :pending)
           until(instance.state == :terminated)
-            sleep(obj.recording? ? 60 : 0.01)
+            miasma_spec_sleep
             instance.reload
           end
           instance.state.must_equal :terminated

@@ -39,7 +39,7 @@ module Miasma
         end
 
         attribute :name, String
-        attribute :state, Symbol, :allowed_values => [:active, :pending]
+        attribute :state, Symbol, :allowed_values => [:active, :pending, :terminated]
         attribute :status, String
         attribute :servers, Server, :multiple => true, :coerce => lambda{|v| Server.new(v)}
         attribute :public_addresses, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}

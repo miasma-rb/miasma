@@ -30,16 +30,25 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
     describe Miasma::Models::LoadBalancer::Balancer do
 
       before do
-        @balancer = load_balancer.balancers.build(build_args)
-        @balancer.save
-        until(@balancer.state == :active)
-          sleep(20)
-          @balancer.reload
+        unless($miasma_balancer)
+          VCR.use_cassette('Miasma_Models_LoadBalancer_Aws/GLOBAL_load_balancer_create') do
+            @balancer = load_balancer.balancers.build(build_args)
+            @balancer.save
+            until(@balancer.state == :active)
+              miasma_spec_sleep
+              @balancer.reload
+            end
+            $miasma_balancer = @balancer
+          end
+          Kernel.at_exit do
+            VCR.use_cassette('Miasma_Models_LoadBalancer_Aws/GLOBAL_load_balancer_destroy') do
+              $miasma_balancer.destroy
+            end
+          end
+        else
+          @balancer = $miasma_balancer
         end
-      end
-
-      after do
-        @balancer.destroy
+        @balancer.reload
       end
 
       let(:balancer){ @balancer }

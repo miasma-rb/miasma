@@ -30,18 +30,27 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
     describe Miasma::Models::Orchestration::Stacks do
 
       before do
-        @stack = orchestration.stacks.build(build_args)
-        @stack.save
-        until(@stack.state == :create_complete)
-          sleep(20)
-          @stack.reload
+        unless($miasma_stack)
+          VCR.use_cassette('Miasma_Models_Orchestration_Aws/GLOBAL_orchestration_stack_create') do
+            @stack = orchestration.stacks.build(build_args)
+            @stack.save
+            until(@stack.state == :create_complete)
+              miasma_spec_sleep
+              @stack.reload
+            end
+            @stack.template
+            orchestration.stacks.reload
+            $miasma_stack = @stack
+          end
+          Kernel.at_exit do
+            VCR.use_cassette('Miasma_Models_Compute_Aws/GLOBAL_orchestration_stack_destroy') do
+              $miasma_stack.destroy
+            end
+          end
+        else
+          @stack = $miasma_stack
         end
-        @stack.template
-        orchestration.stacks.reload
-      end
-
-      after do
-        @stack.destroy
+        @stack.reload
       end
 
       let(:stack){ @stack }
@@ -93,14 +102,14 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
         stack.state.must_equal :create_in_progress
         orchestration.stacks.reload.get(stack.id).wont_be_nil
         until(stack.state == :create_complete)
-          sleep(obj.recording? ? 60 : 0.01)
+          miasma_spec_sleep
           stack.reload
         end
         stack.state.must_equal :create_complete
         stack.destroy
         [:delete_in_progress, :delete_complete].must_include stack.state
         until(stack.state == :delete_complete)
-          sleep(obj.recording? ? 60 : 0.01)
+          miasma_spec_sleep
           stack.reload
         end
         stack.state.must_equal :delete_complete

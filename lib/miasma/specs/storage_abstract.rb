@@ -84,7 +84,7 @@ MIASMA_STORAGE_ABSTRACT = ->{
 
         require 'tempfile'
         local_io_file = Tempfile.new('miasma-storage-test')
-        big_io_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 2)
+        big_io_content = '*' * (Miasma::Models::Storage::MAX_BODY_SIZE_FOR_STRINGIFY * 1.3)
         local_io_file.write big_io_content
         local_io_file.flush
         local_io_file.rewind

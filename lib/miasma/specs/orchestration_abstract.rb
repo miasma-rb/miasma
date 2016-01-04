@@ -3,9 +3,8 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
   # Required `let`s:
   # * orchestration: orchestration API
   # * build_args: stack build arguments [Smash]
-  # * cassette_prefix: cassette file prefix [String]
 
-  describe Miasma::Models::Orchestration do
+  describe Miasma::Models::Orchestration, :vcr do
 
     it 'should provide #stacks collection' do
       orchestration.stacks.must_be_kind_of Miasma::Models::Orchestration::Stacks
@@ -23,9 +22,7 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
       end
 
       it 'should provide #all stacks' do
-        VCR.use_cassette("#{cassette_prefix}_stacks_all") do
-          orchestration.stacks.all.must_be_kind_of Array
-        end
+        orchestration.stacks.all.must_be_kind_of Array
       end
 
     end
@@ -33,22 +30,27 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
     describe Miasma::Models::Orchestration::Stacks do
 
       before do
-        @stack = orchestration.stacks.build(build_args)
-        VCR.use_cassette("#{cassette_prefix}_stacks_before_create") do |obj|
-          @stack.save
-          until(@stack.state == :create_complete)
-            sleep(obj.recording? ? 60 : 0.01)
-            @stack.reload
+        unless($miasma_stack)
+          VCR.use_cassette('Miasma_Models_Orchestration_Aws/GLOBAL_orchestration_stack_create') do
+            @stack = orchestration.stacks.build(build_args)
+            @stack.save
+            until(@stack.state == :create_complete)
+              miasma_spec_sleep
+              @stack.reload
+            end
+            @stack.template
+            orchestration.stacks.reload
+            $miasma_stack = @stack
           end
-          @stack.template
-          orchestration.stacks.reload
+          Kernel.at_exit do
+            VCR.use_cassette('Miasma_Models_Compute_Aws/GLOBAL_orchestration_stack_destroy') do
+              $miasma_stack.destroy
+            end
+          end
+        else
+          @stack = $miasma_stack
         end
-      end
-
-      after do
-        VCR.use_cassette("#{cassette_prefix}_stacks_after_destroy") do
-          @stack.destroy
-        end
+        @stack.reload
       end
 
       let(:stack){ @stack }
@@ -56,10 +58,8 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
       describe 'collection' do
 
         it 'should include stack' do
-          VCR.use_cassette("#{cassette_prefix}_stacks_direct_fetch") do
-            orchestration.stacks.all.detect{|s| s.id == stack.id}.wont_be_nil
-            orchestration.stacks.get(stack.id).wont_be_nil
-          end
+          orchestration.stacks.all.detect{|s| s.id == stack.id}.wont_be_nil
+          orchestration.stacks.get(stack.id).wont_be_nil
         end
 
       end
@@ -96,25 +96,23 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
 
     describe 'instance lifecycle' do
       it 'should create new stack, reload details and destroy stack' do
-        VCR.use_cassette("#{cassette_prefix}_stack_create") do |obj|
-          stack = orchestration.stacks.build(build_args.merge(:name => 'miasma-test-stack-2'))
-          stack.save
-          stack.id.wont_be_nil
-          stack.state.must_equal :create_in_progress
-          orchestration.stacks.reload.get(stack.id).wont_be_nil
-          until(stack.state == :create_complete)
-            sleep(obj.recording? ? 60 : 0.01)
-            stack.reload
-          end
-          stack.state.must_equal :create_complete
-          stack.destroy
-          [:delete_in_progress, :delete_complete].must_include stack.state
-          until(stack.state == :delete_complete)
-            sleep(obj.recording? ? 60 : 0.01)
-            stack.reload
-          end
-          stack.state.must_equal :delete_complete
+        stack = orchestration.stacks.build(build_args.merge(:name => 'miasma-test-stack-2'))
+        stack.save
+        stack.id.wont_be_nil
+        stack.state.must_equal :create_in_progress
+        orchestration.stacks.reload.get(stack.id).wont_be_nil
+        until(stack.state == :create_complete)
+          miasma_spec_sleep
+          stack.reload
         end
+        stack.state.must_equal :create_complete
+        stack.destroy
+        [:delete_in_progress, :delete_complete].must_include stack.state
+        until(stack.state == :delete_complete)
+          miasma_spec_sleep
+          stack.reload
+        end
+        stack.state.must_equal :delete_complete
       end
 
     end

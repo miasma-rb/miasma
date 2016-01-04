@@ -3,9 +3,8 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
   # Required `let`s:
   # * load_balancer: load balancer API
   # * build_args: load balancer build arguments [Smash]
-  # * cassette_prefix: cassette file prefix [String]
 
-  describe Miasma::Models::LoadBalancer do
+  describe Miasma::Models::LoadBalancer, :vcr do
 
     it 'should provide #balancers collection' do
       load_balancer.balancers.must_be_kind_of Miasma::Models::LoadBalancer::Balancers
@@ -23,9 +22,7 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
       end
 
       it 'should provide #all balancers' do
-        VCR.use_cassette("#{cassette_prefix}_balancers_all") do
-          load_balancer.balancers.all.must_be_kind_of Array
-        end
+        load_balancer.balancers.all.must_be_kind_of Array
       end
 
     end
@@ -33,20 +30,25 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
     describe Miasma::Models::LoadBalancer::Balancer do
 
       before do
-        @balancer = load_balancer.balancers.build(build_args)
-        VCR.use_cassette("#{cassette_prefix}_balancer_before_create") do |obj|
-          @balancer.save
-          until(@balancer.state == :active)
-            sleep(obj.recording? ? 60 : 0.01)
-            @balancer.reload
+        unless($miasma_balancer)
+          VCR.use_cassette('Miasma_Models_LoadBalancer_Aws/GLOBAL_load_balancer_create') do
+            @balancer = load_balancer.balancers.build(build_args)
+            @balancer.save
+            until(@balancer.state == :active)
+              miasma_spec_sleep
+              @balancer.reload
+            end
+            $miasma_balancer = @balancer
           end
+          Kernel.at_exit do
+            VCR.use_cassette('Miasma_Models_LoadBalancer_Aws/GLOBAL_load_balancer_destroy') do
+              $miasma_balancer.destroy
+            end
+          end
+        else
+          @balancer = $miasma_balancer
         end
-      end
-
-      after do
-        VCR.use_cassette("#{cassette_prefix}_balancer_after_destroy") do
-          @balancer.destroy
-        end
+        @balancer.reload
       end
 
       let(:balancer){ @balancer }
@@ -54,9 +56,7 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
       describe 'collection' do
 
         it 'should include balancer' do
-          VCR.use_cassette("#{cassette_prefix}_balancer_direct_fetch") do
-            load_balancer.balancers.reload.get(balancer.id).wont_be_nil
-          end
+          load_balancer.balancers.reload.get(balancer.id).wont_be_nil
         end
 
       end

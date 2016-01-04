@@ -19,11 +19,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'miasma-aws'
   s.add_runtime_dependency 'miasma-open-stack'
   s.add_runtime_dependency 'miasma-rackspace'
-  s.executables << 'miasma-test'
   # Include development dependencies for running tests
   s.add_development_dependency 'pry'
-  s.add_development_dependency 'minitest'
-  s.add_development_dependency 'vcr'
-  s.add_development_dependency 'webmock'
   s.files = Dir['{bin,lib}/**/*'] + %w(miasma.gemspec README.md CHANGELOG.md LICENSE)
 end

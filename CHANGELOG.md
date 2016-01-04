@@ -1,3 +1,6 @@
+# v0.2.36
+* Refactor abstract model specs
+
 # v0.2.34
 * Remove deprecated method usage on http library
 

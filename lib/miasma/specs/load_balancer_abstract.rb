@@ -31,7 +31,7 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
 
       before do
         unless($miasma_balancer)
-          VCR.use_cassette('Miasma_Models_LoadBalancer_Aws/GLOBAL_load_balancer_create') do
+          VCR.use_cassette('Miasma_Models_LoadBalancer_Global/GLOBAL_load_balancer_create') do
             @balancer = load_balancer.balancers.build(build_args)
             @balancer.save
             until(@balancer.state == :active)
@@ -41,7 +41,7 @@ MIASMA_LOAD_BALANCER_ABSTRACT = ->{
             $miasma_balancer = @balancer
           end
           Kernel.at_exit do
-            VCR.use_cassette('Miasma_Models_LoadBalancer_Aws/GLOBAL_load_balancer_destroy') do
+            VCR.use_cassette('Miasma_Models_LoadBalancer_Global/GLOBAL_load_balancer_destroy') do
               $miasma_balancer.destroy
             end
           end

@@ -1,3 +1,5 @@
+require 'timeout'
+
 MIASMA_ORCHESTRATION_ABSTRACT = ->{
 
   # Required `let`s:
@@ -31,19 +33,21 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
 
       before do
         unless($miasma_stack)
-          VCR.use_cassette('Miasma_Models_Orchestration_Aws/GLOBAL_orchestration_stack_create') do
+          VCR.use_cassette('Miasma_Models_Orchestration_Global/GLOBAL_orchestration_stack_create') do
             @stack = orchestration.stacks.build(build_args)
             @stack.save
-            until(@stack.state == :create_complete)
-              miasma_spec_sleep
-              @stack.reload
+            Timeout.timeout(500) do
+              until(@stack.state == :create_complete)
+                miasma_spec_sleep
+                @stack.reload
+              end
             end
             @stack.template
             orchestration.stacks.reload
             $miasma_stack = @stack
           end
           Kernel.at_exit do
-            VCR.use_cassette('Miasma_Models_Compute_Aws/GLOBAL_orchestration_stack_destroy') do
+            VCR.use_cassette('Miasma_Models_Compute_Global/GLOBAL_orchestration_stack_destroy') do
               $miasma_stack.destroy
             end
           end
@@ -108,9 +112,11 @@ MIASMA_ORCHESTRATION_ABSTRACT = ->{
         stack.state.must_equal :create_complete
         stack.destroy
         [:delete_in_progress, :delete_complete].must_include stack.state
-        until(stack.state == :delete_complete)
-          miasma_spec_sleep
-          stack.reload
+        Timeout.timeout(500) do
+          until(stack.state == :delete_complete)
+            miasma_spec_sleep
+            stack.reload
+          end
         end
         stack.state.must_equal :delete_complete
       end

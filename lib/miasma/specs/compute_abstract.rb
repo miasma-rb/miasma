@@ -31,7 +31,7 @@ MIASMA_COMPUTE_ABSTRACT = ->{
 
       before do
         unless($miasma_instance)
-          VCR.use_cassette('Miasma_Models_Compute_Aws/GLOBAL_compute_instance_create') do
+          VCR.use_cassette('Miasma_Models_Compute_Global/GLOBAL_compute_instance_create') do
             @instance = compute.servers.build(build_args)
             @instance.save
             until(@instance.state == :running)
@@ -41,7 +41,7 @@ MIASMA_COMPUTE_ABSTRACT = ->{
             $miasma_instance = @instance
           end
           Kernel.at_exit do
-            VCR.use_cassette('Miasma_Models_Compute_Aws/GLOBAL_compute_instance_destroy') do
+            VCR.use_cassette('Miasma_Models_Compute_Global/GLOBAL_compute_instance_destroy') do
               $miasma_instance.destroy
             end
           end

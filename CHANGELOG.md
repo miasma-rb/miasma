@@ -1,3 +1,6 @@
+# v0.2.38
+* Fix cassette naming within spec abstracts
+
 # v0.2.36
 * Refactor abstract model specs
 

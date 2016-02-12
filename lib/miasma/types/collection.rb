@@ -102,9 +102,14 @@ module Miasma
       # @param ident [String, Symbol] model identifier
       # @return [Model, NilClass]
       def perform_get(ident)
-        all.detect do |obj|
-          obj.id == ident ||
-            (obj.respond_to?(:name) && !obj.name.nil? && obj.name == ident)
+        get_name = "#{Bogo::Utility.snake(self.class.name.split('::').last)}_get"
+        if(api.respond_to?(get_name))
+          api.send(get_name, ident)
+        else
+          all.detect do |obj|
+            obj.id == ident ||
+              (obj.respond_to?(:name) && !obj.name.nil? && obj.name == ident)
+          end
         end
       end
 

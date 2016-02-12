@@ -7,6 +7,7 @@ module Miasma
     class Model < Data
 
       include Utils::Memoization
+      include Utils::ApiMethoding
 
       attribute :custom, Smash, :coerce => lambda{|v| v.to_smash}, :default => Smash.new
 
@@ -100,7 +101,11 @@ module Miasma
       # @return [TrueClass, FalseClass] performed remote action
       # @raises [Miasma::Error::Save]
       def perform_save
-        raise NotImplementedError.new 'Remote API save has not been implemented'
+        if(m_name = api_method_for(:save))
+          api.send(m_name, self)
+        else
+          raise NotImplementedError.new 'Remote API save has not been implemented'
+        end
       end
 
       # Reload model state from remote API
@@ -108,7 +113,11 @@ module Miasma
       # @return [TrueClass, FalseClass] performed remote action
       # @raises [Miasma::Error::Save]
       def perform_reload
-        raise NotImplementedError.new 'Remote API reload has not been implemented'
+        if(m_name = api_method_for(:reload))
+          api.send(m_name, self)
+        else
+          raise NotImplementedError.new 'Remote API reload has not been implemented'
+        end
       end
 
       # Destroy model from remote API
@@ -116,7 +125,11 @@ module Miasma
       # @return [TrueClass, FalseClass] performed remote action
       # @raises [Miasma::Error::Save]
       def perform_destroy
-        raise NotImplementedError.new 'Remote API destroy has not been implemented'
+        if(m_name = api_method_for(:destroy))
+          api.send(m_name, self)
+        else
+          raise NotImplementedError.new 'Remote API destroy has not been implemented'
+        end
       end
 
     end

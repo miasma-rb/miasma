@@ -7,13 +7,13 @@ module Miasma
     class Collection
 
       include Utils::Memoization
+      include Utils::ApiMethoding
 
       # @return [Miasma::Api] underlying service API
       attr_reader :api
 
       def initialize(api)
         @api = api
-        @collection = nil
       end
 
       # @return [Array<Model>]
@@ -102,9 +102,8 @@ module Miasma
       # @param ident [String, Symbol] model identifier
       # @return [Model, NilClass]
       def perform_get(ident)
-        get_name = "#{Bogo::Utility.snake(self.class.name.split('::').last)}_get"
-        if(api.respond_to?(get_name))
-          api.send(get_name, ident)
+        if(m_name = api_method_for(:get))
+          api.send(m_name, ident)
         else
           all.detect do |obj|
             obj.id == ident ||
@@ -115,17 +114,25 @@ module Miasma
 
       # @return [Array<Model>]
       def perform_population
-        raise NotImplementedError
+        if(m_name = api_method_for(:all))
+          api.send(m_name)
+        else
+          raise NotImplementedError
+        end
       end
 
       # @return [Array<Model>]
       def perform_filter(args)
-        if(args[:prefix])
-          all.find_all do |item|
-            item.name.start_with?(args[:prefix])
-          end
+        if(m_name = api_method_for(:filter))
+          api.send(m_name, args)
         else
-          all
+          if(args[:prefix])
+            all.find_all do |item|
+              item.name.start_with?(args[:prefix])
+            end
+          else
+            all
+          end
         end
       end
 

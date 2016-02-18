@@ -19,12 +19,6 @@ describe Miasma do
       end.must_raise ArgumentError
     end
 
-    it 'should require `:credentials` argument' do
-      lambda do
-        Miasma.api(:provider => '', :type => '')
-      end.must_raise ArgumentError
-    end
-
     it 'should fail to load unknown provider' do
       lambda do
         Miasma.api(:provider => :unknown, :type => :compute, :credentials => {})

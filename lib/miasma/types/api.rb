@@ -14,6 +14,8 @@ module Miasma
       include Miasma::Utils::Lazy
       include Miasma::Utils::Memoization
 
+      always_clean!
+
       # Create new API connection
       #
       # @param creds [Smash] credentials

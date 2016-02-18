@@ -1,3 +1,10 @@
+# v0.3.0
+* Automatically check for API provided methods
+* Remove provider specific dependencies
+
+_NOTE: Provider specific libraries are not longer
+automatically included and must be explicitly defined._
+
 # v0.2.38
 * Fix cassette naming within spec abstracts
 

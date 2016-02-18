@@ -1,3 +1,5 @@
+require_relative '../spec.rb'
+
 describe Miasma do
   it 'should provide an #api entry method' do
     Miasma.respond_to?(:api).must_equal true

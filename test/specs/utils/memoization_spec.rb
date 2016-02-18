@@ -1,3 +1,5 @@
+require_relative '../../spec.rb'
+
 describe Miasma::Utils::Memoization do
 
   before do
@@ -6,7 +8,7 @@ describe Miasma::Utils::Memoization do
   end
 
   after do
-    Thread.current[:miasma_memoization] = nil
+    Thread.current[:bogo_memoization] = nil
   end
 
   let(:memo){ @memo }

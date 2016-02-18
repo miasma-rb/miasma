@@ -15,11 +15,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'multi_xml'
   s.add_runtime_dependency 'xml-simple'
   s.add_runtime_dependency 'bogo', '>= 0.1.30', '< 1.0'
-  # Include provider libs that do not have outside deps
-  s.add_runtime_dependency 'miasma-aws'
-  s.add_runtime_dependency 'miasma-open-stack'
-  s.add_runtime_dependency 'miasma-rackspace'
-  # Include development dependencies for running tests
   s.add_development_dependency 'pry'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'minitest'
   s.files = Dir['{bin,lib}/**/*'] + %w(miasma.gemspec README.md CHANGELOG.md LICENSE)
 end

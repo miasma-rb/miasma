@@ -1,3 +1,5 @@
+require_relative '../spec.rb'
+
 describe Miasma do
   it 'should provide an #api entry method' do
     Miasma.respond_to?(:api).must_equal true
@@ -14,12 +16,6 @@ describe Miasma do
     it 'should require `:provider` argument' do
       lambda do
         Miasma.api(:type => '', :credentials => {})
-      end.must_raise ArgumentError
-    end
-
-    it 'should require `:credentials` argument' do
-      lambda do
-        Miasma.api(:provider => '', :type => '')
       end.must_raise ArgumentError
     end
 

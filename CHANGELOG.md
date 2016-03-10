@@ -1,3 +1,6 @@
+# v0.3.2
+* Update events update! helper to properly fetch new items
+
 # v0.3.0
 * Automatically check for API provided methods
 * Remove provider specific dependencies

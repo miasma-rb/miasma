@@ -44,16 +44,20 @@ module Miasma
           #
           # @return [Array<Event>] new events fetched
           def update!
-            current_events = all
-            unmemoize(:collection)
-            if(api.respond_to?(:event_all_new))
-              new_events = api.event_all_new(self)
-              memoize(:collection) do
-                new_events + current_events
+            if(memoized?(:collection))
+              current_events = all
+              if(api.respond_to?(:event_all_new))
+                new_events = api.event_all_new(self)
+                unmemoize(:collection)
+                memoize(:collection) do
+                  new_events + current_events
+                end
+                new_events
+              else
+                all - current_events
               end
-              new_events
             else
-              all - current_events
+              all
             end
           end
 

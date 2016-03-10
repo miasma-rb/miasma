@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'multi_json'
   s.add_runtime_dependency 'multi_xml'
   s.add_runtime_dependency 'xml-simple'
-  s.add_runtime_dependency 'bogo', '>= 0.1.30', '< 1.0'
+  s.add_runtime_dependency 'bogo', '>= 0.2.2', '< 1.0'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'minitest'

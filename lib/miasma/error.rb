@@ -81,6 +81,10 @@ module Miasma
     class OrchestrationError < Error
       # Template failed to validate
       class InvalidTemplate < OrchestrationError; end
+      # Stack is not in correct state for planning
+      class InvalidPlanState < OrchestrationError; end
+      # Plan is no longer valid for stack
+      class InvalidStackPlan < OrchestrationError; end
     end
 
     # Invalid modification request

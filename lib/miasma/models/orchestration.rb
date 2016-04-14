@@ -87,6 +87,14 @@ module Miasma
         raise NotImplementedError
       end
 
+      # Plan stack update
+      #
+      # @param stack [Stack]
+      # @return [Hash]
+      def stack_plan(stack)
+        raise NotImplementedError
+      end
+
       # Return all resources for stack
       #
       # @param stack [Models::Orchestration::Stack]

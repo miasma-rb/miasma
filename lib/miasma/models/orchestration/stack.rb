@@ -6,12 +6,61 @@ module Miasma
       # Abstract server
       class Stack < Types::Model
 
+        # Stack states which are valid to apply update plan
+        VALID_PLAN_STATES = [
+          :create_complete, :update_complete, :update_failed,
+          :rollback_complete, :rollback_failed
+        ]
+
         autoload :Resource, 'miasma/models/orchestration/resource'
         autoload :Resources, 'miasma/models/orchestration/resources'
         autoload :Event, 'miasma/models/orchestration/event'
         autoload :Events, 'miasma/models/orchestration/events'
 
         include Miasma::Utils::Memoization
+
+        # Stack update plan
+        class Plan < Types::Data
+
+          attr_reader :stack
+
+          def initialize(stack, args={})
+            @stack = stack
+            super args
+          end
+
+          class Diff < Types::Data
+            attribute :name, String, :required => true
+            attribute :current, String, :required => true
+            attribute :proposed, String, :required => true
+          end
+
+          # Plan item
+          class Item < Types::Data
+            attribute :name, String, :required => true
+            attribute :type, String, :required => true
+            attribute :diffs, Diff, :multiple => true
+          end
+
+          attribute :add, ItemCollection, :multiple => true
+          attribute :remove, ItemCollection, :multiple => true
+          attribute :replace, ItemCollection, :multiple => true
+          attribute :interrupt, ItemCollection, :multiple => true
+          attribute :unavailable, ItemCollection, :multiple => true
+          attribute :unknown, ItemCollection, :multiple => true
+
+          # Apply this stack plan
+          #
+          # @return [Stack]
+          def apply!
+            if self == stack.plan
+              stack.plan_apply
+            else
+              raise Error::InvalidStackPlan.new "Plan is no longer valid for linked stack."
+            end
+            stack.reload
+          end
+        end
 
         # Stack output
         class Output < Types::Data
@@ -42,7 +91,7 @@ module Miasma
         attribute :template_url, String
         attribute :template_description, String
         attribute :timeout_in_minutes, Integer
-        attribute :tags, Smash, :coerce => lambda{|v| v.to_smash}
+        attribute :tags, Smash, :coerce => lambda{|v| v.to_smash}, :default => Smash.new
         # TODO: This is new in AWS but I like this better for the
         # attribute. For now, keep both but i would like to deprecate
         # out the disable_rollback and provide the same functionality
@@ -51,6 +100,7 @@ module Miasma
         attribute :disable_rollback, [TrueClass, FalseClass]
         attribute :notification_topics, String, :multiple => true
         attribute :capabilities, String, :multiple => true
+        attribute :plan, Plan, :depends_on => :perform_template_plan
 
         on_missing :reload
 
@@ -73,6 +123,13 @@ module Miasma
         # @raises [Miasma::Error::OrchestrationError::InvalidTemplate]
         def validate
           perform_template_validate
+        end
+
+        # Apply current plan
+        #
+        # @return [self]
+        def plan_apply
+          perform_template_apply
         end
 
         # Override to scrub custom caches
@@ -110,6 +167,33 @@ module Miasma
         end
 
         protected
+
+        # Stack is in valid state to generate plan
+        #
+        # @return [TrueClass, FalseClass]
+        def planable?
+          VALID_PLAN_STATES.include?(state)
+        end
+
+        # Proxy plan action up to the API
+        def perform_plan
+          if planable?
+            api.stack_plan(self)
+          else
+            raise Error::InvalidPlanState.new "Stack state `#{state}` is not" \
+              "valid for plan generation"
+          end
+        end
+
+        # Proxy plan apply action up to the API
+        def perform_plan_apply
+          api.stack_plan_apply(self)
+        end
+
+        # Proxy plan delete action up to the API
+        def perform_plan_delete
+          api.stack_plan_delete(self)
+        end
 
         # Proxy save action up to the API
         def perform_save

@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = 'Smoggy API'
   s.license = 'Apache 2.0'
   s.require_path = 'lib'
-  s.add_runtime_dependency 'http', '>= 0.8.12', '< 1.1'
+  s.add_runtime_dependency 'http', '>= 0.8.12', '< 2.0'
   s.add_runtime_dependency 'multi_json'
   s.add_runtime_dependency 'multi_xml'
   s.add_runtime_dependency 'xml-simple'

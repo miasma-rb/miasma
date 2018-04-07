@@ -1,5 +1,5 @@
-require 'miasma'
-require 'digest/sha2'
+require "miasma"
+require "digest/sha2"
 
 module Miasma
   module Utils

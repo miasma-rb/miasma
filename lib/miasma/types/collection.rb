@@ -1,11 +1,10 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Types
 
     # Base collection
     class Collection
-
       include Utils::Memoization
       include Utils::ApiMethoding
 
@@ -47,7 +46,7 @@ module Miasma
       # @return [Array<Model>]
       # @todo need to add helper to deep sort args, convert to string
       #   and hash to use as memoization key
-      def filter(args={})
+      def filter(args = {})
         key = "filter_#{args.to_smash.checksum}"
         memoize(key) do
           perform_filter(args)
@@ -58,7 +57,7 @@ module Miasma
       #
       # @param args [Hash] creation options
       # @return [Model]
-      def build(args={})
+      def build(args = {})
         instance = self.model.new(self.api)
         args.each do |m_name, m_value|
           m_name = "#{m_name}="
@@ -78,7 +77,7 @@ module Miasma
       # @return [self]
       def from_json(json)
         loaded = MultiJson.load(json)
-        unless(loaded.is_a?(Array))
+        unless loaded.is_a?(Array)
           raise TypeError.new "Expecting type `Array` but received `#{loaded.class}`"
         end
         unmemoize(:collection)
@@ -102,7 +101,7 @@ module Miasma
       # @param ident [String, Symbol] model identifier
       # @return [Model, NilClass]
       def perform_get(ident)
-        if(m_name = api_method_for(:get))
+        if m_name = api_method_for(:get)
           api.send(m_name, ident)
         else
           all.detect do |obj|
@@ -114,7 +113,7 @@ module Miasma
 
       # @return [Array<Model>]
       def perform_population
-        if(m_name = api_method_for(:all))
+        if m_name = api_method_for(:all)
           api.send(m_name)
         else
           raise NotImplementedError
@@ -123,10 +122,10 @@ module Miasma
 
       # @return [Array<Model>]
       def perform_filter(args)
-        if(m_name = api_method_for(:filter))
+        if m_name = api_method_for(:filter)
           api.send(m_name, args)
         else
-          if(args[:prefix])
+          if args[:prefix]
             all.find_all do |item|
               item.name.start_with?(args[:prefix])
             end
@@ -135,7 +134,6 @@ module Miasma
           end
         end
       end
-
     end
   end
 end

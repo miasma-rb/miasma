@@ -1,11 +1,10 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
     class LoadBalancer
       # Abstract balancer
       class Balancer < Types::Model
-
         class Server < Types::ThinModel
           model Miasma::Models::Compute::Server
         end
@@ -41,14 +40,14 @@ module Miasma
         attribute :name, String
         attribute :state, Symbol, :allowed_values => [:active, :pending, :terminated]
         attribute :status, String
-        attribute :servers, Server, :multiple => true, :coerce => lambda{|v| Server.new(v)}
-        attribute :public_addresses, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
-        attribute :private_addresses, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
-        attribute :health_check, HealthCheck, :coerce => lambda{|v| HealthCheck.new(v)}
-        attribute :listeners, Listener, :coerce => lambda{|v| Listener.new(v)}, :multiple => true
-        attribute :created, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
-        attribute :updated, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
-        attribute :server_states, ServerState, :multiple => true, :coerce => lambda{|v| ServerState.new(v)}
+        attribute :servers, Server, :multiple => true, :coerce => lambda { |v| Server.new(v) }
+        attribute :public_addresses, Address, :multiple => true, :coerce => lambda { |v| Address.new(v) }
+        attribute :private_addresses, Address, :multiple => true, :coerce => lambda { |v| Address.new(v) }
+        attribute :health_check, HealthCheck, :coerce => lambda { |v| HealthCheck.new(v) }
+        attribute :listeners, Listener, :coerce => lambda { |v| Listener.new(v) }, :multiple => true
+        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
+        attribute :updated, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
+        attribute :server_states, ServerState, :multiple => true, :coerce => lambda { |v| ServerState.new(v) }
 
         on_missing :reload
 
@@ -73,7 +72,6 @@ module Miasma
         def perform_destroy
           api.balancer_destroy(self)
         end
-
       end
     end
   end

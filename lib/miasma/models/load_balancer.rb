@@ -1,18 +1,17 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
     # Abstract load balancer API
     class LoadBalancer < Types::Api
-
-      autoload :Balancer, 'miasma/models/load_balancer/balancer'
-      autoload :Balancers, 'miasma/models/load_balancer/balancers'
+      autoload :Balancer, "miasma/models/load_balancer/balancer"
+      autoload :Balancers, "miasma/models/load_balancer/balancers"
 
       # Load balancers
       #
       # @param filter [Hash] filtering options
       # @return [Types::Collection<Models::LoadBalancer::Balancer>] auto scale groups
-      def balancers(filter={})
+      def balancers(filter = {})
         memoize(:balancers) do
           Balancers.new(self)
         end
@@ -46,10 +45,9 @@ module Miasma
       #
       # @param options [Hash] filter
       # @return [Array<Models::LoadBalancer::Balancer>]
-      def balancer_all(options={})
+      def balancer_all(options = {})
         raise NotImplementedError
       end
-
     end
   end
 end

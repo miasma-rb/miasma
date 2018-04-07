@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Types
@@ -7,9 +7,9 @@ module Miasma
     class Api
 
       # HTTP request methods that are allowed retry
-      VALID_REQUEST_RETRY_METHODS=[:get, :head]
+      VALID_REQUEST_RETRY_METHODS = [:get, :head]
       # Maximum allowed HTTP request retries (for non-HTTP related errors)
-      MAX_REQUEST_RETRIES=5
+      MAX_REQUEST_RETRIES = 5
 
       include Miasma::Utils::Lazy
       include Miasma::Utils::Memoization
@@ -22,7 +22,7 @@ module Miasma
       # @return [self]
       def initialize(creds)
         custom_setup(creds)
-        if(creds.is_a?(Hash))
+        if creds.is_a?(Hash)
           load_data(creds)
         else
           raise TypeError.new "Expecting `credentials` to be of type `Hash`. Received: `#{creds.class}`"
@@ -51,7 +51,7 @@ module Miasma
 
       # @return [Symbol] name of provider
       def provider
-        Utils.snake(self.class.to_s.split('::').last).to_sym
+        Utils.snake(self.class.to_s.split("::").last).to_sym
       end
 
       # Connect to the remote API
@@ -71,7 +71,7 @@ module Miasma
             Smash.new(
               :type => type,
               :provider => provider,
-              :credentials => attributes
+              :credentials => attributes,
             )
           )
         end
@@ -79,12 +79,12 @@ module Miasma
 
       # @return [HTTP]
       def connection
-        HTTP.headers('User-Agent' => "miasma/v#{Miasma::VERSION}")
+        HTTP.headers("User-Agent" => "miasma/v#{Miasma::VERSION}")
       end
 
       # @return [String] url endpoint
       def endpoint
-        'http://api.example.com'
+        "http://api.example.com"
       end
 
       # Perform request to remote API
@@ -98,9 +98,9 @@ module Miasma
       # @raises [Error::ApiError::RequestError]
       def request(args)
         args = args.to_smash
-        http_method = args.fetch(:method, 'get').to_s.downcase.to_sym
-        unless(HTTP::Request::METHODS.include?(http_method))
-          raise ArgumentError.new 'Invalid request method provided!'
+        http_method = args.fetch(:method, "get").to_s.downcase.to_sym
+        unless HTTP::Request::METHODS.include?(http_method)
+          raise ArgumentError.new "Invalid request method provided!"
         end
         request_args = [].tap do |ary|
           _endpoint = args.delete(:endpoint) || endpoint
@@ -114,7 +114,7 @@ module Miasma
           end
           ary.push(options) unless options.empty?
         end
-        if(args[:headers])
+        if args[:headers]
           _connection = connection.headers(args[:headers])
           args.delete(:headers)
         else
@@ -122,7 +122,7 @@ module Miasma
         end
         result = retryable_request(http_method) do
           res = make_request(_connection, http_method, request_args)
-          unless([args.fetch(:expects, 200)].flatten.compact.map(&:to_i).include?(res.code))
+          unless [args.fetch(:expects, 200)].flatten.compact.map(&:to_i).include?(res.code)
             raise Error::ApiError::RequestError.new(res.reason, :response => res)
           end
           res
@@ -145,7 +145,7 @@ module Miasma
           :ui => data[:retry_ui],
           :auto_run => false,
           &block
-        ).run!{|e| perform_request_retry(e) }
+        ).run! { |e| perform_request_retry(e) }
       end
 
       # Determine if request type is allowed to be retried
@@ -182,28 +182,27 @@ module Miasma
       # @param result [HTTP::Response]
       # @param extract_body [TrueClass, FalseClass] automatically extract body
       # @return [Smash]
-      def format_response(result, extract_body=true)
-        extracted_headers = Smash[result.headers.map{|k,v| [Utils.snake(k), v]}]
-        if(extract_body)
+      def format_response(result, extract_body = true)
+        extracted_headers = Smash[result.headers.map { |k, v| [Utils.snake(k), v] }]
+        if extract_body
           body_content = result.body.to_s
-          body_content.encode!('UTF-8', 'binary',
-            :invalid => :replace,
-            :undef => :replace,
-            :replace => ''
-          )
-          if(extracted_headers[:content_type].to_s.include?('json'))
+          body_content.encode!("UTF-8", "binary",
+                               :invalid => :replace,
+                               :undef => :replace,
+                               :replace => "")
+          if extracted_headers[:content_type].to_s.include?("json")
             extracted_body = from_json(body_content) || body_content
-          elsif(extracted_headers[:content_type].to_s.include?('xml'))
+          elsif extracted_headers[:content_type].to_s.include?("xml")
             extracted_body = from_xml(body_content) || body_content
           else
             extracted_body = from_json(body_content) ||
-              from_xml(body_content) ||
-              body_content
+                             from_xml(body_content) ||
+                             body_content
           end
         end
-        unless(extracted_body)
+        unless extracted_body
           # @note if body is over 100KB, do not extract
-          if(extracted_headers[:content_length].to_i < 102400)
+          if extracted_headers[:content_length].to_i < 102400
             extracted_body = result.body.to_s
           else
             extracted_body = result.body
@@ -212,7 +211,7 @@ module Miasma
         Smash.new(
           :response => result,
           :headers => extracted_headers,
-          :body => extracted_body
+          :body => extracted_body,
         )
       end
 
@@ -239,8 +238,6 @@ module Miasma
           nil
         end
       end
-
     end
-
   end
 end

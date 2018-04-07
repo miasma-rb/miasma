@@ -1,18 +1,18 @@
 # Load in dependencies
-require 'http'
-require 'bogo'
-require 'bogo/http_proxy'
-require 'multi_json'
-require 'multi_xml'
+require "http"
+require "bogo"
+require "bogo/http_proxy"
+require "multi_json"
+require "multi_xml"
 
 # Make version available
-require 'miasma/version'
+require "miasma/version"
 
 module Miasma
-  autoload :Error, 'miasma/error'
-  autoload :Models, 'miasma/models'
-  autoload :Types, 'miasma/types'
-  autoload :Utils, 'miasma/utils'
+  autoload :Error, "miasma/error"
+  autoload :Models, "miasma/models"
+  autoload :Types, "miasma/types"
+  autoload :Utils, "miasma/utils"
 
   # Generate and API connection
   #
@@ -20,10 +20,10 @@ module Miasma
   # @option args [String, Symbol] :type API type (:compute, :dns, etc)
   # @option args [String, Symbol] :provider Service provider
   # @option args [Hash] :credentials Service provider credentials
-  def self.api(args={})
+  def self.api(args = {})
     args = Utils::Smash.new(args)
     [:type, :provider].each do |key|
-      unless(args[key])
+      unless args[key]
         raise ArgumentError.new "Missing required api argument `#{key.inspect}`!"
       end
     end
@@ -37,9 +37,9 @@ module Miasma
     end
     begin
       base_klass = Models.const_get(args[:type])
-      if(base_klass)
+      if base_klass
         api_klass = base_klass.const_get(args[:provider])
-        if(api_klass)
+        if api_klass
           api_klass.new(args[:credentials].to_smash)
         else
           raise Error.new "Failed to locate #{args[:type]} API for #{args[:provider].inspect}"
@@ -51,5 +51,4 @@ module Miasma
       raise Error.new "Failed to load requested API type #{args[:type].inspect} (Reason: #{e.class} - #{e})"
     end
   end
-
 end

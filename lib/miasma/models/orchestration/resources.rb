@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -23,7 +23,7 @@ module Miasma
           #
           # @param options [Hash] filter options
           # @return [Array<Resources>]
-          def filter(options={})
+          def filter(options = {})
             raise NotImplementedError
           end
 
@@ -31,7 +31,7 @@ module Miasma
           #
           # @param args [Hash] creation options
           # @return [Resource]
-          def build(args={})
+          def build(args = {})
             Resource.new(stack, args.to_smash)
           end
 
@@ -46,9 +46,7 @@ module Miasma
           def perform_population
             api.resource_all(stack)
           end
-
         end
-
       end
     end
   end

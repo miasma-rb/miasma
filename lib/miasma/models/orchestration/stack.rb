@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -9,22 +9,21 @@ module Miasma
         # Stack states which are valid to apply update plan
         VALID_PLAN_STATES = [
           :create_complete, :update_complete, :update_failed,
-          :rollback_complete, :rollback_failed
+          :rollback_complete, :rollback_failed,
         ]
 
-        autoload :Resource, 'miasma/models/orchestration/resource'
-        autoload :Resources, 'miasma/models/orchestration/resources'
-        autoload :Event, 'miasma/models/orchestration/event'
-        autoload :Events, 'miasma/models/orchestration/events'
+        autoload :Resource, "miasma/models/orchestration/resource"
+        autoload :Resources, "miasma/models/orchestration/resources"
+        autoload :Event, "miasma/models/orchestration/event"
+        autoload :Events, "miasma/models/orchestration/events"
 
         include Miasma::Utils::Memoization
 
         # Stack update plan
         class Plan < Types::Data
-
           attr_reader :stack
 
-          def initialize(stack, args={})
+          def initialize(stack, args = {})
             @stack = stack
             super args
           end
@@ -64,39 +63,37 @@ module Miasma
 
         # Stack output
         class Output < Types::Data
-
           attribute :key, String, :required => true
           attribute :value, String, :required => true
           attribute :description, String
 
           attr_reader :stack
 
-          def initialize(stack, args={})
+          def initialize(stack, args = {})
             @stack = stack
             super args
           end
-
         end
 
         attribute :name, String, :required => true
         attribute :description, String
-        attribute :state, Symbol, :allowed => Orchestration::VALID_RESOURCE_STATES, :coerce => lambda{|v| v.to_sym}
-        attribute :outputs, Output, :coerce => lambda{|v, stack| Output.new(stack, v) }, :multiple => true
+        attribute :state, Symbol, :allowed => Orchestration::VALID_RESOURCE_STATES, :coerce => lambda { |v| v.to_sym }
+        attribute :outputs, Output, :coerce => lambda { |v, stack| Output.new(stack, v) }, :multiple => true
         attribute :status, String
         attribute :status_reason, String
-        attribute :created, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
-        attribute :updated, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
-        attribute :parameters, Smash, :coerce => lambda{|v| v.to_smash }
-        attribute :template, Smash, :depends => :perform_template_load, :coerce => lambda{|v| v = MultiJson.load(v) if v.is_a?(String); v.to_smash }
+        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
+        attribute :updated, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
+        attribute :parameters, Smash, :coerce => lambda { |v| v.to_smash }
+        attribute :template, Smash, :depends => :perform_template_load, :coerce => lambda { |v| v = MultiJson.load(v) if v.is_a?(String); v.to_smash }
         attribute :template_url, String
         attribute :template_description, String
         attribute :timeout_in_minutes, Integer
-        attribute :tags, Smash, :coerce => lambda{|v| v.to_smash}, :default => Smash.new
+        attribute :tags, Smash, :coerce => lambda { |v| v.to_smash }, :default => Smash.new
         # TODO: This is new in AWS but I like this better for the
         # attribute. For now, keep both but i would like to deprecate
         # out the disable_rollback and provide the same functionality
         # via this attribute.
-        attribute :on_failure, String, :allowed => %w(nothing rollback delete), :coerce => lambda{|v| v.to_s.downcase}
+        attribute :on_failure, String, :allowed => %w(nothing rollback delete), :coerce => lambda { |v| v.to_s.downcase }
         attribute :disable_rollback, [TrueClass, FalseClass]
         attribute :notification_topics, String, :multiple => true
         attribute :capabilities, String, :multiple => true
@@ -106,7 +103,7 @@ module Miasma
 
         # Overload the loader so we can extract resources,
         # events, and outputs
-        def load_data(args={})
+        def load_data(args = {})
           args = args.to_smash
           @resources = (args.delete(:resources) || []).each do |r|
             Resource.new(r)
@@ -181,7 +178,7 @@ module Miasma
             api.stack_plan(self)
           else
             raise Error::InvalidPlanState.new "Stack state `#{state}` is not" \
-              "valid for plan generation"
+                                              "valid for plan generation"
           end
         end
 
@@ -213,7 +210,7 @@ module Miasma
         # Proxy validate action up to API
         def perform_template_validate
           error = api.stack_template_validate(self)
-          if(error)
+          if error
             raise Error::OrchestrationError::InvalidTemplate.new(error)
           end
           true
@@ -226,9 +223,7 @@ module Miasma
             true
           end
         end
-
       end
-
     end
   end
 end

@@ -1,13 +1,11 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
     class AutoScale
       # Abstract group
       class Group < Types::Model
-
         class Server < Types::ThinModel
-
           model Miasma::Models::Compute::Server
           attribute :name, String
 
@@ -18,7 +16,6 @@ module Miasma
         end
 
         class Balancer < Types::ThinModel
-
           model Miasma::Models::LoadBalancer::Balancer
           attribute :name, String
 
@@ -26,18 +23,17 @@ module Miasma
           def expand
             api.api_for(:load_balancer).balancers.get(self.id || self.name)
           end
-
         end
 
         attribute :name, String, :required => true
-        attribute :created, Time, :coerce => lambda{|v| Time.parse(v.to_s)}
-        attribute :load_balancers, Balancer, :multiple => true, :coerce => lambda{|v,obj| Balancer.new(obj.api, v)}
-        attribute :minimum_size, Integer, :coerce => lambda{|v| v.to_i}
-        attribute :maximum_size, Integer, :coerce => lambda{|v| v.to_i}
-        attribute :desired_size, Integer, :coerce => lambda{|v| v.to_i}
-        attribute :current_size, Integer, :coerce => lambda{|v| v.to_i}
+        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
+        attribute :load_balancers, Balancer, :multiple => true, :coerce => lambda { |v, obj| Balancer.new(obj.api, v) }
+        attribute :minimum_size, Integer, :coerce => lambda { |v| v.to_i }
+        attribute :maximum_size, Integer, :coerce => lambda { |v| v.to_i }
+        attribute :desired_size, Integer, :coerce => lambda { |v| v.to_i }
+        attribute :current_size, Integer, :coerce => lambda { |v| v.to_i }
         attribute :state, Symbol, :allowed_values => []
-        attribute :servers, Server, :multiple => true, :coerce => lambda{|v,obj| Server.new(obj.api_for(:compute), v)}
+        attribute :servers, Server, :multiple => true, :coerce => lambda { |v, obj| Server.new(obj.api_for(:compute), v) }
 
         on_missing :reload
 
@@ -57,7 +53,6 @@ module Miasma
         def perform_destroy
           api.group_destroy(self)
         end
-
       end
     end
   end

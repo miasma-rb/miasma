@@ -1,5 +1,5 @@
-require 'miasma'
-require 'stringio'
+require "miasma"
+require "stringio"
 
 module Miasma
   module Models
@@ -15,15 +15,15 @@ module Miasma
           attr_reader :io
 
           def initialize(io_item)
-            unless(io_item.respond_to?(:readpartial))
-              raise TypeError.new 'Instance must respond to `#readpartial`'
+            unless io_item.respond_to?(:readpartial)
+              raise TypeError.new "Instance must respond to `#readpartial`"
             end
             @io = io_item
           end
 
           # Proxy missing methods to io
           def method_missing(method_name, *args, &block)
-            if(io.respond_to?(method_name))
+            if io.respond_to?(method_name)
               io.send(method_name, *args, &block)
             else
               raise
@@ -34,14 +34,13 @@ module Miasma
           #
           # @param length [Integer] length to read
           # @return [String]
-          def readpartial(length=nil)
+          def readpartial(length = nil)
             begin
               io.readpartial(length)
             rescue EOFError
               nil
             end
           end
-
         end
 
         attribute :name, String, :required => true
@@ -49,9 +48,9 @@ module Miasma
         attribute :content_disposition, String
         attribute :content_encoding, String
         attribute :etag, String
-        attribute :updated, Time, :coerce => lambda{|t| Time.parse(t.to_s)}
+        attribute :updated, Time, :coerce => lambda { |t| Time.parse(t.to_s) }
         attribute :size, Integer
-        attribute :metadata, Smash, :coerce => lambda{|o| o.to_smash}
+        attribute :metadata, Smash, :coerce => lambda { |o| o.to_smash }
 
         on_missing :reload
 
@@ -63,7 +62,7 @@ module Miasma
         # @param bucket [Bucket]
         # @param args [Hash]
         # @return [self]
-        def initialize(bucket, args={})
+        def initialize(bucket, args = {})
           @bucket = bucket
           super bucket.api, args
         end
@@ -73,14 +72,14 @@ module Miasma
         # @param options [Hash] filter options
         # @return [Array<File>]
         # @option options [String] :prefix key prefix
-        def filter(options={})
+        def filter(options = {})
           raise NotImplementedError
         end
 
         # @return [IO-ish]
         # @note object returned will provide #readpartial
         def body
-          unless(attributes[:body])
+          unless attributes[:body]
             data[:body] = api.file_body(self)
           end
           attributes[:body]
@@ -91,7 +90,7 @@ module Miasma
         # @param io [IO, String]
         # @return [IO]
         def body=(io)
-          unless(io.respond_to?(:readpartial))
+          unless io.respond_to?(:readpartial)
             io = StringIO.new(io)
           end
           dirty[:body] = io
@@ -101,7 +100,7 @@ module Miasma
         #
         # @param timeout_in_seconds [Integer] optional if private (default: 60)
         # @return [String] URL
-        def url(timeout_in_seconds=60)
+        def url(timeout_in_seconds = 60)
           perform_file_url(timeout_in_seconds)
         end
 
@@ -136,9 +135,7 @@ module Miasma
         def perform_destroy
           api.file_destroy(self)
         end
-
       end
-
     end
   end
 end

@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -28,11 +28,11 @@ module Miasma
         attribute :flavor_id, [String, Numeric]
         attribute :state, Symbol, :allowed => VALID_COMPUTE_STATES
         attribute :status, String
-        attribute :addresses_public, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
-        attribute :addresses_private, Address, :multiple => true, :coerce => lambda{|v| Address.new(v)}
-        attribute :networks, Network, :multiple => true, :coerce => lambda{|v| Network.new(v)}
+        attribute :addresses_public, Address, :multiple => true, :coerce => lambda { |v| Address.new(v) }
+        attribute :addresses_private, Address, :multiple => true, :coerce => lambda { |v| Address.new(v) }
+        attribute :networks, Network, :multiple => true, :coerce => lambda { |v| Network.new(v) }
         attribute :personality, [Hash, String], :default => {}
-        attribute :metadata, Hash, :coerce => lambda{|o| o.to_smash}
+        attribute :metadata, Hash, :coerce => lambda { |o| o.to_smash }
         attribute :key_name, String
 
         on_missing :reload
@@ -67,7 +67,6 @@ module Miasma
           api.server_destroy(self)
         end
       end
-
     end
   end
 end

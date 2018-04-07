@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -12,7 +12,7 @@ module Miasma
         # @param options [Hash] filter options
         # @option options [String] :state current instance state
         # @return [Array<Server>]
-        def filter(options={})
+        def filter(options = {})
           raise NotImplementedError
         end
 
@@ -27,9 +27,7 @@ module Miasma
         def perform_population
           api.server_all
         end
-
       end
-
     end
   end
 end

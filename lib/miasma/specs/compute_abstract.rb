@@ -1,47 +1,43 @@
-MIASMA_COMPUTE_ABSTRACT = ->{
+MIASMA_COMPUTE_ABSTRACT = -> {
 
   # Required `let`s:
   # * compute: compute API
   # * build_args: server build arguments [Smash]
 
   describe Miasma::Models::Compute, :vcr do
-
-    it 'should provide #servers collection' do
+    it "should provide #servers collection" do
       compute.servers.must_be_kind_of Miasma::Models::Compute::Servers
     end
 
     describe Miasma::Models::Compute::Servers do
-
-      it 'should provide instance class used within collection' do
+      it "should provide instance class used within collection" do
         compute.servers.model.must_equal Miasma::Models::Compute::Server
       end
 
-      it 'should build new instance for collection' do
-        instance = compute.servers.build(:name => 'test')
+      it "should build new instance for collection" do
+        instance = compute.servers.build(:name => "test")
         instance.must_be_kind_of Miasma::Models::Compute::Server
       end
 
-      it 'should provide #all servers' do
+      it "should provide #all servers" do
         compute.servers.all.must_be_kind_of Array
       end
-
     end
 
     describe Miasma::Models::Compute::Server do
-
       before do
-        unless($miasma_instance)
-          VCR.use_cassette('Miasma_Models_Compute_Global/GLOBAL_compute_instance_create') do
+        unless $miasma_instance
+          VCR.use_cassette("Miasma_Models_Compute_Global/GLOBAL_compute_instance_create") do
             @instance = compute.servers.build(build_args)
             @instance.save
-            until(@instance.state == :running)
+            until @instance.state == :running
               miasma_spec_sleep
               @instance.reload
             end
             $miasma_instance = @instance
           end
           Kernel.at_exit do
-            VCR.use_cassette('Miasma_Models_Compute_Global/GLOBAL_compute_instance_destroy') do
+            VCR.use_cassette("Miasma_Models_Compute_Global/GLOBAL_compute_instance_destroy") do
               $miasma_instance.destroy
             end
           end
@@ -51,68 +47,63 @@ MIASMA_COMPUTE_ABSTRACT = ->{
         @instance.reload
       end
 
-      let(:instance){ @instance }
+      let(:instance) { @instance }
 
-      describe 'instance methods' do
-
-        it 'should have a name' do
+      describe "instance methods" do
+        it "should have a name" do
           instance.name.must_equal build_args[:name]
         end
 
-        it 'should have an image_id' do
+        it "should have an image_id" do
           instance.image_id.must_equal build_args[:image_id]
         end
 
-        it 'should have a flavor_id' do
+        it "should have a flavor_id" do
           instance.flavor_id.must_equal build_args[:flavor_id]
         end
 
-        it 'should have an address' do
+        it "should have an address" do
           instance.addresses.detect do |addr|
             addr.version == 4
           end.address.must_match /^(\d+)+\.(\d+)\.(\d+)\.(\d+)$/
         end
 
-        it 'should have a status' do
+        it "should have a status" do
           instance.status.wont_be_nil
         end
 
-        it 'should be in :running state' do
+        it "should be in :running state" do
           instance.state.must_equal :running
         end
-
       end
-
     end
 
-    describe 'instance lifecycle' do
-      it 'should create new server, reload details and destroy server' do
+    describe "instance lifecycle" do
+      it "should create new server, reload details and destroy server" do
         instance = compute.servers.build(build_args)
         instance.save
         instance.id.wont_be_nil
         instance.state.must_equal :pending
         compute.servers.reload.get(instance.id).wont_be_nil
-        until(instance.state == :running)
+        until instance.state == :running
           miasma_spec_sleep
           instance.reload
         end
         instance.state.must_equal :running
         instance.destroy
-        while(instance.state == :running)
+        while instance.state == :running
           miasma_spec_sleep
           instance.reload
         end
         [:pending, :terminated].must_include instance.state
-        if(instance.state == :pending)
-          until(instance.state == :terminated)
+        if instance.state == :pending
+          until instance.state == :terminated
             miasma_spec_sleep
             instance.reload
           end
           instance.state.must_equal :terminated
         end
       end
-
     end
-
   end
 }

@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -23,7 +23,7 @@ module Miasma
           #
           # @param options [Hash] filter options
           # @return [Array<Event>]
-          def filter(options={})
+          def filter(options = {})
             raise NotImplementedError
           end
 
@@ -31,7 +31,7 @@ module Miasma
           #
           # @param args [Hash] creation options
           # @return [Event]
-          def build(args={})
+          def build(args = {})
             Event.new(stack, args.to_smash)
           end
 
@@ -44,9 +44,9 @@ module Miasma
           #
           # @return [Array<Event>] new events fetched
           def update!
-            if(memoized?(:collection))
+            if memoized?(:collection)
               current_events = all
-              if(api.respond_to?(:event_all_new))
+              if api.respond_to?(:event_all_new)
                 new_events = api.event_all_new(self)
                 unmemoize(:collection)
                 memoize(:collection) do
@@ -67,9 +67,7 @@ module Miasma
           def perform_population
             api.event_all(stack)
           end
-
         end
-
       end
     end
   end

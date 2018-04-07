@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -7,7 +7,6 @@ module Miasma
 
         # Stack event
         class Event < Types::Model
-
           attribute :time, Time, :required => true
           attribute :resource_id, [String, Numeric], :required => true
           attribute :resource_logical_id, [String, Numeric]
@@ -18,7 +17,7 @@ module Miasma
 
           attr_reader :stack
 
-          def initialize(stack, args={})
+          def initialize(stack, args = {})
             @stack = stack
             super stack.api, args
           end
@@ -29,9 +28,7 @@ module Miasma
           end
 
           include Utils::Immutable
-
         end
-
       end
     end
   end

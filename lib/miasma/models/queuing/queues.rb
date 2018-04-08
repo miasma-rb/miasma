@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -11,7 +11,7 @@ module Miasma
         #
         # @param options [Hash] filter options
         # @return [Array<Queue>]
-        def filter(options={})
+        def filter(options = {})
           raise NotImplementedError
         end
 
@@ -26,9 +26,7 @@ module Miasma
         def perform_population
           api.queue_all
         end
-
       end
-
     end
   end
 end

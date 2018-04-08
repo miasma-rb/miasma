@@ -1,12 +1,11 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
     # Abstract orchestration API
     class Orchestration < Types::Api
-
-      autoload :Stack, 'miasma/models/orchestration/stack'
-      autoload :Stacks, 'miasma/models/orchestration/stacks'
+      autoload :Stack, "miasma/models/orchestration/stack"
+      autoload :Stacks, "miasma/models/orchestration/stacks"
 
       # @return [Smash] mapping of remote type to internal type
       RESOURCE_MAPPING = Smash.new
@@ -26,14 +25,14 @@ module Miasma
         :rollback_complete, :rollback_in_progress, :rollback_failed,
         :update_complete, :update_in_progress, :update_failed,
         :update_rollback_complete, :update_rollback_in_progress,
-        :update_rollback_failed, :unknown
+        :update_rollback_failed, :unknown,
       ]
 
       # Orchestration stacks
       #
       # @param filter [Hash] filtering options
       # @return [Types::Collection<Models::Orchestration::Stack>] stacks
-      def stacks(args={})
+      def stacks(args = {})
         memoize(:stacks) do
           Stacks.new(self)
         end
@@ -67,7 +66,7 @@ module Miasma
       #
       # @param options [Hash] filter
       # @return [Array<Models::Orchestration::Stack>]
-      def stack_all(options={})
+      def stack_all(options = {})
         raise NotImplementedError
       end
 
@@ -84,6 +83,14 @@ module Miasma
       # @param stack [Stack]
       # @return [NilClass, String] nil if valid, string error message if invalid
       def stack_template_validate(stack)
+        raise NotImplementedError
+      end
+
+      # Plan stack update
+      #
+      # @param stack [Stack]
+      # @return [Hash]
+      def stack_plan(stack)
         raise NotImplementedError
       end
 
@@ -127,6 +134,21 @@ module Miasma
         raise NotImplementedError
       end
 
+      # Return all plans for stack
+      #
+      # @param stack [Models::Orchestration::Stack]
+      # @return [Array<Models::Orchestration::Stack::Plan>]
+      def plan_all(stack)
+        raise NotImplementedError
+      end
+
+      # Reload the plan data from the API
+      #
+      # @param plan [Models::Orchestration::Stack::Plan]
+      # @return [Models::Orchestration::Stack::Plan]
+      def plan_reload(plan)
+        raise NotImplementedError
+      end
     end
   end
 end

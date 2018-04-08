@@ -1,14 +1,13 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
     class Storage
       # Abstract bucket
       class Bucket < Types::Model
-
         attribute :name, String, :required => true
-        attribute :created, Time, :coerce => lambda{|t| Time.parse(t.to_s)}
-        attribute :metadata, Smash, :coerce => lambda{|o| o.to_smash}
+        attribute :created, Time, :coerce => lambda { |t| Time.parse(t.to_s) }
+        attribute :metadata, Smash, :coerce => lambda { |o| o.to_smash }
 
         # @return [Files]
         def files
@@ -21,7 +20,7 @@ module Miasma
         #
         # @param filter [Hash]
         # @return [Array<Bucket>]
-        def filter(filter={})
+        def filter(filter = {})
           raise NotImplementedError
         end
 
@@ -41,9 +40,7 @@ module Miasma
         def perform_destroy
           api.bucket_destroy(self)
         end
-
       end
-
     end
   end
 end

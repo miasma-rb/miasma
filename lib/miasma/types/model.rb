@@ -1,15 +1,14 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Types
 
     # Base model
     class Model < Data
-
       include Utils::Memoization
       include Utils::ApiMethoding
 
-      attribute :custom, Smash, :coerce => lambda{|v| v.to_smash}, :default => Smash.new
+      attribute :custom, Smash, :coerce => lambda { |v| v.to_smash }, :default => Smash.new
 
       # @return [Miasma::Types::Api] underlying service API
       attr_reader :api
@@ -26,7 +25,6 @@ module Miasma
           instance.from_json(json)
           instance
         end
-
       end
 
       # Build new model
@@ -34,12 +32,12 @@ module Miasma
       # @param api [Miasma::Types::Api] service API
       # @param model_data [Smash] load model data if provided
       # @return [self]
-      def initialize(api, model_data=nil)
+      def initialize(api, model_data = nil)
         @api = api
         @data = Smash.new
         @dirty = Smash.new
-        if(model_data)
-          if(model_data.is_a?(Hash))
+        if model_data
+          if model_data.is_a?(Hash)
             load_data(model_data) unless model_data.empty?
           else
             raise TypeError.new "Expecting `model_data` to be of type `Hash`. Received: `#{model_data.class}`"
@@ -53,7 +51,7 @@ module Miasma
       # @return [TrueClass, FalseClass] save was performed
       # @raises [Miasma::Error::Save]
       def save
-        if(dirty?)
+        if dirty?
           perform_save
           reload
         else
@@ -66,7 +64,7 @@ module Miasma
       # @return [TrueClass, FalseClass] destruction was performed
       # @raises [Miasma::Error::Destroy]
       def destroy
-        if(persisted?)
+        if persisted?
           perform_destroy
           reload
           true
@@ -101,10 +99,10 @@ module Miasma
       # @return [TrueClass, FalseClass] performed remote action
       # @raises [Miasma::Error::Save]
       def perform_save
-        if(m_name = api_method_for(:save))
+        if m_name = api_method_for(:save)
           api.send(m_name, self)
         else
-          raise NotImplementedError.new 'Remote API save has not been implemented'
+          raise NotImplementedError.new "Remote API save has not been implemented"
         end
       end
 
@@ -113,10 +111,10 @@ module Miasma
       # @return [TrueClass, FalseClass] performed remote action
       # @raises [Miasma::Error::Save]
       def perform_reload
-        if(m_name = api_method_for(:reload))
+        if m_name = api_method_for(:reload)
           api.send(m_name, self)
         else
-          raise NotImplementedError.new 'Remote API reload has not been implemented'
+          raise NotImplementedError.new "Remote API reload has not been implemented"
         end
       end
 
@@ -125,13 +123,12 @@ module Miasma
       # @return [TrueClass, FalseClass] performed remote action
       # @raises [Miasma::Error::Save]
       def perform_destroy
-        if(m_name = api_method_for(:destroy))
+        if m_name = api_method_for(:destroy)
           api.send(m_name, self)
         else
-          raise NotImplementedError.new 'Remote API destroy has not been implemented'
+          raise NotImplementedError.new "Remote API destroy has not been implemented"
         end
       end
-
     end
   end
 end

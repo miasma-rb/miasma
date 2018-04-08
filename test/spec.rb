@@ -1,2 +1,2 @@
-require 'miasma'
-require 'minitest/autorun'
+require "miasma"
+require "minitest/autorun"

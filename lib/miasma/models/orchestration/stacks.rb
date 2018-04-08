@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -12,7 +12,7 @@ module Miasma
         # @param options [Hash] filter options
         # @option options [String] :state current stack state
         # @return [Array<Stack>]
-        def filter(options={})
+        def filter(options = {})
           raise NotImplementedError
         end
 
@@ -30,15 +30,13 @@ module Miasma
 
         # @return [Stack]
         def perform_get(ident)
-          if(api.respond_to?(:stack_get))
+          if api.respond_to?(:stack_get)
             api.stack_get(ident)
           else
             super
           end
         end
-
       end
-
     end
   end
 end

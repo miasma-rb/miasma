@@ -1,18 +1,17 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
     # Abstract auto scale API
     class AutoScale < Types::Api
-
-      autoload :Group, 'miasma/models/auto_scale/group'
-      autoload :Groups, 'miasma/models/auto_scale/groups'
+      autoload :Group, "miasma/models/auto_scale/group"
+      autoload :Groups, "miasma/models/auto_scale/groups"
 
       # Auto scale groups
       #
       # @param filter [Hash] filtering options
       # @return [Types::Collection<Models::AutoScale::Groups>] auto scale groups
-      def groups(filter={})
+      def groups(filter = {})
         memoize(:groups) do
           Groups.new(self)
         end
@@ -46,10 +45,9 @@ module Miasma
       #
       # @param options [Hash] filter
       # @return [Array<Models::AutoScale::Group>]
-      def group_all(options={})
+      def group_all(options = {})
         raise NotImplementedError
       end
-
     end
   end
 end

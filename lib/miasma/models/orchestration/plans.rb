@@ -5,8 +5,8 @@ module Miasma
     class Orchestration
       class Stack
 
-        # Abstract stack resources collection
-        class Resources < Types::Collection
+        # Abstract stack plans collection
+        class Plans < Types::Collection
 
           # @return [Miasma::Models::Orchestration::Stack]
           attr_reader :stack
@@ -19,32 +19,32 @@ module Miasma
             super stack.api
           end
 
-          # Return resources matching given filter
+          # Return plans matching given filter
           #
           # @param options [Hash] filter options
-          # @return [Array<Resources>]
+          # @return [Array<Plans>]
           def filter(options = {})
             raise NotImplementedError
           end
 
-          # Build a new resource instance
+          # Build a new plan instance
           #
           # @param args [Hash] creation options
-          # @return [Resource]
+          # @return [Plan]
           def build(args = {})
-            Resource.new(stack, args.to_smash)
+            Plan.new(stack, args.to_smash)
           end
 
-          # @return [Resource] collection item class
+          # @return [Plan] collection item class
           def model
-            Resource
+            Plan
           end
 
           protected
 
-          # @return [Array<Resources>]
+          # @return [Array<Plan>]
           def perform_population
-            api.resource_all(stack)
+            api.plan_all(stack)
           end
         end
       end

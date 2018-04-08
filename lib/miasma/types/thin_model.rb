@@ -1,20 +1,19 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Types
 
     # Base data container
     class ThinModel < Data
-
       class << self
 
         # Get/Set fat model
         #
         # @param klass [Class] fat model class
         # @return [Class] fat model class
-        def model(klass=nil)
-          if(klass)
-            unless(klass.ancestors.include?(Miasma::Types::Model))
+        def model(klass = nil)
+          if klass
+            unless klass.ancestors.include?(Miasma::Types::Model)
               raise TypeError.new "Expecting `Miasma::Types::Model` subclass! (got #{klass})"
             else
               self._model = klass
@@ -27,7 +26,6 @@ module Miasma
 
         # @return [Class] fat model class
         attr_accessor :_model
-
       end
 
       # @return [Miasma::Types::Api] service API
@@ -37,7 +35,7 @@ module Miasma
       #
       # @param api [Miasma::Types::Api] service API
       # @param args [Hash] model data
-      def initialize(api, args={})
+      def initialize(api, args = {})
         @api = api
         super args
       end
@@ -53,7 +51,7 @@ module Miasma
       # @return [Class] of type Miasma::Types::Model
       # @note will deconstruct namespace and rebuild using provider
       def model
-        if(self.class.model)
+        if self.class.model
           self.class.model
         else
           raise NotImplementedError.new "No associated model for this thin model type (#{self.class})"
@@ -68,9 +66,8 @@ module Miasma
         inst.data[:id] = self.id
         inst.reload
       end
+
       alias_method :instance, :expand
-
     end
-
   end
 end

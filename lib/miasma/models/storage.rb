@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -6,20 +6,20 @@ module Miasma
     class Storage < Types::Api
 
       # @return [Integer] max bytes allowed for storing body in string
-      MAX_BODY_SIZE_FOR_STRINGIFY = (1024**2) * 10
+      MAX_BODY_SIZE_FOR_STRINGIFY = (1024 ** 2) * 10
       # @return [Integer] chunking size for reading IO
-      READ_BODY_CHUNK_SIZE = (1024**2) * 5
+      READ_BODY_CHUNK_SIZE = (1024 ** 2) * 5
 
-      autoload :Buckets, 'miasma/models/storage/buckets'
-      autoload :Bucket, 'miasma/models/storage/bucket'
-      autoload :Files, 'miasma/models/storage/files'
-      autoload :File, 'miasma/models/storage/file'
+      autoload :Buckets, "miasma/models/storage/buckets"
+      autoload :Bucket, "miasma/models/storage/bucket"
+      autoload :Files, "miasma/models/storage/files"
+      autoload :File, "miasma/models/storage/file"
 
       # Storage buckets
       #
       # @param filter [Hash] filtering options
       # @return [Types::Collection<Models::Storage::Bucket>] buckets
-      def buckets(args={})
+      def buckets(args = {})
         memoize(:buckets) do
           Buckets.new(self)
         end
@@ -87,7 +87,6 @@ module Miasma
       def file_reload(file)
         raise NotImplementedError
       end
-
     end
   end
 end

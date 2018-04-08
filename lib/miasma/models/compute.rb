@@ -1,12 +1,11 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
     # Abstract compute API
     class Compute < Types::Api
-
-      autoload :Server, 'miasma/models/compute/server'
-      autoload :Servers, 'miasma/models/compute/servers'
+      autoload :Server, "miasma/models/compute/server"
+      autoload :Servers, "miasma/models/compute/servers"
 
       # All compute instances
       #
@@ -22,7 +21,7 @@ module Miasma
       # @param filter [Hash] search filter
       # @option filter [Symbol] :state state of server `Server::VALID_COMPUTE_STATES`
       # @return [Array<Server>]
-      def server_filter(filter={})
+      def server_filter(filter = {})
       end
 
       # Create new server instance
@@ -64,7 +63,6 @@ module Miasma
       def server_change_state(server, action)
         raise NotImplementedError
       end
-
     end
   end
 end

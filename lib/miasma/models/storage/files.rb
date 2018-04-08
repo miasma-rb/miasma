@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -24,12 +24,12 @@ module Miasma
         # @param options [Hash] filter options
         # @return [Array<File>]
         # @option options [String] :prefix key prefix
-        def filter(options={})
+        def filter(options = {})
           super
         end
 
         # @return [File] new unsaved instance
-        def build(args={})
+        def build(args = {})
           instance = self.model.new(bucket)
           args.each do |m_name, m_value|
             m_name = "#{m_name}="
@@ -54,9 +54,7 @@ module Miasma
         def perform_filter(args)
           api.file_filter(bucket, args)
         end
-
       end
-
     end
   end
 end

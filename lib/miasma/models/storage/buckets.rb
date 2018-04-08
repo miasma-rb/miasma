@@ -1,4 +1,4 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
@@ -9,7 +9,7 @@ module Miasma
       class Buckets < Types::Collection
 
         # @return [Bucket] new unsaved instance
-        def build(args={})
+        def build(args = {})
           Bucket.new(api, args.to_smash)
         end
 
@@ -24,9 +24,7 @@ module Miasma
         def perform_population
           api.bucket_all
         end
-
       end
-
     end
   end
 end

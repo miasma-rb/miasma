@@ -1,11 +1,10 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Types
 
     # Base data container
     class Data
-
       include Miasma::Utils::Lazy
 
       attribute :id, [String, Numeric]
@@ -14,7 +13,7 @@ module Miasma
       #
       # @param args [Hash] attribute values
       # @return [self]
-      def initialize(args={})
+      def initialize(args = {})
         load_data(args)
         valid_state
       end
@@ -45,9 +44,7 @@ module Miasma
         def from_json(json)
           self.new(MultiJson.load(json).to_smash)
         end
-
       end
-
     end
   end
 end

@@ -1,11 +1,10 @@
-require 'miasma'
+require "miasma"
 
 module Miasma
   module Models
     class Queuing
       # Abstract balancer
       class Queue < Types::Model
-
         class Message < Types::Data
           attribute :origin, Queue, :required => true
           attribute :content, String, :required => true
@@ -32,7 +31,7 @@ module Miasma
         # @param msg_or_msgs [String, Array<String>]
         # @param options [Hash]
         # @return [Array<Receipt>]
-        def deliver(msg_or_msgs, options={})
+        def deliver(msg_or_msgs, options = {})
           result = perform_delivery(msg_or_msgs, options)
           result.is_a?(Array) ? result : [result]
         end
@@ -41,7 +40,7 @@ module Miasma
         #
         # @param options [Hash]
         # @return [Array<Message>]
-        def receive(options={})
+        def receive(options = {})
           result = perform_receive(options)
           result.is_a?(Array) ? result : [result]
         end
@@ -49,12 +48,12 @@ module Miasma
         protected
 
         # Proxy delivery action up to the API
-        def perform_delivery(msg, options={})
+        def perform_delivery(msg, options = {})
           api.queue_deliver(self, msg, options)
         end
 
         # Proxy receive action up to the API
-        def perform_receive(options={})
+        def perform_receive(options = {})
           api.queue_receive(self, options)
         end
 
@@ -72,7 +71,6 @@ module Miasma
         def perform_destroy
           api.queue_destroy(self)
         end
-
       end
     end
   end

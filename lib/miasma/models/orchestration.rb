@@ -133,6 +133,22 @@ module Miasma
       def event_reload(event)
         raise NotImplementedError
       end
+
+      # Return all plans for stack
+      #
+      # @param stack [Models::Orchestration::Stack]
+      # @return [Array<Models::Orchestration::Stack::Plan>]
+      def plan_all(stack)
+        raise NotImplementedError
+      end
+
+      # Reload the plan data from the API
+      #
+      # @param plan [Models::Orchestration::Stack::Plan]
+      # @return [Models::Orchestration::Stack::Plan]
+      def plan_reload(plan)
+        raise NotImplementedError
+      end
     end
   end
 end

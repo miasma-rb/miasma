@@ -16,50 +16,10 @@ module Miasma
         autoload :Resources, "miasma/models/orchestration/resources"
         autoload :Event, "miasma/models/orchestration/event"
         autoload :Events, "miasma/models/orchestration/events"
+        autoload :Plan, "miasma/models/orchestration/plan"
+        autoload :Plans, "miasma/models/orchestration/plans"
 
         include Miasma::Utils::Memoization
-
-        # Stack update plan
-        class Plan < Types::Data
-          attr_reader :stack
-
-          def initialize(stack, args = {})
-            @stack = stack
-            super args
-          end
-
-          class Diff < Types::Data
-            attribute :name, String, :required => true
-            attribute :current, String, :required => true
-            attribute :proposed, String, :required => true
-          end
-
-          # Plan item
-          class Item < Types::Data
-            attribute :name, String, :required => true
-            attribute :type, String, :required => true
-            attribute :diffs, Diff, :multiple => true
-          end
-
-          attribute :add, ItemCollection, :multiple => true
-          attribute :remove, ItemCollection, :multiple => true
-          attribute :replace, ItemCollection, :multiple => true
-          attribute :interrupt, ItemCollection, :multiple => true
-          attribute :unavailable, ItemCollection, :multiple => true
-          attribute :unknown, ItemCollection, :multiple => true
-
-          # Apply this stack plan
-          #
-          # @return [Stack]
-          def apply!
-            if self == stack.plan
-              stack.plan_apply
-            else
-              raise Error::InvalidStackPlan.new "Plan is no longer valid for linked stack."
-            end
-            stack.reload
-          end
-        end
 
         # Stack output
         class Output < Types::Data
@@ -97,7 +57,7 @@ module Miasma
         attribute :disable_rollback, [TrueClass, FalseClass]
         attribute :notification_topics, String, :multiple => true
         attribute :capabilities, String, :multiple => true
-        attribute :plan, Plan, :depends_on => :perform_template_plan
+        attribute :plan, Plan, :depends => :perform_plan
 
         on_missing :reload
 
@@ -126,7 +86,26 @@ module Miasma
         #
         # @return [self]
         def plan_apply
-          perform_template_apply
+          if dirty?(:plan)
+            perform_plan_apply
+          else
+            raise Miasma::Error::OrchestrationError::InvalidStackPlan.new(
+              "This stack instance does not have a generated plan"
+            )
+          end
+        end
+
+        # Delete the current plan
+        #
+        # @return [self]
+        def plan_delete
+          if dirty?(:plan)
+            perform_plan_delete
+          else
+            raise Miasma::Error::OrchestrationError::InvalidStackPlan.new(
+              "This stack instance does not have a generated plan"
+            )
+          end
         end
 
         # Override to scrub custom caches
@@ -147,6 +126,13 @@ module Miasma
         def events
           memoize(:events) do
             Events.new(self)
+          end
+        end
+
+        # @return [Plans]
+        def plans
+          memoize(:plans) do
+            Plans.new(self)
           end
         end
 
@@ -177,8 +163,9 @@ module Miasma
           if planable?
             api.stack_plan(self)
           else
-            raise Error::InvalidPlanState.new "Stack state `#{state}` is not" \
-                                              "valid for plan generation"
+            raise Error::OrchestrationError::InvalidPlanState.new(
+              "Stack state `#{state}` is not valid for plan generation"
+            )
           end
         end
 

@@ -6,7 +6,7 @@ module Miasma
       # Abstract server
       class Stack < Types::Model
 
-        # Stack states which are valid to apply update plan
+        # Stack states which are valid to execute update plan
         VALID_PLAN_STATES = [
           :create_complete, :update_complete, :update_failed,
           :rollback_complete, :rollback_failed,
@@ -57,7 +57,7 @@ module Miasma
         attribute :disable_rollback, [TrueClass, FalseClass]
         attribute :notification_topics, String, :multiple => true
         attribute :capabilities, String, :multiple => true
-        attribute :plan, Plan, :depends => :perform_plan
+        attribute :plan, Plan, :depends => :load_plan
 
         on_missing :reload
 
@@ -82,12 +82,25 @@ module Miasma
           perform_template_validate
         end
 
-        # Apply current plan
+        # Create a new stack plan
         #
         # @return [self]
-        def plan_apply
+        def plan_generate
+          if plan
+            raise Miasma::Error::OrchestrationError::StackPlanExists.new(
+              "Plan already exists for this stack"
+            )
+          else
+            perform_plan
+          end
+        end
+
+        # Execute current execute
+        #
+        # @return [self]
+        def plan_execute
           if dirty?(:plan)
-            perform_plan_apply
+            perform_plan_execute
           else
             raise Miasma::Error::OrchestrationError::InvalidStackPlan.new(
               "This stack instance does not have a generated plan"
@@ -158,6 +171,11 @@ module Miasma
           VALID_PLAN_STATES.include?(state)
         end
 
+        # Proxy load plan action up to the API
+        def load_plan
+          api.stack_plan_load(self)
+        end
+
         # Proxy plan action up to the API
         def perform_plan
           if planable?
@@ -169,9 +187,9 @@ module Miasma
           end
         end
 
-        # Proxy plan apply action up to the API
-        def perform_plan_apply
-          api.stack_plan_apply(self)
+        # Proxy plan execute action up to the API
+        def perform_plan_execute
+          api.stack_plan_execute(self)
         end
 
         # Proxy plan delete action up to the API

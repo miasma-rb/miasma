@@ -4,7 +4,6 @@ module Miasma
   module Models
     class Orchestration
       class Stack
-
         # Abstract stack plans collection
         class Plans < Types::Collection
 

@@ -16,17 +16,17 @@ describe Miasma::Models::Orchestration::Stack::Plan do
     @subject = nil
   end
 
-  describe "#apply!" do
-    it "should apply the plan to the stack" do
-      expect(stack).to receive(:plan_apply)
-      subject.apply!
+  describe "#execute!" do
+    it "should execute the plan to the stack" do
+      expect(stack).to receive(:plan_execute)
+      subject.execute!
     end
 
     context "with stale stack plan" do
       let(:stack_plan) { :other }
 
       it "should raise an error" do
-        expect { subject.apply! }.to raise_error(Miasma::Error::OrchestrationError::InvalidStackPlan)
+        expect { subject.execute! }.to raise_error(Miasma::Error::OrchestrationError::InvalidStackPlan)
       end
     end
   end

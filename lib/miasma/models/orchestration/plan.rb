@@ -26,19 +26,34 @@ module Miasma
             attribute :diffs, Diff, :multiple => true
           end
 
+          attribute :name, String, :coerce => lambda { |x| x.to_s }
           attribute :add, Item, :multiple => true
           attribute :remove, Item, :multiple => true
           attribute :replace, Item, :multiple => true
           attribute :interrupt, Item, :multiple => true
           attribute :unavailable, Item, :multiple => true
           attribute :unknown, Item, :multiple => true
+          attribute :stacks, Smash
 
-          # Apply this stack plan
+          DIFF_ATTRIBUTES = [
+            :add, :remove, :replace, :interrupt, :unavailable, :unknown,
+          ]
+
+          # Plan has no modifications
+          #
+          # @return [TrueClass, FalseClass]
+          def empty?
+            DIFF_ATTRIBUTES.all? { |attr|
+              self.send(attr).empty?
+            } && stacks.values.all? { |stk| stk.empty? }
+          end
+
+          # Execute this stack plan
           #
           # @return [Stack]
-          def apply!
+          def execute!
             if self == stack.plan
-              stack.plan_apply
+              stack.plan_execute
             else
               raise Error::OrchestrationError::InvalidStackPlan.new "Plan is no longer valid for linked stack."
             end

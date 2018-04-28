@@ -6,7 +6,10 @@ describe Miasma::Models::Orchestration::Stack do
   let(:stack_opts) { @stack_opts ||= {:name => stack_name} }
   let(:subject) { @subject ||= described_class.new(api, stack_opts) }
 
-  before { allow(api).to receive(:stack_reload) }
+  before do
+    allow(api).to receive(:stack_reload)
+    allow(api).to receive(:stack_plan_load)
+  end
 
   after do
     @subject = nil
@@ -37,15 +40,17 @@ describe Miasma::Models::Orchestration::Stack do
 
   describe "#plan" do
     it "should automatically call plan loading" do
-      expect(subject).to receive(:perform_plan)
+      expect(subject).to receive(:load_plan)
       subject.plan
     end
+  end
 
+  describe "#plan_generate" do
     context "with invalid planning state" do
       before { stack_opts[:state] = :delete_complete }
 
       it "should raise an error" do
-        expect { subject.plan }.to raise_error(
+        expect { subject.plan_generate }.to raise_error(
           Miasma::Error::OrchestrationError::InvalidPlanState
         )
       end
@@ -56,7 +61,7 @@ describe Miasma::Models::Orchestration::Stack do
 
       it "should generate plan" do
         expect(api).to receive(:stack_plan).with(subject)
-        subject.plan
+        subject.plan_generate
       end
     end
   end
@@ -68,10 +73,10 @@ describe Miasma::Models::Orchestration::Stack do
     end
   end
 
-  describe "#plan_apply" do
+  describe "#plan_execute" do
     context "without generated plan" do
       it "should raise an error" do
-        expect { subject.plan_apply }.to raise_error(
+        expect { subject.plan_execute }.to raise_error(
           Miasma::Error::OrchestrationError::InvalidStackPlan
         )
       end
@@ -79,9 +84,9 @@ describe Miasma::Models::Orchestration::Stack do
 
     context "with generated plan" do
       before { allow(subject).to receive(:dirty?).with(:plan).and_return(true) }
-      it "should apply the plan" do
-        expect(subject).to receive(:perform_plan_apply)
-        subject.plan_apply
+      it "should execute the plan" do
+        expect(subject).to receive(:perform_plan_execute)
+        subject.plan_execute
       end
     end
   end
@@ -97,7 +102,7 @@ describe Miasma::Models::Orchestration::Stack do
 
     context "with generated plan" do
       before { allow(subject).to receive(:dirty?).with(:plan).and_return(true) }
-      it "should apply the plan" do
+      it "should execute the plan" do
         expect(subject).to receive(:perform_plan_delete)
         subject.plan_delete
       end

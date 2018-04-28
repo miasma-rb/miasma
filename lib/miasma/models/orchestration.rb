@@ -89,8 +89,16 @@ module Miasma
       # Plan stack update
       #
       # @param stack [Stack]
-      # @return [Hash]
+      # @return [Plan]
       def stack_plan(stack)
+        raise NotImplementedError
+      end
+
+      # Load plan for stack
+      #
+      # @param stack [Stack]
+      # @return [Plan]
+      def stack_plan_load(stack)
         raise NotImplementedError
       end
 

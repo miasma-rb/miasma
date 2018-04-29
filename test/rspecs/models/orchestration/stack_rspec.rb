@@ -94,7 +94,7 @@ describe Miasma::Models::Orchestration::Stack do
   describe "#plan_delete" do
     context "without generated plan" do
       it "should raise an error" do
-        expect { subject.plan_delete }.to raise_error(
+        expect { subject.plan_destroy }.to raise_error(
           Miasma::Error::OrchestrationError::InvalidStackPlan
         )
       end
@@ -103,8 +103,8 @@ describe Miasma::Models::Orchestration::Stack do
     context "with generated plan" do
       before { allow(subject).to receive(:dirty?).with(:plan).and_return(true) }
       it "should execute the plan" do
-        expect(subject).to receive(:perform_plan_delete)
-        subject.plan_delete
+        expect(subject).to receive(:perform_plan_destroy)
+        subject.plan_destroy
       end
     end
   end

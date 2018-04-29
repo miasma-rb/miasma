@@ -74,10 +74,8 @@ module Miasma
 
           # Proxy reload action up to the API
           def perform_reload
-            api.plan_reload(self)
+            api.stack_plan_reload(self)
           end
-
-          include Utils::Immutable
         end
       end
     end

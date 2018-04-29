@@ -48,7 +48,7 @@ describe Miasma::Models::Orchestration::Stack::Plan do
 
   describe "#perform_reload" do
     it "should call api to reload plan" do
-      expect(api).to receive(:plan_reload).with(subject)
+      expect(api).to receive(:stack_plan_reload).with(subject)
       subject.perform_reload
     end
   end

@@ -84,7 +84,7 @@ module Miasma
 
         # Create a new stack plan
         #
-        # @return [self]
+        # @return [Plan]
         def plan_generate
           if plan
             raise Miasma::Error::OrchestrationError::StackPlanExists.new(
@@ -111,9 +111,9 @@ module Miasma
         # Delete the current plan
         #
         # @return [self]
-        def plan_delete
+        def plan_destroy
           if dirty?(:plan)
-            perform_plan_delete
+            perform_plan_destroy
           else
             raise Miasma::Error::OrchestrationError::InvalidStackPlan.new(
               "This stack instance does not have a generated plan"
@@ -168,12 +168,14 @@ module Miasma
         #
         # @return [TrueClass, FalseClass]
         def planable?
-          VALID_PLAN_STATES.include?(state)
+          state.nil? || VALID_PLAN_STATES.include?(state)
         end
 
         # Proxy load plan action up to the API
         def load_plan
-          api.stack_plan_load(self)
+          memoize(:plan) do
+            api.stack_plan_load(self)
+          end
         end
 
         # Proxy plan action up to the API
@@ -193,8 +195,8 @@ module Miasma
         end
 
         # Proxy plan delete action up to the API
-        def perform_plan_delete
-          api.stack_plan_delete(self)
+        def perform_plan_destroy
+          api.stack_plan_destroy(self)
         end
 
         # Proxy save action up to the API

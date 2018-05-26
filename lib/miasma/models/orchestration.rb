@@ -146,7 +146,7 @@ module Miasma
       #
       # @param stack [Models::Orchestration::Stack]
       # @return [Array<Models::Orchestration::Stack::Plan>]
-      def plan_all(stack)
+      def stack_plan_all(stack)
         raise NotImplementedError
       end
 
@@ -154,7 +154,7 @@ module Miasma
       #
       # @param plan [Models::Orchestration::Stack::Plan]
       # @return [Models::Orchestration::Stack::Plan]
-      def plan_reload(plan)
+      def stack_plan_reload(plan)
         raise NotImplementedError
       end
     end

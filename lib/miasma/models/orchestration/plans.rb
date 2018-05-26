@@ -43,7 +43,7 @@ module Miasma
 
           # @return [Array<Plan>]
           def perform_population
-            api.plan_all(stack)
+            api.stack_plan_all(stack)
           end
         end
       end

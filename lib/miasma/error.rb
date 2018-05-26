@@ -86,6 +86,9 @@ module Miasma
 
       # Plan is no longer valid for stack
       class InvalidStackPlan < OrchestrationError; end
+
+      # Plan already exists
+      class StackPlanExists < OrchestrationError; end
     end
 
     # Invalid modification request

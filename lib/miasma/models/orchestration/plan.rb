@@ -34,6 +34,7 @@ module Miasma
           attribute :unavailable, Item, :multiple => true
           attribute :unknown, Item, :multiple => true
           attribute :stacks, Smash
+          attribute :state, String, :coerce => lambda { |x| x.to_s }
 
           DIFF_ATTRIBUTES = [
             :add, :remove, :replace, :interrupt, :unavailable, :unknown,

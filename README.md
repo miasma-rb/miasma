@@ -148,9 +148,12 @@ should provide a simple feature matrix for a quick
 check on support availability:
 
 * [AWS](https://github.com/miasma-rb/miasma-aws)
-* [Rackspace](https://github.com/miasma-rb/miasma-rackspace)
-* [OpenStack](https://github.com/miasma-rb/miasma-open-stack)
+* [Azure](https://github.com/miasma-rb/miasma-azure)
+* [Google](https://github.com/miasma-rb/miasma-google)
 * [Local](https://github.com/miasma-rb/miasma-local)
+* [OpenStack](https://github.com/miasma-rb/miasma-open-stack)
+* [Rackspace](https://github.com/miasma-rb/miasma-rackspace)
+* [Terraform](https://github.com/miasma-rb/miasma-terraform)
 
 ## Info
 

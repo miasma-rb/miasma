@@ -9,7 +9,7 @@ module Miasma
         # Stack states which are valid to execute update plan
         VALID_PLAN_STATES = [
           :create_complete, :update_complete, :update_failed,
-          :rollback_complete, :rollback_failed, :unknown
+          :rollback_complete, :rollback_failed, :unknown,
         ]
 
         autoload :Resource, "miasma/models/orchestration/resource"

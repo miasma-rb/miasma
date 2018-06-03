@@ -1,3 +1,7 @@
+# v0.3.4
+* Add queue modeling abstracts
+* Add orchestration stack plan abstracts
+
 # v0.3.2
 * Update events update! helper to properly fetch new items
 

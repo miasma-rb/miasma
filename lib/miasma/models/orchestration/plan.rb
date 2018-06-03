@@ -35,7 +35,8 @@ module Miasma
           attribute :unknown, Item, :multiple => true
           attribute :stacks, Smash
           attribute :state, String, :coerce => lambda { |x| x.to_s }
-          attribute :parameters, Smash
+          attribute :parameters, Smash, :default => Smash.new
+          attribute :template, Smash, :default => Smash.new
           attribute :created_at, Time, :coerce => lambda { |x| Time.parse(x.to_s) }
 
           DIFF_ATTRIBUTES = [

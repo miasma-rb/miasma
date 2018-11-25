@@ -11,9 +11,11 @@ module Miasma
       # Maximum allowed HTTP request retries (for non-HTTP related errors)
       MAX_REQUEST_RETRIES = 5
 
+      include Bogo::Logger::Helpers
       include Miasma::Utils::Lazy
       include Miasma::Utils::Memoization
 
+      logger_name(:api)
       always_clean!
 
       # Create new API connection
@@ -25,7 +27,8 @@ module Miasma
         if creds.is_a?(Hash)
           load_data(creds)
         else
-          raise TypeError.new "Expecting `credentials` to be of type `Hash`. Received: `#{creds.class}`"
+          raise TypeError, "Expecting `credentials` to be of type `Hash`. " \
+            "Received: `#{creds.class}`"
         end
         after_setup(creds)
         connect
@@ -104,9 +107,7 @@ module Miasma
         end
         request_args = [].tap do |ary|
           _endpoint = args.delete(:endpoint) || endpoint
-          ary.push(
-            File.join(_endpoint, args[:path].to_s)
-          )
+          ary.push(File.join(_endpoint, args[:path].to_s))
           options = {}.tap do |opts|
             [:form, :params, :json, :body].each do |key|
               opts[key] = args[key] if args[key]
@@ -140,7 +141,8 @@ module Miasma
       def retryable_request(http_method, &block)
         Bogo::Retry.build(
           data.fetch(:retry_type, :exponential),
-          :max_attempts => retryable_allowed?(http_method) ? data.fetch(:retry_max, MAX_REQUEST_RETRIES) : 0,
+          :max_attempts => retryable_allowed?(http_method) ?
+            data.fetch(:retry_max, MAX_REQUEST_RETRIES) : 0,
           :wait_interval => data[:retry_interval],
           :ui => data[:retry_ui],
           :auto_run => false,
@@ -174,6 +176,7 @@ module Miasma
       #   override if things need to be done prior to
       #   the actual request (like signature generation)
       def make_request(connection, http_method, request_args)
+        logger.debug("making #{http_method.to_s.upcase} request - #{request_args.inspect}")
         connection.send(http_method, *request_args)
       end
 
@@ -183,18 +186,23 @@ module Miasma
       # @param extract_body [TrueClass, FalseClass] automatically extract body
       # @return [Smash]
       def format_response(result, extract_body = true)
+        logger.debug("formatting HTTP response")
         extracted_headers = Smash[result.headers.map { |k, v| [Utils.snake(k), v] }]
         if extract_body
+          logger.debug("extracting HTTP response body")
           body_content = result.body.to_s
           body_content.encode!("UTF-8", "binary",
                                :invalid => :replace,
                                :undef => :replace,
                                :replace => "")
           if extracted_headers[:content_type].to_s.include?("json")
+            logger.debug("unpacking HTTP response body using JSON")
             extracted_body = from_json(body_content) || body_content
           elsif extracted_headers[:content_type].to_s.include?("xml")
+            logger.debug("unpacking HTTP response body using XML")
             extracted_body = from_xml(body_content) || body_content
           else
+            logger.debug("unpacking HTTP response body using best effort")
             extracted_body = from_json(body_content) ||
                              from_xml(body_content) ||
                              body_content
@@ -203,6 +211,7 @@ module Miasma
         unless extracted_body
           # @note if body is over 100KB, do not extract
           if extracted_headers[:content_length].to_i < 102400
+            logger.warn("skipping body extraction and formatting due to size")
             extracted_body = result.body.to_s
           else
             extracted_body = result.body
@@ -222,7 +231,10 @@ module Miasma
       def from_json(string)
         begin
           MultiJson.load(string).to_smash
-        rescue MultiJson::ParseError
+        rescue MultiJson::ParseError => err
+          logger.error("failed to load JSON string - #{err.class}: #{err}")
+          logger.debug("JSON string load failure: #{string.inspect}")
+          logger.debug("JSON error - #{err.class}: #{err}\n#{err.backtrace.join("\n")}")
           nil
         end
       end
@@ -234,7 +246,10 @@ module Miasma
       def from_xml(string)
         begin
           MultiXml.parse(string).to_smash
-        rescue MultiXml::ParseError
+        rescue MultiXml::ParseError => err
+          logger.error("failed to load XML string - #{err.class}: #{err}")
+          logger.debug("XML string load failure: #{string.inspect}")
+          logger.debug("XML error - #{err.class}: #{err}\n#{err.backtrace.join("\n")}")
           nil
         end
       end

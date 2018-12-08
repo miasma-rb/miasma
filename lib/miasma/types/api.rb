@@ -28,7 +28,7 @@ module Miasma
           load_data(creds)
         else
           raise TypeError, "Expecting `credentials` to be of type `Hash`. " \
-            "Received: `#{creds.class}`"
+                "Received: `#{creds.class}`"
         end
         after_setup(creds)
         connect
@@ -186,7 +186,6 @@ module Miasma
       # @param extract_body [TrueClass, FalseClass] automatically extract body
       # @return [Smash]
       def format_response(result, extract_body = true)
-        logger.debug("formatting HTTP response")
         extracted_headers = Smash[result.headers.map { |k, v| [Utils.snake(k), v] }]
         if extract_body
           logger.debug("extracting HTTP response body")

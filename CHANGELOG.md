@@ -1,3 +1,6 @@
+# v0.3.8
+* Return coerced time values in local time
+
 # v0.3.6
 * Add logging to API
 

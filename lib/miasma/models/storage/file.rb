@@ -48,7 +48,7 @@ module Miasma
         attribute :content_disposition, String
         attribute :content_encoding, String
         attribute :etag, String
-        attribute :updated, Time, :coerce => lambda { |t| Time.parse(t.to_s) }
+        attribute :updated, Time, :coerce => lambda { |t| Time.parse(t.to_s).localtime }
         attribute :size, Integer
         attribute :metadata, Smash, :coerce => lambda { |o| o.to_smash }
 

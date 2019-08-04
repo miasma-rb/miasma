@@ -6,7 +6,7 @@ module Miasma
       # Abstract bucket
       class Bucket < Types::Model
         attribute :name, String, :required => true
-        attribute :created, Time, :coerce => lambda { |t| Time.parse(t.to_s) }
+        attribute :created, Time, :coerce => lambda { |t| Time.parse(t.to_s).localtime }
         attribute :metadata, Smash, :coerce => lambda { |o| o.to_smash }
 
         # @return [Files]

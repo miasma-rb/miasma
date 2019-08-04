@@ -45,8 +45,8 @@ module Miasma
         attribute :private_addresses, Address, :multiple => true, :coerce => lambda { |v| Address.new(v) }
         attribute :health_check, HealthCheck, :coerce => lambda { |v| HealthCheck.new(v) }
         attribute :listeners, Listener, :coerce => lambda { |v| Listener.new(v) }, :multiple => true
-        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
-        attribute :updated, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
+        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
+        attribute :updated, Time, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
         attribute :server_states, ServerState, :multiple => true, :coerce => lambda { |v| ServerState.new(v) }
 
         on_missing :reload

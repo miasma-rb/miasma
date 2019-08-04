@@ -26,7 +26,7 @@ module Miasma
         end
 
         attribute :name, String, :required => true
-        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
+        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
         attribute :load_balancers, Balancer, :multiple => true, :coerce => lambda { |v, obj| Balancer.new(obj.api, v) }
         attribute :minimum_size, Integer, :coerce => lambda { |v| v.to_i }
         attribute :maximum_size, Integer, :coerce => lambda { |v| v.to_i }

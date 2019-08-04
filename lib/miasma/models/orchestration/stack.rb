@@ -41,8 +41,8 @@ module Miasma
         attribute :outputs, Output, :coerce => lambda { |v, stack| Output.new(stack, v) }, :multiple => true
         attribute :status, String
         attribute :status_reason, String
-        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
-        attribute :updated, Time, :coerce => lambda { |v| Time.parse(v.to_s) }
+        attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
+        attribute :updated, Time, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
         attribute :parameters, Smash, :coerce => lambda { |v| v.to_smash }
         attribute :template, Smash, :depends => :perform_template_load, :coerce => lambda { |v| v = MultiJson.load(v) if v.is_a?(String); v.to_smash }
         attribute :template_url, String

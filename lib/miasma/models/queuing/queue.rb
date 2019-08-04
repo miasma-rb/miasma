@@ -8,8 +8,8 @@ module Miasma
         class Message < Types::Data
           attribute :origin, Queue, :required => true
           attribute :content, String, :required => true
-          attribute :created, Time
-          attribute :updated, Time
+          attribute :created, Time, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
+          attribute :updated, Time, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
           attribute :timeout, Integer
         end
 
@@ -19,8 +19,8 @@ module Miasma
         end
 
         attribute :name, String, :required => true
-        attribute :created, Time, :required => true
-        attribute :updated, Time
+        attribute :created, Time, :required => true, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
+        attribute :updated, Time, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
         attribute :maximum_message_size, Integer
         attribute :messages_available, Integer
 

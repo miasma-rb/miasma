@@ -7,7 +7,7 @@ module Miasma
 
         # Stack event
         class Event < Types::Model
-          attribute :time, Time, :required => true
+          attribute :time, Time, :required => true, :coerce => lambda { |v| Time.parse(v.to_s).localtime }
           attribute :resource_id, [String, Numeric], :required => true
           attribute :resource_logical_id, [String, Numeric]
           attribute :resource_name, String

@@ -37,7 +37,7 @@ module Miasma
           attribute :state, String, :coerce => lambda { |x| x.to_s }
           attribute :parameters, Smash, :default => Smash.new
           attribute :template, Smash, :default => Smash.new
-          attribute :created_at, Time, :coerce => lambda { |x| Time.parse(x.to_s) }
+          attribute :created_at, Time, :coerce => lambda { |x| Time.parse(x.to_s).localtime }
 
           DIFF_ATTRIBUTES = [
             :add, :remove, :replace, :interrupt, :unavailable, :unknown,
